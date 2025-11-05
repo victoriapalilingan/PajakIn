@@ -6,7 +6,7 @@ export default function App(): React.JSX.Element {
     <SafeAreaView style={styles.container}>
       <View>
         <Text style={styles.title}>Tes Font Montserrat Black</Text>
-        <Text style={styles.body}>Ini teks biasa untuk pembanding.</Text>
+        <Text style={styles.body}> teks biasa</Text>
       </View>
     </SafeAreaView>
   );
