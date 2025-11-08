@@ -13,12 +13,13 @@ const TextInput = ({
   label,
   placeholder,
   secureTextEntry,
-  leftIconName, // nama ikon Feather (opsional)
-  leftElement, // React node (SVG/icon custom) (opsional)
-  hideRightIcon = false, // sembunyikan ikon "eye"
-  hideLeftIcon = false, // sembunyikan ikon kiri
+  leftIconName,
+  leftElement,
+  hideRightIcon = false,
+  hideLeftIcon = false,
   width = 255,
   height = 36,
+  iconSize = 20, // 👈 tambahkan prop baru untuk kontrol ukuran ikon
   containerStyle,
   inputStyle,
   ...rest
@@ -27,7 +28,6 @@ const TextInput = ({
   const [show, setShow] = useState(false);
   const isPassword = !!secureTextEntry;
 
-  // Apakah ada ikon kiri yang AKAN dirender?
   const hasLeftIcon = !hideLeftIcon && (leftElement || leftIconName);
 
   const s = useMemo(
@@ -46,18 +46,17 @@ const TextInput = ({
           s.shadowIOS,
           Platform.OS === 'android' && s.shadowAndroid,
         ]}>
-        {/* Ikon kiri (opsional) */}
         {hasLeftIcon ? (
           leftElement ? (
             <View style={s.iconWrapper}>{leftElement}</View>
           ) : (
             <View style={s.iconWrapper}>
-              <Feather name={leftIconName} size={20} color="#6A7C6E" />
+              <Feather name={leftIconName} size={iconSize} color="#6A7C6E" />
+              {/* 👆 pakai prop iconSize */}
             </View>
           )
         ) : null}
 
-        {/* Input */}
         <RNInput
           style={[s.input, inputStyle]}
           placeholder={placeholder}
@@ -69,12 +68,11 @@ const TextInput = ({
           {...rest}
         />
 
-        {/* Ikon mata (opsional) */}
         {isPassword && !hideRightIcon && (
           <TouchableOpacity style={s.rightIcon} onPress={() => setShow(!show)}>
             <Feather
               name={show ? 'eye' : 'eye-off'}
-              size={18}
+              size={iconSize - 2} // 👈 kamu bisa bedakan sedikit ukuran kanan & kiri
               color="#9E9E9E"
             />
           </TouchableOpacity>
@@ -94,10 +92,10 @@ const createStyles = (width, height, hasLeftIcon) =>
       alignSelf: 'center',
     },
     label: {
-      fontSize: 12,
-      color: '#1B3C29',
+      fontSize: 13,
+      color: '#2A6E53',
       marginBottom: 6,
-      fontFamily: 'Poppins-Regular',
+      fontFamily: 'Montserrat-Medium',
       textAlign: 'left',
       width: '100%',
     },
@@ -110,12 +108,10 @@ const createStyles = (width, height, hasLeftIcon) =>
       borderRadius: 12,
       borderWidth: 1,
       borderColor: '#D9D9D9',
-      // padding kiri menyesuaikan jika tidak ada ikon kiri
       paddingLeft: hasLeftIcon ? 12 : 10,
       paddingRight: 12,
     },
     fieldFocused: {borderColor: '#1E90FF'},
-    // Shadow
     shadowIOS: {
       shadowColor: '#000',
       shadowOffset: {width: 0, height: 3},
@@ -123,7 +119,6 @@ const createStyles = (width, height, hasLeftIcon) =>
       shadowRadius: 5,
     },
     shadowAndroid: {elevation: 5},
-    // Ikon kiri (tanpa background box)
     iconWrapper: {
       marginRight: 8,
       alignItems: 'center',
@@ -134,8 +129,8 @@ const createStyles = (width, height, hasLeftIcon) =>
       height: '100%',
       fontSize: 14,
       color: '#020202',
-      paddingVertical: 0, // jaga vertikal center
-      fontFamily: 'Poppins-Regular',
+      paddingVertical: 0,
+      fontFamily: 'Montserrat-Regular',
     },
     rightIcon: {marginLeft: 8},
   });
