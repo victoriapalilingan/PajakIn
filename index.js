@@ -9,4 +9,4 @@ import SignUp from './src/pages/SignUp';
 import Home from './src/pages/HomeScreen';
 import HomeScreen from './src/pages/HomeScreen';
 
-AppRegistry.registerComponent(appName, () => HomeScreen);
+AppRegistry.registerComponent(appName, () => SignUp);
