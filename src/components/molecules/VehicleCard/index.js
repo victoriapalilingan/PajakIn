@@ -65,18 +65,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#CDE5FF',
+    borderColor: '#E0ECF8', // sedikit lebih lembut dari sebelumnya
     paddingHorizontal: 16,
     paddingVertical: 12,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 12,
+
+    // ✨ Shadow lembut dan lebih menyebar seperti di desain
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
-    elevation: 2,
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
   },
   leftSection: {
     flexDirection: 'row',
@@ -88,8 +90,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   vehicleIcon: {
-    width: 40,
-    height: 40,
+    width: 53,
+    height: 53,
     marginRight: 12,
   },
   textContainer: {
