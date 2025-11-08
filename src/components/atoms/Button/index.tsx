@@ -1,42 +1,56 @@
+// src/components/atoms/IconText.tsx
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  ImageSourcePropType,
+  TextStyle,
+  ImageStyle,
+} from 'react-native';
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 
-const Button = ({
-  label,
-  color = '#2A6E54', // warna hijau PajakIn
-  textColor = '#FFFFFF',
-  width = 255,
-  height = 38,
-  onPress,
-}) => {
+interface IconTextProps {
+  icon: ImageSourcePropType;
+  text: string;
+  textStyle?: TextStyle;
+  iconStyle?: ImageStyle;
+  iconWidth?: number;
+  iconHeight?: number;
+}
+
+const IconText = ({
+  icon,
+  text,
+  textStyle,
+  iconStyle,
+  iconWidth = 24,
+  iconHeight = 24,
+}: IconTextProps) => {
   return (
-    <TouchableOpacity
-      style={[styles.button, {backgroundColor: color, width, height}]}
-      activeOpacity={0.8}
-      onPress={onPress}>
-      <Text style={[styles.text, {color: textColor}]}>{label}</Text>
-    </TouchableOpacity>
+    <View style={styles.container}>
+      <Image
+        source={icon}
+        style={[styles.icon, {width: iconWidth, height: iconHeight}, iconStyle]}
+        resizeMode="contain"
+      />
+      <Text style={[styles.text, textStyle]}>{text}</Text>
+    </View>
   );
 };
 
-export default Button;
+export default IconText;
 
 const styles = StyleSheet.create({
-  button: {
-    justifyContent: 'center',
+  container: {
+    flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 50, // sesuai radius di Figma
-    paddingHorizontal: 24, // kiri-kanan 24px
-    paddingVertical: 8, // atas-bawah 10px
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.15,
-    shadowRadius: 3.84,
-    elevation: 3, // efek bayangan di Android
+  },
+  icon: {
+    marginRight: 8,
   },
   text: {
-    fontFamily: 'Montserrat-SemiBold',
-    fontSize: 15,
-    textAlign: 'center',
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 12,
   },
 });

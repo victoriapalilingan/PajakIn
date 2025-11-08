@@ -22,7 +22,7 @@ import EmailIcon from '../../assets/Mobile Email.svg';
 import PassIcon from '../../assets/Lock.svg';
 
 // logo PajakIn putih
-import WhitePajakIn from '../../assets/WhitePajakIn.png';
+// import WhitePajakIn from '../../assets/WhitePajakIn.png';
 
 const SignUp = () => {
   const [isAgreed, setIsAgreed] = useState(false);
