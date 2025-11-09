@@ -136,7 +136,6 @@ const SignUp = () => {
         </Card>
 
         {/* Logo PajakIn putih */}
-        <Image source={WhitePajakIn} style={styles.logo} resizeMode="contain" />
       </View>
     </ImageBackground>
   );
