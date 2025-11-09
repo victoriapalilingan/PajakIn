@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: colors.white,
     overflow: 'hidden',
-    elevation: 4,
   },
   avatar: {width: '100%', height: '100%'},
 
