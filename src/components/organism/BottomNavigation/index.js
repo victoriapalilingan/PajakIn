@@ -6,8 +6,11 @@ import NavItem from '../../atoms/NavItem';
 import ButtonFab from '../../atoms/ButtonFab';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
-const FAB_SIZE = 63;
-const FAB_VERTICAL_OFFSET = -8;
+
+const BAR_HEIGHT = 75; // samakan dgn BottomBar
+const NOTCH_DEPTH = 60; // samakan dgn BottomBar
+const FAB_SIZE = 80; // ← ujinya pakai nilai realistis dulu (60–120)
+const LIFT = 10; // naikkan 8–14 biar “floating”
 
 const BottomNavigation = ({
   items,
@@ -31,8 +34,21 @@ const BottomNavigation = ({
     />
   );
 
+  // Posisi FAB
   const fabLeft = (SCREEN_WIDTH - FAB_SIZE) / 2;
-  const fabBottom = 34 + safeAreaBottom + FAB_VERTICAL_OFFSET;
+  const fabBottom =
+    BAR_HEIGHT - NOTCH_DEPTH - FAB_SIZE / 2 + LIFT + safeAreaBottom;
+
+  // LOG: pastikan nilai berubah
+  console.log('[BottomNavigation]', {
+    SCREEN_WIDTH,
+    BAR_HEIGHT,
+    NOTCH_DEPTH,
+    FAB_SIZE,
+    LIFT,
+    fabLeft,
+    fabBottom,
+  });
 
   return (
     <View style={styles.wrapper}>
@@ -42,6 +58,7 @@ const BottomNavigation = ({
           rightItems={rightItems.map(renderNavItem)}
           safeAreaBottom={safeAreaBottom}
         />
+
         <View style={[styles.fabContainer, {left: fabLeft, bottom: fabBottom}]}>
           <ButtonFab size={FAB_SIZE} onPress={onAddPress} icon={fabIcon} />
         </View>
@@ -67,16 +84,12 @@ BottomNavigation.propTypes = {
 export default BottomNavigation;
 
 const styles = StyleSheet.create({
-  wrapper: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  container: {
-    position: 'relative',
-  },
+  wrapper: {position: 'absolute', bottom: 0, left: 0, right: 0},
+  container: {position: 'relative'},
   fabContainer: {
     position: 'absolute',
+    zIndex: 3, // iOS
+    elevation: 3, // Android
+    pointerEvents: 'box-none',
   },
 });

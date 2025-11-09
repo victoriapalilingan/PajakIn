@@ -3,30 +3,41 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Svg, {Circle, Defs, LinearGradient, Stop} from 'react-native-svg';
 
-const ButtonFab = ({size, onPress, icon}) => {
-  const fabSize = size || 63;
+const ButtonFab = ({size = 63, onPress, icon}) => {
   const Icon = icon;
+
+  // LOG: lihat ukuran yg diterima ButtonFab
+  console.log('[ButtonFab] size=', size);
 
   return (
     <TouchableOpacity
-      style={[styles.container, {width: fabSize, height: fabSize}]}
+      style={[
+        styles.container,
+        {width: size, height: size, borderRadius: size / 2},
+      ]}
       onPress={onPress}
       activeOpacity={0.85}>
-      <Svg width={fabSize} height={fabSize} style={styles.svgCircle}>
+      <Svg width={size} height={size} style={styles.svgCircle}>
         <Defs>
           <LinearGradient id="fabGradient" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor="#F4C542" stopOpacity="1" />
-            <Stop offset="1" stopColor="#FFE9B0" stopOpacity="1" />
+            <Stop offset="0" stopColor="#F4C542" />
+            <Stop offset="1" stopColor="#FFE9B0" />
           </LinearGradient>
         </Defs>
         <Circle
-          cx={fabSize / 2}
-          cy={fabSize / 2}
-          r={(fabSize - 2) / 2}
+          cx={size / 2}
+          cy={size / 2}
+          r={(size - 2) / 2}
           fill="url(#fabGradient)"
         />
       </Svg>
-      <Icon width={30} height={30} color="#2A6E54" style={styles.icon} />
+
+      {/* Ikon proporsional, ~48% dari diameter */}
+      <Icon
+        width={Math.round(size * 0.48)}
+        height={Math.round(size * 0.48)}
+        color="#2A6E54"
+      />
     </TouchableOpacity>
   );
 };
@@ -42,7 +53,6 @@ export default ButtonFab;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
     ...Platform.select({
@@ -52,15 +62,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 10,
       },
-      android: {
-        elevation: 10,
-      },
+      android: {elevation: 10},
     }),
   },
-  svgCircle: {
-    position: 'absolute',
-  },
-  icon: {
-    zIndex: 1,
-  },
+  svgCircle: {position: 'absolute'},
 });
