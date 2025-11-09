@@ -1,3 +1,4 @@
+// src/components/pages/HomeScreen.js
 import React, {useState} from 'react';
 import {
   StyleSheet,
@@ -5,20 +6,26 @@ import {
   ScrollView,
   View,
   StatusBar,
+  Platform,
 } from 'react-native';
 import PropTypes from 'prop-types';
+
 import HomeHeader from '../../components/organism/HomeHeader';
 import VehicleList from '../../components/organism/VehicleList';
 import Button from '../../components/atoms/Button';
 import Gap from '../../components/atoms/Gap';
 import BottomNavigation from '../../components/organism/BottomNavigation';
+import BottomPopup from '../../components/molecules/BottomPopup';
 
+// SVG lokal
 import PlusIcon from '../../assets/Add.svg';
-import ButtonPlus from '../../assets/ButtonAdd1.svg';
+import ButtonPlus from '../../assets/ButtonAdd1.svg'; // kalau mau pakai FAB khusus
 import HomeIcon from '../../assets/Home.svg';
 import ReceiptIcon from '../../assets/Activity History.svg';
 import BellIcon from '../../assets/Doorbell.svg';
 import UserIcon from '../../assets/Profile.svg';
+import BtnCarIcon from '../../assets/WhiteMobil.svg';
+import BtnDetailIcon from '../../assets/Pencil.svg';
 
 const tabs = [
   {key: 'home', label: 'Home', icon: HomeIcon},
@@ -29,9 +36,10 @@ const tabs = [
 
 const HomeScreen = ({navigation}) => {
   const [activeTab, setActiveTab] = useState('home');
+  const [popupVisible, setPopupVisible] = useState(false);
 
   const handleAddVehicle = () => {
-    console.log('Tambah Kendaraan');
+    console.log('Tambah Kendaraan (header button)');
     // navigation.navigate('AddVehicle');
   };
 
@@ -40,9 +48,9 @@ const HomeScreen = ({navigation}) => {
     setActiveTab(key);
   };
 
-  const handleAddPress = () => {
-    console.log('add pressed');
-  };
+  // FAB opens popup
+  const openPopup = () => setPopupVisible(true);
+  const closePopup = () => setPopupVisible(false);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -55,7 +63,7 @@ const HomeScreen = ({navigation}) => {
         <HomeHeader />
         <Gap height={24} />
         <VehicleList />
-        <Gap height={5} />
+        <Gap height={12} />
         <View style={styles.buttonWrapper}>
           <Button
             label="Tambah Kendaraan"
@@ -65,44 +73,73 @@ const HomeScreen = ({navigation}) => {
             width={368}
             height={51}
             iconGap={10}
-            iconSize={36}
-            leftIcon={<PlusIcon width={36} height={36} color="#FFFFFF" />}
+            iconSize={28}
+            leftIcon={<PlusIcon width={28} height={28} color="#FFFFFF" />}
           />
         </View>
         <Gap height={24} />
       </ScrollView>
 
+      {/* Bottom nav – tekan FAB untuk buka popup */}
       <BottomNavigation
         items={tabs}
         activeKey={activeTab}
         onTabPress={handleTabPress}
-        onAddPress={handleAddPress}
-        fabIcon={ButtonPlus}
+        onAddPress={openPopup}
+        fabIcon={ButtonPlus /* atau PlusIcon */}
+        fabSize={63}
+        fabLift={12}
       />
+
+      {/* POPUP actions */}
+      <BottomPopup
+        visible={popupVisible}
+        onClose={closePopup}
+        safeBottom={Platform.OS === 'ios' ? 20 : 0}>
+        <Button
+          label="Tambah Kendaraan"
+          onPress={() => {
+            closePopup();
+            console.log('Tambah Kendaraan (popup)');
+            // navigation.navigate('AddVehicle');
+          }}
+          color="#F5C84C"
+          textColor="#ffffffff"
+          width={348}
+          height={51}
+          iconGap={10}
+          leftIcon={<BtnCarIcon width={24} height={24} color="#ffffffff" />}
+        />
+        <Gap height={12} />
+        <Button
+          label="Detail Kendaraan"
+          onPress={() => {
+            closePopup();
+            console.log('Detail Kendaraan (popup)');
+            // navigation.navigate('VehicleDetail');
+          }}
+          color="#2A6E54"
+          textColor="#FFFFFF"
+          width={348}
+          height={51}
+          iconGap={10}
+          leftIcon={<BtnDetailIcon width={24} height={24} color="#FFFFFF" />}
+        />
+      </BottomPopup>
     </SafeAreaView>
   );
 };
 
 HomeScreen.propTypes = {
-  navigation: PropTypes.object.isRequired,
+  navigation: PropTypes.object,
 };
 
 export default HomeScreen;
 
 const NAV_HEIGHT_GUESS = 120;
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: NAV_HEIGHT_GUESS,
-  },
-  buttonWrapper: {
-    alignItems: 'center',
-  },
+  container: {flex: 1, backgroundColor: '#F5F5F5'},
+  scrollView: {flex: 1},
+  scrollContent: {paddingBottom: NAV_HEIGHT_GUESS},
+  buttonWrapper: {alignItems: 'center'},
 });

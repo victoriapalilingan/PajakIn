@@ -1,89 +1,103 @@
-import {StyleSheet, View, Dimensions, Platform} from 'react-native';
+import {StyleSheet, View, Dimensions} from 'react-native';
 import React from 'react';
 import PropTypes from 'prop-types';
-import BottomBar from '../../molecules/BottomBar';
-import NavItem from '../../atoms/NavItem';
-import ButtonFab from '../../atoms/ButtonFab';
+import Svg, {Path, Defs, LinearGradient, Stop} from 'react-native-svg';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const BAR_HEIGHT = 70;
 
-const BAR_HEIGHT = 75; // samakan dengan BottomBar
-const NOTCH_DEPTH = 60; // samakan dengan BottomBar
-const FAB_SIZE = 1000; // diameter FAB
-const LIFT = 10; // + naikkan 8–14 px sesuai selera “floating”
+const BottomBar = ({leftItems, rightItems, safeAreaBottom}) => {
+  const safePadding = safeAreaBottom || 0;
+  const centerX = SCREEN_WIDTH / 2;
+  const notchRadius = 42;
+  const notchWidth = 110;
 
-const BottomNavigation = ({
-  items,
-  activeKey,
-  onTabPress,
-  onAddPress,
-  fabIcon,
-}) => {
-  const safeAreaBottom = Platform.OS === 'ios' ? 20 : 0;
+  const cornerRadius = 28;
+  const leftNotchStart = centerX - notchWidth / 2;
+  const rightNotchStart = centerX + notchWidth / 2;
 
-  const leftItems = items.slice(0, 2);
-  const rightItems = items.slice(2, 4);
+  const curveDepth = notchRadius - 5;
 
-  const renderNavItem = item => (
-    <NavItem
-      key={item.key}
-      label={item.label}
-      icon={item.icon}
-      active={activeKey === item.key}
-      onPress={() => onTabPress(item.key)}
-    />
-  );
-
-  // Center horizontal
-  const fabLeft = (SCREEN_WIDTH - FAB_SIZE) / 2;
-
-  // ⬇️ Center FAB tepat di dasar cekungan lalu angkat sedikit dengan LIFT
-  const fabBottom =
-    BAR_HEIGHT - NOTCH_DEPTH - FAB_SIZE / 2 + LIFT + safeAreaBottom;
+  const pathData = `
+    M 0,${cornerRadius}
+    Q 0,0 ${cornerRadius},0
+    L ${leftNotchStart - 10},0
+    Q ${leftNotchStart - 3},0 ${leftNotchStart + 5},8
+    Q ${leftNotchStart + 18},${curveDepth - 15} ${
+    centerX - notchRadius + 10
+  },${curveDepth}
+    Q ${centerX},${curveDepth + 8} ${centerX + notchRadius - 10},${curveDepth}
+    Q ${rightNotchStart - 18},${curveDepth - 15} ${rightNotchStart - 5},8
+    Q ${rightNotchStart + 3},0 ${rightNotchStart + 10},0
+    L ${SCREEN_WIDTH - cornerRadius},0
+    Q ${SCREEN_WIDTH},0 ${SCREEN_WIDTH},${cornerRadius}
+    L ${SCREEN_WIDTH},${BAR_HEIGHT + safePadding}
+    L 0,${BAR_HEIGHT + safePadding}
+    Z
+  `;
 
   return (
-    <View style={styles.wrapper}>
-      <View style={styles.container}>
-        <BottomBar
-          leftItems={leftItems.map(renderNavItem)}
-          rightItems={rightItems.map(renderNavItem)}
-          safeAreaBottom={safeAreaBottom}
-        />
-        <View style={[styles.fabContainer, {left: fabLeft, bottom: fabBottom}]}>
-          <ButtonFab size={FAB_SIZE} onPress={onAddPress} icon={fabIcon} />
-        </View>
+    <View style={styles.container}>
+      <Svg
+        width={SCREEN_WIDTH}
+        height={BAR_HEIGHT + safePadding}
+        style={styles.svg}>
+        <Defs>
+          <LinearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor="#226A5F" stopOpacity="1" />
+            <Stop offset="29" stopColor="#2A6E53" stopOpacity="1" />
+            <Stop offset="100" stopColor="#205942ff" stopOpacity="1" />
+          </LinearGradient>
+        </Defs>
+        <Path d={pathData} fill="url(#barGradient)" />
+      </Svg>
+      <View style={[styles.itemsContainer, {paddingBottom: safePadding}]}>
+        <View style={styles.leftSection}>{leftItems}</View>
+        <View style={styles.centerSpacer} />
+        <View style={styles.rightSection}>{rightItems}</View>
       </View>
     </View>
   );
 };
 
-BottomNavigation.propTypes = {
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      icon: PropTypes.elementType.isRequired,
-    }),
-  ).isRequired,
-  activeKey: PropTypes.string.isRequired,
-  onTabPress: PropTypes.func.isRequired,
-  onAddPress: PropTypes.func.isRequired,
-  fabIcon: PropTypes.elementType.isRequired,
+BottomBar.propTypes = {
+  leftItems: PropTypes.node,
+  rightItems: PropTypes.node,
+  safeAreaBottom: PropTypes.number,
 };
 
-export default BottomNavigation;
+export default BottomBar;
 
 const styles = StyleSheet.create({
-  wrapper: {position: 'absolute', bottom: 0, left: 0, right: 0},
-  container: {position: 'relative'},
-  fabContainer: {
+  container: {
+    position: 'relative',
+  },
+  svg: {
     position: 'absolute',
-    zIndex: 3, // iOS
-    elevation: 3, // Android
-    pointerEvents: 'box-none',
+    bottom: 0,
+  },
+  itemsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: BAR_HEIGHT,
+    paddingHorizontal: 20,
+  },
+  leftSection: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    paddingRight: 15,
+  },
+  centerSpacer: {
+    width: 110,
+  },
+  rightSection: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    paddingLeft: 15,
   },
 });
-
-console.log('ButtonFab size =', size);
-console.warn('Warning log test');
-console.error('Error log test');
