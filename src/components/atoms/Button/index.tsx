@@ -1,42 +1,78 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {TouchableOpacity, Text, View, StyleSheet} from 'react-native';
 
-const Button = ({
+export default function Button({
   label,
-  color = '#2A6E54', // warna hijau PajakIn
-  textColor = '#FFFFFF',
-  width = 255,
-  height = 38,
   onPress,
-}) => {
+  width = 255,
+  height = 44,
+  color = '#2A6E54',
+  textColor = '#FFFFFF',
+  disabled = false,
+  leftIcon,
+  iconSize = 24,
+  iconGap = 12,
+  horizontalPadding = 20,
+}) {
+  const radius = height / 2;
+
+  // Jika ada ikon, tambahkan padding kiri agar teks tetap center
+  const extraPadLeft = leftIcon ? iconSize + iconGap : 0;
+
   return (
     <TouchableOpacity
-      style={[styles.button, {backgroundColor: color, width, height}]}
-      activeOpacity={0.8}
-      onPress={onPress}>
-      <Text style={[styles.text, {color: textColor}]}>{label}</Text>
+      activeOpacity={0.85}
+      onPress={onPress}
+      disabled={disabled}
+      style={[
+        styles.base,
+        {
+          width,
+          height,
+          borderRadius: radius,
+          backgroundColor: disabled ? '#9BB8AC' : color,
+          paddingHorizontal: horizontalPadding,
+          paddingLeft: horizontalPadding + extraPadLeft,
+        },
+      ]}>
+      {/* Ikon di kiri (absolute), hanya jika dikirim */}
+      {leftIcon ? (
+        <View
+          style={[
+            styles.icon,
+            {left: horizontalPadding, width: iconSize, height: iconSize},
+          ]}>
+          {leftIcon}
+        </View>
+      ) : null}
+
+      {/* Label selalu center */}
+      <Text style={[styles.text, {color: textColor}]} numberOfLines={1}>
+        {label}
+      </Text>
     </TouchableOpacity>
   );
-};
-
-export default Button;
+}
 
 const styles = StyleSheet.create({
-  button: {
+  base: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 50, // sesuai radius di Figma
-    paddingHorizontal: 24, // kiri-kanan 24px
-    paddingVertical: 8, // atas-bawah 10px
+    elevation: 3,
     shadowColor: '#000',
+    shadowOpacity: 0.12,
     shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.15,
-    shadowRadius: 3.84,
-    elevation: 3, // efek bayangan di Android
+    shadowRadius: 6,
+  },
+  icon: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   text: {
+    fontSize: 22,
     fontFamily: 'Montserrat-SemiBold',
-    fontSize: 15,
+    letterSpacing: 0.2,
     textAlign: 'center',
   },
 });
