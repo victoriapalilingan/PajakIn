@@ -1,21 +1,6 @@
 import React from 'react';
 import {TouchableOpacity, Text, View, StyleSheet} from 'react-native';
 
-type Props = {
-  label: string;
-  onPress: () => void;
-  width?: number;
-  height?: number;
-  color?: string;
-  textColor?: string;
-  disabled?: boolean;
-  /** Ikon opsional, mis. <Ionicons name="add-circle" size={24} color="#fff" /> */
-  leftIcon?: React.ReactNode; // <-- opsional
-  iconSize?: number; // untuk perhitungan padding, default 24
-  iconGap?: number; // jarak ikon ke teks, default 12
-  horizontalPadding?: number; // padding kiri/kanan tombol, default 20
-};
-
 export default function Button({
   label,
   onPress,
@@ -28,10 +13,10 @@ export default function Button({
   iconSize = 24,
   iconGap = 12,
   horizontalPadding = 20,
-}: Props) {
+}) {
   const radius = height / 2;
 
-  // Kalau ada ikon, tambahkan paddingLeft supaya teks tetap center secara visual
+  // Jika ada ikon, tambahkan padding kiri agar teks tetap center
   const extraPadLeft = leftIcon ? iconSize + iconGap : 0;
 
   return (
@@ -47,7 +32,6 @@ export default function Button({
           borderRadius: radius,
           backgroundColor: disabled ? '#9BB8AC' : color,
           paddingHorizontal: horizontalPadding,
-          // tambah padding kiri agar teks tetap center saat ada ikon
           paddingLeft: horizontalPadding + extraPadLeft,
         },
       ]}>
