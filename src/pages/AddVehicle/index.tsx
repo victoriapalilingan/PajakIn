@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import GoBackIcon from '../../assets/Go Back.svg';
 import GoogleCalendarIcon from '../../assets/Google Calendar.svg';
 import Button from '../../components/atoms/Button';
+import DownButton from '../../assets/Down Button.svg';
 
 const AddVehicle = () => {
   return (
@@ -18,7 +19,7 @@ const AddVehicle = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton}>
-          <GoBackIcon width={36} height={36} />
+          <GoBackIcon width={48} height={55} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Tambah Kendaraan</Text>
       </View>
@@ -34,7 +35,7 @@ const AddVehicle = () => {
             <Text style={styles.label}>Jenis Kendaraan</Text>
             <TouchableOpacity style={styles.inputField}>
               <Text style={styles.placeholder}>Pilih Jenis Kendaraan</Text>
-              <Icon name="keyboard-arrow-down" size={22} color="#6E8B7E" />
+              <DownButton width={30} height={30} />
             </TouchableOpacity>
           </View>
 
@@ -99,7 +100,11 @@ const AddVehicle = () => {
 
         {/* Button */}
         <View style={styles.buttonContainer}>
-          <Button label="Simpan" style={styles.saveButton} />
+          <Button
+            label="Simpan"
+            style={styles.saveButton}
+            textStyle={{fontFamily: 'Montserrat-Bold', fontSize: 22}}
+          />
         </View>
       </ScrollView>
     </View>
@@ -121,19 +126,42 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 40,
     borderBottomRightRadius: 40,
   },
-  backButton: {marginRight: 12},
+  spacer: {
+    width: 8,
+  },
+
+  rightSpacer: {
+    flex: 1,
+  },
+
+  backButton: {
+    width: 60,
+    height: 60,
+    marginLeft: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
   headerTitle: {
+    fontFamily: 'Montserrat-Bold',
     fontSize: 28,
     fontWeight: '700',
     color: '#FEB800',
+    textAlign: 'center',
   },
   scrollView: {flex: 1},
   scrollContent: {padding: 20, paddingBottom: 50},
   card: {marginTop: 16},
   inputGroup: {marginBottom: 16},
-  label: {fontSize: 14, fontWeight: '600', color: '#2D6A4F', marginBottom: 6},
-
+  label: {
+    fontFamily: 'Montserrat-Medium', // ditambahkan
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2D6A4F',
+    marginBottom: 6,
+  },
   inputField: {
+    fontFamily: 'Montserrat-Regular', // ditambahkan
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFF',
@@ -146,17 +174,21 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
   },
-  placeholder: {fontSize: 14, color: '#9CA3AF', flex: 1},
-
+  placeholder: {
+    fontFamily: 'Montserrat-Regular', // ditambahkan
+    fontSize: 14,
+    color: '#9CA3AF',
+    flex: 1,
+  },
   switchRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 6,
   },
-
   reminderSection: {marginTop: 12},
   reminderTitle: {
+    fontFamily: 'Montserrat-Bold', // ditambahkan
     fontSize: 16,
     fontWeight: '700',
     color: '#2D6A4F',
@@ -174,11 +206,14 @@ const styles = StyleSheet.create({
   checkboxActive: {
     backgroundColor: '#2D6A4F',
   },
-  checkboxLabel: {fontSize: 14, color: '#2F3F35'},
-
+  checkboxLabel: {
+    fontFamily: 'Montserrat-Regular', // ditambahkan
+    fontSize: 14,
+    color: '#2F3F35',
+  },
   buttonContainer: {marginTop: 91, paddingHorizontal: 20, marginBottom: 30},
   saveButton: {
-    width: 328, // lebar button
+    width: 328,
     height: 48,
     backgroundColor: '#2D6A4F',
     borderRadius: 100,

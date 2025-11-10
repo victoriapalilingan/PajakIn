@@ -1,42 +1,46 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
 
-const Button = ({
-  label,
-  color = '#2A6E54', // warna hijau PajakIn
-  textColor = '#FFFFFF',
-  width = 255,
-  height = 38,
-  onPress,
-}) => {
+type ButtonProps = {
+  label: string;
+  style?: ViewStyle; // menambahkan props style
+  textStyle?: TextStyle; // menambahkan props textStyle
+  onPress?: () => void;
+};
+
+const Button: React.FC<ButtonProps> = ({label, style, textStyle, onPress}) => {
   return (
-    <TouchableOpacity
-      style={[styles.button, {backgroundColor: color, width, height}]}
-      activeOpacity={0.8}
-      onPress={onPress}>
-      <Text style={[styles.text, {color: textColor}]}>{label}</Text>
+    <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
+      <Text style={[styles.text, textStyle]}>{label}</Text>
     </TouchableOpacity>
   );
 };
 
-export default Button;
-
 const styles = StyleSheet.create({
   button: {
+    backgroundColor: '#2D6A4F',
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 50, // sesuai radius di Figma
-    paddingHorizontal: 50, // kiri-kanan 24px
-    paddingVertical: 8, // atas-bawah 10px
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.15,
-    shadowRadius: 3.84,
-    elevation: 3, // efek bayangan di Android
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 5,
   },
   text: {
-    fontFamily: 'Montserrat-SemiBold',
-    fontSize: 15,
+    fontFamily: 'Montserrat-Bold',
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 40,
     textAlign: 'center',
   },
 });
+
+export default Button;
