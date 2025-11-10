@@ -2,6 +2,7 @@ import React from 'react';
 import {Modal, View, Text, StyleSheet} from 'react-native';
 import Backdrop from '../../atoms/Backdrop';
 import Button from '../../atoms/Button';
+import CheckMark from '../../../assets/Check Mark.svg';
 
 const SuccessPopup = ({visible, onClose}) => {
   if (!visible) return null;
@@ -20,9 +21,7 @@ const SuccessPopup = ({visible, onClose}) => {
         <View style={styles.popupCard}>
           {/* Icon centang */}
           <View style={styles.iconWrapper}>
-            <View style={styles.checkCircle}>
-              <Text style={styles.checkMark}>✓</Text>
-            </View>
+            <CheckMark width={112} height={100} />
           </View>
 
           {/* Teks judul */}
@@ -62,9 +61,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 10,
     elevation: 8,
-  },
-  iconWrapper: {
-    marginBottom: 20,
   },
   checkCircle: {
     width: 70,
