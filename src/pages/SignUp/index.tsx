@@ -15,6 +15,9 @@ import CheckBox from '../../components/molecules/CheckBox';
 import Gap from '../../components/atoms/Gap';
 import Button from '../../components/atoms/Button';
 
+// ✅ TAMBAHKAN IMPORT INI (setelah Button)
+import SuccessPopup from '../../components/molecules/SuccessPopup';
+
 // SVG khusus
 import IdentificationIcon from '../../assets/Identification Documents.svg';
 import MaleIcon from '../../assets/Collaborator Male.svg';
@@ -26,6 +29,8 @@ import PassIcon from '../../assets/Lock.svg';
 
 const SignUp = () => {
   const [isAgreed, setIsAgreed] = useState(false);
+  // ✅ TAMBAHKAN STATE INI (setelah isAgreed)
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const fields = [
     {
@@ -61,16 +66,26 @@ const SignUp = () => {
     },
   ];
 
+  // ✅ GANTI handleContinue dengan ini
   const handleContinue = () => {
     if (!isAgreed) {
       console.log('Harap setujui Ketentuan dan Kebijakan Privasi');
       return;
     }
+    // Tampilkan popup success
+    setShowSuccessPopup(true);
     console.log('Continue pressed');
   };
 
   const handleGoToLogin = () => {
     console.log('Go to Login');
+  };
+
+  // ✅ TAMBAHKAN FUNCTION INI (setelah handleGoToLogin)
+  const handlePopupClose = () => {
+    setShowSuccessPopup(false);
+    // Redirect ke halaman login setelah popup ditutup
+    handleGoToLogin();
   };
 
   return (
@@ -137,6 +152,9 @@ const SignUp = () => {
 
         {/* Logo PajakIn putih */}
       </View>
+
+      {/* ✅ TAMBAHKAN KOMPONEN INI (sebelum </ImageBackground>) */}
+      <SuccessPopup visible={showSuccessPopup} onClose={handlePopupClose} />
     </ImageBackground>
   );
 };
