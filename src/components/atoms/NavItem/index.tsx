@@ -14,7 +14,7 @@ const NavItem = ({label, icon, active, onPress}) => {
       onPress={onPress}
       activeOpacity={0.7}>
       <View style={styles.iconWrapper}>
-        <IconSvg source={icon} size={26} color={iconColor} />
+        <IconSvg source={icon} size={38} color={iconColor} />
       </View>
       <Text style={[styles.label, {color: labelColor}]}>{label}</Text>
     </TouchableOpacity>
