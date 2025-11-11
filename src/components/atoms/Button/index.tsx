@@ -1,46 +1,78 @@
 import React from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ViewStyle,
-  TextStyle,
-} from 'react-native';
+import {TouchableOpacity, Text, View, StyleSheet} from 'react-native';
 
-type ButtonProps = {
-  label: string;
-  style?: ViewStyle; // menambahkan props style
-  textStyle?: TextStyle; // menambahkan props textStyle
-  onPress?: () => void;
-};
+export default function Button({
+  label,
+  onPress,
+  width = 255,
+  height = 44,
+  color = '#2A6E54',
+  textColor = '#FFFFFF',
+  disabled = false,
+  leftIcon,
+  iconSize = 24,
+  iconGap = 12,
+  horizontalPadding = 20,
+}) {
+  const radius = height / 2;
 
-const Button: React.FC<ButtonProps> = ({label, style, textStyle, onPress}) => {
+  // Jika ada ikon, tambahkan padding kiri agar teks tetap center
+  const extraPadLeft = leftIcon ? iconSize + iconGap : 0;
+
   return (
-    <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
-      <Text style={[styles.text, textStyle]}>{label}</Text>
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={onPress}
+      disabled={disabled}
+      style={[
+        styles.base,
+        {
+          width,
+          height,
+          borderRadius: radius,
+          backgroundColor: disabled ? '#9BB8AC' : color,
+          paddingHorizontal: horizontalPadding,
+          paddingLeft: horizontalPadding + extraPadLeft,
+        },
+      ]}>
+      {/* Ikon di kiri (absolute), hanya jika dikirim */}
+      {leftIcon ? (
+        <View
+          style={[
+            styles.icon,
+            {left: horizontalPadding, width: iconSize, height: iconSize},
+          ]}>
+          {leftIcon}
+        </View>
+      ) : null}
+
+      {/* Label selalu center */}
+      <Text style={[styles.text, {color: textColor}]} numberOfLines={1}>
+        {label}
+      </Text>
     </TouchableOpacity>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#2D6A4F',
-    borderRadius: 24,
+  base: {
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 3,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
     shadowOpacity: 0.12,
+    shadowOffset: {width: 0, height: 2},
     shadowRadius: 6,
-    elevation: 5,
+  },
+  icon: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   text: {
-    fontFamily: 'Montserrat-Bold',
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 40,
+    fontSize: 22,
+    fontFamily: 'Montserrat-SemiBold',
+    letterSpacing: 0.2,
     textAlign: 'center',
   },
 });
-
-export default Button;
