@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, Image, StyleSheet, Dimensions} from 'react-native';
 import Button from '../../components/atoms/Button';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 const slides = [
   {
@@ -23,14 +23,14 @@ const slides = [
   },
 ];
 
-const OnBoarding = ({navigation}: any) => {
+const OnBoarding = ({navigation}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      navigation.replace('LoginScreen'); // ganti sesuai nama screen login kamu
+      navigation.replace('SignIn');
     }
   };
 
@@ -38,16 +38,17 @@ const OnBoarding = ({navigation}: any) => {
 
   return (
     <View style={styles.container}>
-      <Image source={image} style={styles.image} resizeMode="contain" />
+      <View style={styles.imageContainer}>
+        <Image source={image} style={styles.image} resizeMode="contain" />
+      </View>
 
       <View style={styles.textContainer}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
       </View>
 
-      <Button title={buttonText} onPress={handleNext} />
+      <Button label={buttonText} onPress={handleNext} />
 
-      {/* indikator bulatan */}
       <View style={styles.dotsContainer}>
         {slides.map((_, index) => (
           <View
@@ -70,16 +71,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 24,
   },
-  image: {
-    width: width * 586,
-    height: 339,
+  imageContainer: {
+    width: width * 0.8,
+    height: height * 0.35,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 40,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
   },
   textContainer: {
     marginBottom: 30,
+    paddingHorizontal: 10,
   },
   title: {
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: 'Montserrat-SemiBold',
     fontSize: 24,
     fontWeight: '700',
     color: '#133126',
@@ -92,18 +100,18 @@ const styles = StyleSheet.create({
     color: '#225843',
     textAlign: 'center',
     lineHeight: 22,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   dotsContainer: {
     flexDirection: 'row',
-    marginTop: 50,
+    marginTop: 40,
   },
   dot: {
-    width: 40,
-    height: 40,
-    borderRadius: 40,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
     backgroundColor: '#E0E0E0',
-    marginHorizontal: 12,
+    marginHorizontal: 6,
   },
   activeDot: {
     backgroundColor: '#FFE9B0',

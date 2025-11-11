@@ -5,6 +5,6 @@
 import {AppRegistry} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
-import onBoarding from './src/pages/onBoarding';
+import SplashScreen from './src/pages/SplashScreen';
 
-AppRegistry.registerComponent(appName, () => onBoarding);
+AppRegistry.registerComponent(appName, () => App);

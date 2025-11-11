@@ -15,13 +15,11 @@ import CheckBox from '../../components/molecules/CheckBox';
 import Gap from '../../components/atoms/Gap';
 import Button from '../../components/atoms/Button';
 
-// SVG khusus
 import IdentificationIcon from '../../assets/Identification Documents.svg';
 import MaleIcon from '../../assets/Collaborator Male.svg';
 import EmailIcon from '../../assets/Mobile Email.svg';
 import PassIcon from '../../assets/Lock.svg';
 
-// logo PajakIn putih
 import WhitePajakIn from '../../assets/Lock.svg';
 const SignUp = () => {
   const [isAgreed, setIsAgreed] = useState(false);
@@ -101,7 +99,6 @@ const SignUp = () => {
 
           <Gap height={4} />
 
-          {/* Checkbox & tombol */}
           <View style={styles.centerContainer}>
             <View style={styles.checkboxWrapper}>
               <CheckBox
@@ -124,7 +121,6 @@ const SignUp = () => {
 
             <Gap height={10} />
 
-            {/* Footer */}
             <View style={styles.footer}>
               <Text style={styles.footerText}>Sudah Punya Akun? </Text>
               <TouchableOpacity onPress={handleGoToLogin} activeOpacity={0.7}>
@@ -134,7 +130,6 @@ const SignUp = () => {
           </View>
         </Card>
 
-        {/* Logo PajakIn putih */}
         <Image source={WhitePajakIn} style={styles.logo} resizeMode="contain" />
       </View>
     </ImageBackground>
