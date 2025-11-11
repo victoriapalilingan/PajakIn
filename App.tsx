@@ -1,32 +1,25 @@
 import React from 'react';
-import {SafeAreaView, Text, StyleSheet, View} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-export default function App(): React.JSX.Element {
+// Import screen
+import SplashScreen from './src/pages/SplashScreen';
+import OnBoarding from './src/pages/onBoarding'; // pastikan huruf besar sesuai nama folder/file
+
+const Stack = createNativeStackNavigator();
+
+const App = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <View>
-        <Text style={styles.title}>Tes Font Montserrat Black</Text>
-        <Text style={styles.body}>Ini teks biasa untuk pembanding.</Text>
-      </View>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="SplashScreen"
+        screenOptions={{headerShown: false}}>
+        {/* Mulai dari Splash → OnBoarding */}
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+        <Stack.Screen name="OnBoarding" component={OnBoarding} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  title: {
-    fontSize: 24,
-    color: '#000',
-    fontFamily: 'Montserrat-Black', // sesuai nama file font tanpa .ttf
-  },
-  body: {
-    fontSize: 18,
-    color: '#333',
-    marginTop: 10,
-  },
-});
+export default App;
