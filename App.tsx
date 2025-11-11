@@ -1,5 +1,10 @@
 import React from 'react';
 import {SafeAreaView, Text, StyleSheet, View} from 'react-native';
+// Di file index.js atau App.js
+import {LogBox} from 'react-native';
+
+// Menonaktifkan LogBox sepenuhnya (Hanya untuk debugging, jangan dibiarkan di production)
+LogBox.ignoreAllLogs();
 
 export default function App(): React.JSX.Element {
   return (

@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
   Switch,
 } from 'react-native';
-import GoBackIcon from '../../assets/Go Back.svg';
-import GoogleCalendarIcon from '../../assets/Google Calendar.svg';
-import DownButton from '../../assets/Down Button.svg';
+import GoogleCalendarIcon from '../../assets/googlecalendar.svg';
+import DownButton from '../../assets/downbutton.svg';
+import CustomHeader from '../../components/molecules/CustomHeader';
 import Button from '../../components/atoms/Button';
 
 const EditVehicle = ({route, navigation}) => {
-  const {vehicle} = route.params || {}; // default empty object
+  const {vehicle} = route?.params || {};
 
   const [vehicleType, setVehicleType] = useState(vehicle?.type || '');
   const [plateNumber, setPlateNumber] = useState(vehicle?.plateNumber || '');
@@ -37,23 +37,16 @@ const EditVehicle = ({route, navigation}) => {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}>
-          <GoBackIcon width={36} height={36} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Edit Kendaraan</Text>
-        <View style={{width: 36}} /> {/* dummy agar judul center */}
-      </View>
+      <CustomHeader
+        title="Edit Kendaraan"
+        onBackPress={() => navigation.goBack()}
+      />
 
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
         <View style={styles.card}>
-          {/* Jenis Kendaraan */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Jenis Kendaraan</Text>
             <TouchableOpacity style={styles.inputField}>
@@ -64,7 +57,6 @@ const EditVehicle = ({route, navigation}) => {
             </TouchableOpacity>
           </View>
 
-          {/* Nomor Polisi */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Nomor Polisi</Text>
             <TouchableOpacity style={styles.inputField}>
@@ -74,7 +66,6 @@ const EditVehicle = ({route, navigation}) => {
             </TouchableOpacity>
           </View>
 
-          {/* Merek & Tahun Kendaraan */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Merek & Tahun Kendaraan</Text>
             <TouchableOpacity style={styles.inputField}>
@@ -84,7 +75,6 @@ const EditVehicle = ({route, navigation}) => {
             </TouchableOpacity>
           </View>
 
-          {/* Tanggal Jatuh Tempo */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Tanggal Jatuh Tempo Pajak</Text>
             <TouchableOpacity style={styles.inputField}>
@@ -99,7 +89,6 @@ const EditVehicle = ({route, navigation}) => {
             </TouchableOpacity>
           </View>
 
-          {/* Pengingat */}
           <View style={styles.switchRow}>
             <Text style={styles.label}>Aktifkan Pengingat Pajak</Text>
             <Switch
@@ -110,7 +99,6 @@ const EditVehicle = ({route, navigation}) => {
             />
           </View>
 
-          {/* Waktu Pengingat */}
           <View style={styles.reminderSection}>
             <Text style={styles.reminderTitle}>Waktu Pengingat</Text>
 
@@ -132,7 +120,6 @@ const EditVehicle = ({route, navigation}) => {
           </View>
         </View>
 
-        {/* Button */}
         <View style={styles.buttonContainer}>
           <Button
             label="Update"
@@ -148,30 +135,7 @@ const EditVehicle = ({route, navigation}) => {
 
 const styles = StyleSheet.create({
   container: {flex: 1, backgroundColor: '#F4FFF4'},
-  header: {
-    backgroundColor: '#26634C',
-    paddingTop: 46,
-    paddingBottom: 22,
-    paddingHorizontal: 18,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
-  },
-  backButton: {
-    width: 40,
-    height: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontFamily: 'Montserrat-Bold',
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#FEB800',
-    textAlign: 'center',
-    flex: 1,
-  },
+
   scrollView: {flex: 1},
   scrollContent: {padding: 20, paddingBottom: 50},
   card: {marginTop: 16},
