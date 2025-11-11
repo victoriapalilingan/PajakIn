@@ -114,11 +114,8 @@ function AddVehicle({navigation}) {
 const styles = StyleSheet.create({
   container: {flex: 1, backgroundColor: '#F4FFF4'},
 
-  // HAPUS SEMUA STYLE HEADER LAMA DARI SINI
-  // (header, spacer, rightSpacer, backButton, headerTitle)
-
   scrollView: {flex: 1},
-  scrollContent: {padding: 20, paddingBottom: 50},
+  scrollContent: {padding: 30, paddingBottom: 10},
   card: {marginTop: 16},
   inputGroup: {marginBottom: 16},
   label: {

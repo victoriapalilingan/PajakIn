@@ -1,20 +1,17 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-// Asumsi path yang benar adalah 2 tingkat ke atas (../components/molecules/ -> ../components/ -> ../src/ -> assets)
+
 import GoBackIcon from '../../../assets/goback.svg';
 
 const CustomHeader = ({title, onBackPress}) => {
   return (
     <View style={styles.header}>
-      {/* Tombol Kembali */}
       <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
         <GoBackIcon width={55} height={55} />
       </TouchableOpacity>
 
-      {/* Judul Tengah */}
       <Text style={styles.headerTitle}>{title}</Text>
 
-      {/* Penyeimbang Kanan (flex: 1) */}
       <View style={styles.rightSpacer} />
     </View>
   );
@@ -37,8 +34,8 @@ const styles = StyleSheet.create({
     height: 48,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 1, // Jarak ke Judul
-    marginLeft: 15, // Menarik tombol keluar dari padding 18px
+    marginRight: 1,
+    marginLeft: 15,
   },
 
   headerTitle: {
@@ -46,10 +43,9 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: '#FEB800',
-    // Tidak perlu textAlign: 'center' karena rightSpacer yang memusatkan
   },
 
-  rightSpacer: {flex: 1}, // PENTING untuk pemusatan
+  rightSpacer: {flex: 1},
 });
 
 export default CustomHeader;

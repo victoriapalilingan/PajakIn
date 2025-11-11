@@ -7,21 +7,28 @@ import {
   TouchableOpacity,
   Switch,
 } from 'react-native';
+
 import GoogleCalendarIcon from '../../assets/googlecalendar.svg';
 import DownButton from '../../assets/downbutton.svg';
 import CustomHeader from '../../components/molecules/CustomHeader';
 import Button from '../../components/atoms/Button';
 
 const EditVehicle = ({route, navigation}) => {
+  // Catatan: Logic state management (useState) tetap dipertahankan
+  // agar data dapat ditampilkan, meskipun tampilan field-nya statis (Text).
   const {vehicle} = route?.params || {};
 
-  const [vehicleType, setVehicleType] = useState(vehicle?.type || '');
-  const [plateNumber, setPlateNumber] = useState(vehicle?.plateNumber || '');
-  const [brandYear, setBrandYear] = useState(vehicle?.brandYear || '');
-  const [dueDate, setDueDate] = useState(vehicle?.dueDate || '');
-  const [reminder, setReminder] = useState(vehicle?.reminder || false);
+  const [vehicleType, setVehicleType] = useState(vehicle?.type || 'Mobil'); // Default: Mobil
+  const [plateNumber, setPlateNumber] = useState(
+    vehicle?.plateNumber || 'DB 3527 AP',
+  );
+  const [brandYear, setBrandYear] = useState(
+    vehicle?.brandYear || 'Toyota Innova (2020)',
+  );
+  const [dueDate, setDueDate] = useState(vehicle?.dueDate || '2025 - 08 - 15');
+  const [reminder, setReminder] = useState(vehicle?.reminder || true); // Default: true (Aktif)
   const [reminderH7, setReminderH7] = useState(vehicle?.reminderH7 || false);
-  const [reminderH3, setReminderH3] = useState(vehicle?.reminderH3 || false);
+  const [reminderH3, setReminderH3] = useState(vehicle?.reminderH3 || true); // Default: true (Aktif)
 
   const handleSave = () => {
     console.log('Update vehicle', {
@@ -37,9 +44,10 @@ const EditVehicle = ({route, navigation}) => {
 
   return (
     <View style={styles.container}>
+      {/* Header (Memanggil CustomHeader) */}
       <CustomHeader
         title="Edit Kendaraan"
-        onBackPress={() => navigation.goBack()}
+        onBackPress={() => navigation?.goBack()}
       />
 
       <ScrollView
@@ -47,34 +55,32 @@ const EditVehicle = ({route, navigation}) => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
         <View style={styles.card}>
+          {/* Jenis Kendaraan (DIPERBAIKI: Menggunakan style valueText) */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Jenis Kendaraan</Text>
             <TouchableOpacity style={styles.inputField}>
-              <Text style={styles.placeholder}>
-                {vehicleType || 'Pilih Jenis Kendaraan'}
-              </Text>
+              <Text style={styles.valueText}>{vehicleType}</Text>
               <DownButton width={24} height={24} />
             </TouchableOpacity>
           </View>
 
+          {/* Nomor Polisi (DIPERBAIKI: Menggunakan style valueText) */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Nomor Polisi</Text>
             <TouchableOpacity style={styles.inputField}>
-              <Text style={styles.placeholder}>
-                {plateNumber || 'Masukkan Nomor Polisi'}
-              </Text>
+              <Text style={styles.valueText}>{plateNumber}</Text>
             </TouchableOpacity>
           </View>
 
+          {/* Merek & Tahun Kendaraan (DIPERBAIKI: Menggunakan style valueText) */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Merek & Tahun Kendaraan</Text>
             <TouchableOpacity style={styles.inputField}>
-              <Text style={styles.placeholder}>
-                {brandYear || 'Masukkan Merek & Tahun Kendaraan'}
-              </Text>
+              <Text style={styles.valueText}>{brandYear}</Text>
             </TouchableOpacity>
           </View>
 
+          {/* Tanggal Jatuh Tempo Pajak (DIPERBAIKI: Menggunakan style valueText) */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Tanggal Jatuh Tempo Pajak</Text>
             <TouchableOpacity style={styles.inputField}>
@@ -83,12 +89,11 @@ const EditVehicle = ({route, navigation}) => {
                 height={20}
                 style={{marginRight: 8}}
               />
-              <Text style={styles.placeholder}>
-                {dueDate || 'Masukkan Tanggal Jatuh Tempo Pajak'}
-              </Text>
+              <Text style={styles.valueText}>{dueDate}</Text>
             </TouchableOpacity>
           </View>
 
+          {/* Pengingat */}
           <View style={styles.switchRow}>
             <Text style={styles.label}>Aktifkan Pengingat Pajak</Text>
             <Switch
@@ -99,6 +104,7 @@ const EditVehicle = ({route, navigation}) => {
             />
           </View>
 
+          {/* Waktu Pengingat */}
           <View style={styles.reminderSection}>
             <Text style={styles.reminderTitle}>Waktu Pengingat</Text>
 
@@ -124,7 +130,7 @@ const EditVehicle = ({route, navigation}) => {
           <Button
             label="Update"
             style={styles.saveButton}
-            textStyle={{fontFamily: 'Montserrat-Bold', fontSize: 16}}
+            textStyle={{fontFamily: 'Montserrat-Bold', fontSize: 22}}
             onPress={handleSave}
           />
         </View>
@@ -137,36 +143,49 @@ const styles = StyleSheet.create({
   container: {flex: 1, backgroundColor: '#F4FFF4'},
 
   scrollView: {flex: 1},
-  scrollContent: {padding: 20, paddingBottom: 50},
+  // DIPERBAIKI: Mengurangi padding atas agar field lebih dekat ke header (dari 40 ke 20)
+  scrollContent: {padding: 30, paddingBottom: 10},
+
   card: {marginTop: 16},
   inputGroup: {marginBottom: 16},
   label: {
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: 'Montserrat-medium',
     fontSize: 14,
     fontWeight: '600',
     color: '#2D6A4F',
     marginBottom: 6,
   },
   inputField: {
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: 'Montserrat-medium',
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFF',
     borderRadius: 14,
     height: 54,
     paddingHorizontal: 14,
+
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.08,
+    shadowOffset: {width: 0, height: 4},
+    shadowOpacity: 0.15, // Shadow lebih kuat
     shadowRadius: 5,
-    elevation: 3,
+    elevation: 5,
   },
+  // DIPERBAIKI: Style baru untuk menampilkan nilai (value)
+  valueText: {
+    fontFamily: 'Montserrat-SemiBold', // Font semi-bold agar value menonjol
+    fontSize: 16, // Sedikit lebih besar
+    color: '#2D6A4F', // Warna teks gelap
+    flex: 1,
+  },
+
+  // HAPUS placeholder lama (atau ubah agar valueText menggunakannya)
   placeholder: {
     fontFamily: 'Montserrat-Regular',
     fontSize: 14,
     color: '#9CA3AF',
     flex: 1,
   },
+
   switchRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -196,9 +215,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#2F3F35',
   },
-  buttonContainer: {marginTop: 91, paddingHorizontal: 20, marginBottom: 30},
+  // DIPERBAIKI: Hapus paddingHorizontal di buttonContainer karena sudah ada padding di scrollContent
+  buttonContainer: {marginTop: 91, marginBottom: 30},
   saveButton: {
-    width: 328,
+    // DIPERBAIKI: Sesuaikan width agar tidak terlalu lebar (mengikuti padding 20)
+    width: '100%',
     height: 48,
     backgroundColor: '#2D6A4F',
     borderRadius: 100,
