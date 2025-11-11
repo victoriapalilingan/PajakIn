@@ -7,6 +7,9 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 
 import Card from '../../components/molecules/Card';
@@ -15,14 +18,18 @@ import CheckBox from '../../components/molecules/CheckBox';
 import Gap from '../../components/atoms/Gap';
 import Button from '../../components/atoms/Button';
 
+import SuccessPopup from '../../components/molecules/SuccessPopup'; // <-- tambahkan ini
+
 import IdentificationIcon from '../../assets/Identification Documents.svg';
 import MaleIcon from '../../assets/Collaborator Male.svg';
 import EmailIcon from '../../assets/Mobile Email.svg';
 import PassIcon from '../../assets/Lock.svg';
 
 import WhitePajakIn from '../../assets/Lock.svg';
-const SignUp = () => {
+
+const SignUp = ({navigation}) => {
   const [isAgreed, setIsAgreed] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false); // <-- state popup
 
   const fields = [
     {
@@ -63,11 +70,12 @@ const SignUp = () => {
       console.log('Harap setujui Ketentuan dan Kebijakan Privasi');
       return;
     }
-    console.log('Continue pressed');
+    // Saat ini: cukup tampilkan popup sukses
+    setShowSuccess(true);
   };
 
   const handleGoToLogin = () => {
-    console.log('Go to Login');
+    navigation.navigate('SignIn');
   };
 
   return (
@@ -78,60 +86,81 @@ const SignUp = () => {
       <StatusBar
         translucent
         backgroundColor="transparent"
-        barStyle="light-content"
+        barStyle="dark-content"
       />
 
-      <View style={styles.overlay}>
-        <Card>
-          <Text style={styles.title}>Buatlah Akun Anda!</Text>
-          <Gap height={6} />
-          <Text style={styles.subtitle}>
-            {'Isi Data dibawah ini untuk mulai\nmenggunakan PajakIn'}
-          </Text>
-          <Gap height={18} />
+      <KeyboardAvoidingView
+        style={styles.keyboardView}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
+          <View style={styles.overlay}>
+            <Card>
+              <Gap height={16} />
+              <Text style={styles.title}>Buatlah Akun Anda!</Text>
+              <Gap height={6} />
+              <Text style={styles.subtitle}>
+                {'Isi Data dibawah ini untuk mulai\nmenggunakan PajakIn'}
+              </Text>
+              <Gap height={18} />
 
-          {fields.map((f, idx) => (
-            <React.Fragment key={idx}>
-              <TextInput {...f} width={255} height={36} />
-              {idx < fields.length - 1 && <Gap height={2} />}
-            </React.Fragment>
-          ))}
+              {fields.map((f, idx) => (
+                <React.Fragment key={idx}>
+                  <TextInput {...f} width={255} height={36} />
+                  {idx < fields.length - 1 && <Gap height={2} />}
+                </React.Fragment>
+              ))}
 
-          <Gap height={4} />
+              <Gap height={4} />
 
-          <View style={styles.centerContainer}>
-            <View style={styles.checkboxWrapper}>
-              <CheckBox
-                label="Saya telah menyetujui Ketentuan dan Kebijakan Privasi PajakIn"
-                checked={isAgreed}
-                onPress={() => setIsAgreed(!isAgreed)}
-              />
-            </View>
+              <View style={styles.centerContainer}>
+                <View style={styles.checkboxWrapper}>
+                  <CheckBox
+                    label="Saya telah menyetujui Ketentuan dan Kebijakan Privasi PajakIn"
+                    checked={isAgreed}
+                    onPress={() => setIsAgreed(!isAgreed)}
+                  />
+                </View>
+
+                <Gap height={16} />
+
+                <Button
+                  label="Daftar Sekarang"
+                  onPress={handleContinue}
+                  color="#2A6E54"
+                  textColor="#FFFFFF"
+                  width={255}
+                  height={38}
+                />
+
+                <Gap height={10} />
+
+                <View style={styles.footer}>
+                  <Text style={styles.footerText}>Sudah Punya Akun? </Text>
+                  <TouchableOpacity
+                    onPress={handleGoToLogin}
+                    activeOpacity={0.7}>
+                    <Text style={styles.footerLink}>Masuk Sekarang</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <Gap height={16} />
+            </Card>
 
             <Gap height={16} />
-
-            <Button
-              label="Daftar Sekarang"
-              onPress={handleContinue}
-              color="#2A6E54"
-              textColor="#FFFFFF"
-              width={255}
-              height={38}
-            />
-
-            <Gap height={10} />
-
-            <View style={styles.footer}>
-              <Text style={styles.footerText}>Sudah Punya Akun? </Text>
-              <TouchableOpacity onPress={handleGoToLogin} activeOpacity={0.7}>
-                <Text style={styles.footerLink}>Masuk Sekarang</Text>
-              </TouchableOpacity>
-            </View>
+            <Gap height={32} />
           </View>
-        </Card>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
-        <Image source={WhitePajakIn} style={styles.logo} resizeMode="contain" />
-      </View>
+      {/* Popup Sukses */}
+      <SuccessPopup
+        visible={showSuccess}
+        onClose={() => setShowSuccess(false)}
+        navigation={navigation}
+      />
     </ImageBackground>
   );
 };
@@ -139,7 +168,18 @@ const SignUp = () => {
 export default SignUp;
 
 const styles = StyleSheet.create({
-  background: {flex: 1, width: '100%', height: '100%'},
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingTop: StatusBar.currentHeight || 0,
+  },
   overlay: {
     flex: 1,
     justifyContent: 'center',
@@ -190,6 +230,5 @@ const styles = StyleSheet.create({
   logo: {
     width: 300,
     height: 96,
-    marginTop: 1,
   },
 });
