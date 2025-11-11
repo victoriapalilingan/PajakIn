@@ -2,9 +2,10 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-// Import screen
+// import screens
 import SplashScreen from './src/pages/SplashScreen';
-import OnBoarding from './src/pages/onBoarding'; // pastikan huruf besar sesuai nama folder/file
+import OnBoarding from './src/pages/onBoarding';
+import SignIn from './src/pages/SignIn';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,9 +15,9 @@ const App = () => {
       <Stack.Navigator
         initialRouteName="SplashScreen"
         screenOptions={{headerShown: false}}>
-        {/* Mulai dari Splash → OnBoarding */}
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         <Stack.Screen name="OnBoarding" component={OnBoarding} />
+        <Stack.Screen name="SignIn" component={SignIn} />
       </Stack.Navigator>
     </NavigationContainer>
   );
