@@ -17,7 +17,7 @@ const StatusBadge = ({
           {
             color: textColor,
             fontSize: labelFontSize,
-            marginBottom: 6, // tambahan jarak kecil antara label dan count
+            marginBottom: 6, 
           },
         ]}
         numberOfLines={2}>
