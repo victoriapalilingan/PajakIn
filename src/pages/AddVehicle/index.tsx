@@ -7,35 +7,35 @@ import {
   TouchableOpacity,
   Switch,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import GoBackIcon from '../../assets/Go Back.svg';
-import GoogleCalendarIcon from '../../assets/Google Calendar.svg';
-import Button from '../../components/atoms/Button';
-import DownButton from '../../assets/Down Button.svg';
 
-const AddVehicle = () => {
+// Hapus import {useNavigation}
+import GoogleCalendarIcon from '../../assets/googlecalendar.svg';
+import DownButton from '../../assets/downbutton.svg';
+import CustomHeader from '../../components/molecules/CustomHeader'; // Import header baru
+import Button from '../../components/atoms/Button';
+
+// UBAH: Menerima 'navigation' dari props (standar untuk screen React Navigation)
+function AddVehicle({navigation}) {
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-          <GoBackIcon width={48} height={55} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Tambah Kendaraan</Text>
-      </View>
+      {/* Panggil CustomHeader */}
+      <CustomHeader
+        title="Tambah Kendaraan"
+        // Panggil navigation.goBack() dari props yang diterima
+        onBackPress={() => navigation.goBack()}
+      />
 
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
-        {/* Form Card */}
         <View style={styles.card}>
           {/* Jenis Kendaraan */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Jenis Kendaraan</Text>
             <TouchableOpacity style={styles.inputField}>
               <Text style={styles.placeholder}>Pilih Jenis Kendaraan</Text>
-              <DownButton width={30} height={30} />
+              <DownButton width={26} height={26} />
             </TouchableOpacity>
           </View>
 
@@ -109,73 +109,32 @@ const AddVehicle = () => {
       </ScrollView>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F4FFF4',
-  },
-  header: {
-    backgroundColor: '#26634C',
-    paddingTop: 46,
-    paddingBottom: 22,
-    paddingHorizontal: 18,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
-  },
-  spacer: {
-    width: 8,
-  },
+  container: {flex: 1, backgroundColor: '#F4FFF4'},
 
-  rightSpacer: {
-    flex: 1,
-  },
-
-  backButton: {
-    width: 60,
-    height: 60,
-    marginLeft: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  headerTitle: {
-    fontFamily: 'Montserrat-Bold',
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#FEB800',
-    textAlign: 'center',
-  },
   scrollView: {flex: 1},
-  scrollContent: {padding: 20, paddingBottom: 50},
+  scrollContent: {padding: 30, paddingBottom: 10},
   card: {marginTop: 16},
   inputGroup: {marginBottom: 16},
   label: {
-    fontFamily: 'Montserrat-Medium', // ditambahkan
+    fontFamily: 'Montserrat-Medium',
     fontSize: 14,
     fontWeight: '600',
     color: '#2D6A4F',
     marginBottom: 6,
   },
   inputField: {
-    fontFamily: 'Montserrat-Regular', // ditambahkan
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFF',
     borderRadius: 14,
     height: 54,
     paddingHorizontal: 14,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.08,
-    shadowRadius: 5,
-    elevation: 3,
   },
   placeholder: {
-    fontFamily: 'Montserrat-Regular', // ditambahkan
+    fontFamily: 'Montserrat-Regular',
     fontSize: 14,
     color: '#9CA3AF',
     flex: 1,
@@ -188,7 +147,7 @@ const styles = StyleSheet.create({
   },
   reminderSection: {marginTop: 12},
   reminderTitle: {
-    fontFamily: 'Montserrat-Bold', // ditambahkan
+    fontFamily: 'Montserrat-Bold',
     fontSize: 16,
     fontWeight: '700',
     color: '#2D6A4F',
@@ -203,11 +162,9 @@ const styles = StyleSheet.create({
     borderColor: '#2D6A4F',
     marginRight: 10,
   },
-  checkboxActive: {
-    backgroundColor: '#2D6A4F',
-  },
+  checkboxActive: {backgroundColor: '#2D6A4F'},
   checkboxLabel: {
-    fontFamily: 'Montserrat-Regular', // ditambahkan
+    fontFamily: 'Montserrat-Regular',
     fontSize: 14,
     color: '#2F3F35',
   },
@@ -219,11 +176,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.12,
-    shadowRadius: 6,
-    elevation: 5,
   },
 });
 
