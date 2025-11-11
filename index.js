@@ -1,6 +1,5 @@
 import {AppRegistry} from 'react-native';
 import {name as appName} from './app.json';
-import SignIn from './src/pages/SignIn';
-import App from './App';
+import AddVehicle from './src/pages/AddVehicle';
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => AddVehicle);
