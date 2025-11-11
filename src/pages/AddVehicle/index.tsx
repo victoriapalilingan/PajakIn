@@ -16,13 +16,15 @@ import Button from '../../components/atoms/Button';
 function AddVehicle({navigation}) {
   return (
     <View style={styles.container}>
-      <CustomHeader title="Tambah Kendaraan" onBackPress={() => navigation.goBack()} />
+      <CustomHeader
+        title="Tambah Kendaraan"
+        onBackPress={() => navigation.goBack()}
+      />
 
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+        showsVerticalScrollIndicator={false}>
         <View style={styles.card}>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Jenis Kendaraan</Text>
@@ -51,7 +53,11 @@ function AddVehicle({navigation}) {
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Tanggal Jatuh Tempo Pajak</Text>
             <TouchableOpacity style={styles.inputField}>
-              <GoogleCalendarIcon width={20} height={20} style={{marginRight: 8}} />
+              <GoogleCalendarIcon
+                width={20}
+                height={20}
+                style={{marginRight: 8}}
+              />
               <Text style={styles.placeholder}>
                 Masukkan Tanggal Jatuh Tempo Pajak
               </Text>
@@ -87,6 +93,7 @@ function AddVehicle({navigation}) {
             label="Simpan"
             style={styles.saveButton}
             textStyle={{fontFamily: 'Montserrat-Bold', fontSize: 22}}
+            onPress={() => navigation.navigate('DetailVehicle')}
           />
         </View>
       </ScrollView>
@@ -144,4 +151,21 @@ const styles = StyleSheet.create({
     borderColor: '#2D6A4F',
     marginRight: 10,
   },
-  checkboxActive:
+  checkboxActive: {backgroundColor: '#2D6A4F'},
+  checkboxLabel: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 14,
+    color: '#2F3F35',
+  },
+  buttonContainer: {marginTop: 91, paddingHorizontal: 20, marginBottom: 30},
+  saveButton: {
+    width: 328,
+    height: 48,
+    backgroundColor: '#2D6A4F',
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
+export default AddVehicle;

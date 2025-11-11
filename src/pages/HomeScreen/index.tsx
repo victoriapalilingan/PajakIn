@@ -41,6 +41,11 @@ const HomeScreen = ({navigation}) => {
     navigation.navigate('AddVehicle');
   };
 
+  const handleDetailVehicle = () => {
+    console.log('Navigating to DetailVehicle...');
+    navigation.navigate('DetailVehicle');
+  };
+
   const handleTabPress = key => {
     console.log('tab:', key);
     setActiveTab(key);
@@ -113,7 +118,7 @@ const HomeScreen = ({navigation}) => {
           label="Detail Kendaraan"
           onPress={() => {
             closePopup();
-            console.log('Detail Kendaraan (popup)');
+            handleDetailVehicle();
           }}
           color="#2A6E54"
           textColor="#FFFFFF"
