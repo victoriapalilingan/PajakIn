@@ -1,4 +1,3 @@
-// src/components/organism/HomeHeader/index.js
 import React from 'react';
 import {StyleSheet, View, Text, Image} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';

@@ -1,4 +1,3 @@
-// src/components/pages/HomeScreen.js
 import React, {useState} from 'react';
 import {
   StyleSheet,
@@ -40,7 +39,6 @@ const HomeScreen = ({navigation}) => {
 
   const handleAddVehicle = () => {
     console.log('Tambah Kendaraan (header button)');
-    // navigation.navigate('AddVehicle');
   };
 
   const handleTabPress = key => {
@@ -54,12 +52,16 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F5F5F5" />
-
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle="dark-content"
+        />
+        <Gap height={25} />
         <HomeHeader />
         <Gap height={24} />
         <VehicleList />
@@ -80,18 +82,16 @@ const HomeScreen = ({navigation}) => {
         <Gap height={24} />
       </ScrollView>
 
-      {/* Bottom nav – tekan FAB untuk buka popup */}
       <BottomNavigation
         items={tabs}
         activeKey={activeTab}
         onTabPress={handleTabPress}
         onAddPress={openPopup}
-        fabIcon={ButtonPlus /* atau PlusIcon */}
+        fabIcon={ButtonPlus}
         fabSize={63}
         fabLift={12}
       />
 
-      {/* POPUP actions */}
       <BottomPopup
         visible={popupVisible}
         onClose={closePopup}
@@ -101,7 +101,6 @@ const HomeScreen = ({navigation}) => {
           onPress={() => {
             closePopup();
             console.log('Tambah Kendaraan (popup)');
-            // navigation.navigate('AddVehicle');
           }}
           color="#F5C84C"
           textColor="#ffffffff"
@@ -116,7 +115,6 @@ const HomeScreen = ({navigation}) => {
           onPress={() => {
             closePopup();
             console.log('Detail Kendaraan (popup)');
-            // navigation.navigate('VehicleDetail');
           }}
           color="#2A6E54"
           textColor="#FFFFFF"
