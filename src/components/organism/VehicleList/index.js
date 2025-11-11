@@ -1,11 +1,9 @@
-// src/components/organisms/VehicleList.js
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import VehicleCard from '../../molecules/VehicleCard';
 import colors from '../../../styles/colors';
 import Gap from '../../atoms/Gap';
 
-// ⬇️ Import SVG sebagai komponen (bukan require)
 import MotorIcon from '../../../assets/motor.svg';
 import MobilIcon from '../../../assets/mobil.svg';
 
@@ -14,13 +12,13 @@ const VehicleList = () => {
     {
       id: 1,
       plate: 'Plat B 1234 XYZ',
-      Icon: MotorIcon, // ⬅️ pakai komponen
+      Icon: MotorIcon,
       status: 'Aktif',
     },
     {
       id: 2,
       plate: 'Plat D 5678 ABC',
-      Icon: MobilIcon, // ⬅️ pakai komponen
+      Icon: MobilIcon,
       status: 'Aktif',
       statusText: 'Akan Jatuh Tempo 7 Hari',
       statusColor: colors.orange,
@@ -28,7 +26,7 @@ const VehicleList = () => {
     {
       id: 3,
       plate: 'Plat DB 9123 VIC',
-      Icon: MobilIcon, // ⬅️ pakai komponen
+      Icon: MobilIcon,
       status: 'Aktif',
       statusText: 'Telat Bayar 1 Hari',
       statusColor: colors.red,
@@ -43,7 +41,7 @@ const VehicleList = () => {
           <React.Fragment key={v.id}>
             <VehicleCard
               plate={v.plate}
-              Icon={v.Icon} // ⬅️ kirim sebagai komponen
+              Icon={v.Icon}
               status={v.status}
               statusText={v.statusText}
               statusColor={v.statusColor}
