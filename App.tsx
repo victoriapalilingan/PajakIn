@@ -8,6 +8,7 @@ import OnBoarding from './src/pages/onBoarding';
 import SignIn from './src/pages/SignIn';
 import SignUp from './src/pages/SignUp';
 import HomeScreen from './src/pages/HomeScreen';
+import AddVehicle from './src/pages/AddVehicle';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,7 @@ const App = () => {
         <Stack.Screen name="SignIn" component={SignIn} />
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="AddVehicle" component={AddVehicle} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -7,7 +7,6 @@ import {
   StatusBar,
   Platform,
 } from 'react-native';
-import PropTypes from 'prop-types';
 
 import HomeHeader from '../../components/organism/HomeHeader';
 import VehicleList from '../../components/organism/VehicleList';
@@ -18,7 +17,7 @@ import BottomPopup from '../../components/molecules/BottomPopup';
 
 // SVG lokal
 import PlusIcon from '../../assets/Add.svg';
-import ButtonPlus from '../../assets/ButtonAdd1.svg'; // kalau mau pakai FAB khusus
+import ButtonPlus from '../../assets/ButtonAdd1.svg';
 import HomeIcon from '../../assets/Home.svg';
 import ReceiptIcon from '../../assets/Activity History.svg';
 import BellIcon from '../../assets/Doorbell.svg';
@@ -38,7 +37,8 @@ const HomeScreen = ({navigation}) => {
   const [popupVisible, setPopupVisible] = useState(false);
 
   const handleAddVehicle = () => {
-    console.log('Tambah Kendaraan (header button)');
+    console.log('Navigating to AddVehicle...');
+    navigation.navigate('AddVehicle');
   };
 
   const handleTabPress = key => {
@@ -46,7 +46,6 @@ const HomeScreen = ({navigation}) => {
     setActiveTab(key);
   };
 
-  // FAB opens popup
   const openPopup = () => setPopupVisible(true);
   const closePopup = () => setPopupVisible(false);
 
@@ -100,14 +99,14 @@ const HomeScreen = ({navigation}) => {
           label="Tambah Kendaraan"
           onPress={() => {
             closePopup();
-            console.log('Tambah Kendaraan (popup)');
+            handleAddVehicle();
           }}
           color="#F5C84C"
-          textColor="#ffffffff"
+          textColor="#FFFFFF"
           width={348}
           height={51}
           iconGap={10}
-          leftIcon={<BtnCarIcon width={24} height={24} color="#ffffffff" />}
+          leftIcon={<BtnCarIcon width={24} height={24} color="#FFFFFF" />}
         />
         <Gap height={12} />
         <Button
@@ -126,10 +125,6 @@ const HomeScreen = ({navigation}) => {
       </BottomPopup>
     </SafeAreaView>
   );
-};
-
-HomeScreen.propTypes = {
-  navigation: PropTypes.object,
 };
 
 export default HomeScreen;

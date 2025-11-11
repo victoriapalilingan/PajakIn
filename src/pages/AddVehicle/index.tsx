@@ -13,12 +13,14 @@ import GoogleCalendarIcon from '../../assets/Google Calendar.svg';
 import Button from '../../components/atoms/Button';
 import DownButton from '../../assets/Down Button.svg';
 
-const AddVehicle = () => {
+const AddVehicle = ({navigation}) => {
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}>
           <GoBackIcon width={48} height={55} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Tambah Kendaraan</Text>
@@ -154,14 +156,14 @@ const styles = StyleSheet.create({
   card: {marginTop: 16},
   inputGroup: {marginBottom: 16},
   label: {
-    fontFamily: 'Montserrat-Medium', // ditambahkan
+    fontFamily: 'Montserrat-Medium',
     fontSize: 14,
     fontWeight: '600',
     color: '#2D6A4F',
     marginBottom: 6,
   },
   inputField: {
-    fontFamily: 'Montserrat-Regular', // ditambahkan
+    fontFamily: 'Montserrat-Regular',
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFF',
@@ -175,7 +177,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   placeholder: {
-    fontFamily: 'Montserrat-Regular', // ditambahkan
+    fontFamily: 'Montserrat-Regular',
     fontSize: 14,
     color: '#9CA3AF',
     flex: 1,
@@ -188,7 +190,7 @@ const styles = StyleSheet.create({
   },
   reminderSection: {marginTop: 12},
   reminderTitle: {
-    fontFamily: 'Montserrat-Bold', // ditambahkan
+    fontFamily: 'Montserrat-Bold',
     fontSize: 16,
     fontWeight: '700',
     color: '#2D6A4F',
@@ -207,7 +209,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2D6A4F',
   },
   checkboxLabel: {
-    fontFamily: 'Montserrat-Regular', // ditambahkan
+    fontFamily: 'Montserrat-Regular',
     fontSize: 14,
     color: '#2F3F35',
   },
