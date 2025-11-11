@@ -1,102 +1,78 @@
-import React, {useEffect, useRef} from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Animated,
-  View,
-  StyleSheet as RNStyleSheet,
-} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import React from 'react';
+import {TouchableOpacity, Text, View, StyleSheet} from 'react-native';
 
-/**
- * Props:
- * - label / title    : teks tombol (label diprioritaskan)
- * - onPress          : handler tekan
- * - width            : default 255
- * - height           : default 45
- * - gradient         : true = gradasi (default), false = warna solid
- * - color            : warna solid (dipakai jika gradient=false)
- * - textColor        : warna teks
- * - style            : override style tombol
- * - textStyle        : override style teks
- */
 export default function Button({
   label,
-  title,
   onPress,
   width = 255,
-  height = 45,
-  gradient = true,
+  height = 44,
   color = '#2A6E54',
   textColor = '#FFFFFF',
-  style,
-  textStyle,
+  disabled = false,
+  leftIcon,
+  iconSize = 24,
+  iconGap = 12,
+  horizontalPadding = 20,
 }) {
-  const buttonLabel = label || title || '';
-  const fade = useRef(new Animated.Value(0)).current;
+  const radius = height / 2;
 
-  useEffect(() => {
-    Animated.timing(fade, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, []);
+  // Jika ada ikon, tambahkan padding kiri agar teks tetap center
+  const extraPadLeft = leftIcon ? iconSize + iconGap : 0;
 
   return (
-    <Animated.View style={{opacity: fade}}>
-      <TouchableOpacity
-        activeOpacity={0.85}
-        onPress={onPress}
-        style={[styles.buttonBase, {width, height}, style]}>
-        {gradient ? (
-          <LinearGradient
-            colors={['#2A6E54', '#51D4A2']}
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 1}}
-            style={[RNStyleSheet.absoluteFill, styles.round]}
-          />
-        ) : (
-          <View
-            style={[
-              RNStyleSheet.absoluteFill,
-              styles.round,
-              {backgroundColor: color},
-            ]}
-          />
-        )}
+    <TouchableOpacity
+      activeOpacity={0.85}
+      onPress={onPress}
+      disabled={disabled}
+      style={[
+        styles.base,
+        {
+          width,
+          height,
+          borderRadius: radius,
+          backgroundColor: disabled ? '#9BB8AC' : color,
+          paddingHorizontal: horizontalPadding,
+          paddingLeft: horizontalPadding + extraPadLeft,
+        },
+      ]}>
+      {/* Ikon di kiri (absolute), hanya jika dikirim */}
+      {leftIcon ? (
+        <View
+          style={[
+            styles.icon,
+            {left: horizontalPadding, width: iconSize, height: iconSize},
+          ]}>
+          {leftIcon}
+        </View>
+      ) : null}
 
-        <Text
-          allowFontScaling={false}
-          style={[styles.text, {color: textColor}, textStyle]}>
-          {buttonLabel}
-        </Text>
-      </TouchableOpacity>
-    </Animated.View>
+      {/* Label selalu center */}
+      <Text style={[styles.text, {color: textColor}]} numberOfLines={1}>
+        {label}
+      </Text>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  round: {borderRadius: 50},
-  buttonBase: {
+  base: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 50,
-    paddingHorizontal: 24, // biar auto-fit teks
-    // shadow iOS
+    elevation: 3,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 6},
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    // shadow Android
-    elevation: 6,
-    overflow: 'hidden',
+    shadowOpacity: 0.12,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 6,
+  },
+  icon: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   text: {
+    fontSize: 22,
     fontFamily: 'Montserrat-SemiBold',
-    fontSize: 15, // kecilkan jika masih kepanjangan
+    letterSpacing: 0.2,
     textAlign: 'center',
-    fontWeight: '700',
   },
 });

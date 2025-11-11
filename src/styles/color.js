@@ -1,0 +1,14 @@
+export default {
+  primary: '#2A6E54',
+  primaryLight: '#E6F6EA',
+  yellowLight: '#FFE89A',
+  greenLight: '#CFEED8',
+  yellowBadge: '#FFF1CD',
+  redBadge: '#FFD9D9',
+  orange: '#E6B300',
+  red: '#D13F3F',
+  yellow: '#FFD65B',
+  white: '#FFFFFF',
+  textPrimary: '#2A6E54',
+  background: '#F5F5F5',
+};
