@@ -1,5 +1,5 @@
 export default {
-  primary: '#2A6E54',
+  primary: '#2A6E53',
   primaryLight: '#E6F6EA',
   yellowLight: '#FFE89A',
   greenLight: '#CFEED8',
@@ -11,4 +11,9 @@ export default {
   white: '#FFFFFF',
   textPrimary: '#2A6E54',
   background: '#F5F5F5',
+  badgeActive: '#D7FFCD',
+  badgeWarning: '#FFF8E6',
+  badgeLate: '#FFD7D5',
+  yellow2: '#F4C542',
+  red2: '#F44336',
 };

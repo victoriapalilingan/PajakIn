@@ -4,8 +4,13 @@ import Backdrop from '../../atoms/Backdrop';
 import Button from '../../atoms/Button';
 import CheckMark from '../../../assets/Check Mark.svg';
 
-const SuccessPopup = ({visible, onClose}) => {
+const SuccessPopup = ({visible, onClose, navigation}) => {
   if (!visible) return null;
+
+  const handleNavigate = () => {
+    onClose(); // tutup popup
+    navigation.replace('SignIn'); // arahkan ke halaman SignIn
+  };
 
   return (
     <Modal
@@ -13,24 +18,19 @@ const SuccessPopup = ({visible, onClose}) => {
       visible={visible}
       animationType="fade"
       onRequestClose={onClose}>
-      {/* Backdrop reusable */}
       <Backdrop visible={visible} onPress={onClose} />
 
-      {/* Card langsung di sini */}
       <View style={styles.center}>
         <View style={styles.popupCard}>
-          {/* Icon centang */}
           <View style={styles.iconWrapper}>
             <CheckMark width={112} height={100} />
           </View>
 
-          {/* Teks judul */}
           <Text style={styles.title}>Akun Anda{'\n'}Berhasil Dibuat!</Text>
 
-          {/* Tombol reusable */}
           <Button
             label="Masuk Sekarang"
-            onPress={onClose}
+            onPress={handleNavigate}
             width={200}
             height={44}
           />
@@ -62,18 +62,8 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 8,
   },
-  checkCircle: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: '#2A6E54',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  checkMark: {
-    fontSize: 40,
-    color: '#FFFFFF',
-    fontWeight: 'bold',
+  iconWrapper: {
+    marginBottom: 12,
   },
   title: {
     fontFamily: 'Montserrat-Bold',
