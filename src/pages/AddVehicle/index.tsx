@@ -8,44 +8,22 @@ import {
   Switch,
 } from 'react-native';
 
-<<<<<<< HEAD
-const AddVehicle = ({navigation}) => {
-  return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}>
-          <GoBackIcon width={48} height={55} />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Tambah Kendaraan</Text>
-      </View>
-=======
-// Hapus import {useNavigation}
 import GoogleCalendarIcon from '../../assets/googlecalendar.svg';
 import DownButton from '../../assets/downbutton.svg';
-import CustomHeader from '../../components/molecules/CustomHeader'; // Import header baru
+import CustomHeader from '../../components/molecules/CustomHeader';
 import Button from '../../components/atoms/Button';
 
-// UBAH: Menerima 'navigation' dari props (standar untuk screen React Navigation)
 function AddVehicle({navigation}) {
   return (
     <View style={styles.container}>
-      {/* Panggil CustomHeader */}
-      <CustomHeader
-        title="Tambah Kendaraan"
-        // Panggil navigation.goBack() dari props yang diterima
-        onBackPress={() => navigation.goBack()}
-      />
->>>>>>> 286d0d4083c53ea680a4905b58b0b74f7834e36c
+      <CustomHeader title="Tambah Kendaraan" onBackPress={() => navigation.goBack()} />
 
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.card}>
-          {/* Jenis Kendaraan */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Jenis Kendaraan</Text>
             <TouchableOpacity style={styles.inputField}>
@@ -54,7 +32,6 @@ function AddVehicle({navigation}) {
             </TouchableOpacity>
           </View>
 
-          {/* Nomor Polisi */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Nomor Polisi</Text>
             <TouchableOpacity style={styles.inputField}>
@@ -62,7 +39,6 @@ function AddVehicle({navigation}) {
             </TouchableOpacity>
           </View>
 
-          {/* Merek & Tahun Kendaraan */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Merek & Tahun Kendaraan</Text>
             <TouchableOpacity style={styles.inputField}>
@@ -72,22 +48,16 @@ function AddVehicle({navigation}) {
             </TouchableOpacity>
           </View>
 
-          {/* Tanggal Jatuh Tempo */}
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Tanggal Jatuh Tempo Pajak</Text>
             <TouchableOpacity style={styles.inputField}>
-              <GoogleCalendarIcon
-                width={20}
-                height={20}
-                style={{marginRight: 8}}
-              />
+              <GoogleCalendarIcon width={20} height={20} style={{marginRight: 8}} />
               <Text style={styles.placeholder}>
                 Masukkan Tanggal Jatuh Tempo Pajak
               </Text>
             </TouchableOpacity>
           </View>
 
-          {/* Pengingat */}
           <View style={styles.switchRow}>
             <Text style={styles.label}>Aktifkan Pengingat Pajak</Text>
             <Switch
@@ -97,7 +67,6 @@ function AddVehicle({navigation}) {
             />
           </View>
 
-          {/* Waktu Pengingat */}
           <View style={styles.reminderSection}>
             <Text style={styles.reminderTitle}>Waktu Pengingat</Text>
 
@@ -113,7 +82,6 @@ function AddVehicle({navigation}) {
           </View>
         </View>
 
-        {/* Button */}
         <View style={styles.buttonContainer}>
           <Button
             label="Simpan"
@@ -128,7 +96,6 @@ function AddVehicle({navigation}) {
 
 const styles = StyleSheet.create({
   container: {flex: 1, backgroundColor: '#F4FFF4'},
-
   scrollView: {flex: 1},
   scrollContent: {padding: 30, paddingBottom: 10},
   card: {marginTop: 16},
@@ -141,10 +108,6 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   inputField: {
-<<<<<<< HEAD
-    fontFamily: 'Montserrat-Regular',
-=======
->>>>>>> 286d0d4083c53ea680a4905b58b0b74f7834e36c
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFF',
@@ -181,21 +144,4 @@ const styles = StyleSheet.create({
     borderColor: '#2D6A4F',
     marginRight: 10,
   },
-  checkboxActive: {backgroundColor: '#2D6A4F'},
-  checkboxLabel: {
-    fontFamily: 'Montserrat-Regular',
-    fontSize: 14,
-    color: '#2F3F35',
-  },
-  buttonContainer: {marginTop: 91, paddingHorizontal: 20, marginBottom: 30},
-  saveButton: {
-    width: 328,
-    height: 48,
-    backgroundColor: '#2D6A4F',
-    borderRadius: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
-
-export default AddVehicle;
+  checkboxActive:
