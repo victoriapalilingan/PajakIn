@@ -9,4 +9,4 @@ import AddVehicle from './src/pages/AddVehicle';
 import EditVehicle from './src/pages/EditVehicle';
 import VehicleDetail from './src/pages/VehicleDetail';
 
-AppRegistry.registerComponent(appName, () => VehicleDetail);
+AppRegistry.registerComponent(appName, () => EditVehicle);

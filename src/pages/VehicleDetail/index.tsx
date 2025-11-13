@@ -10,6 +10,18 @@ import {
 import CustomHeader from '../../components/molecules/CustomHeader';
 import CheckmarkIcon from '../../assets/checkmark.svg';
 
+// TAMBAHKAN: Dummy Data untuk navigasi
+const vehicleData = {
+  id: 'DB3527AP',
+  type: 'Mobil',
+  plateNumber: 'DB 3527 AP',
+  brandYear: 'Toyota Innova (2020)',
+  dueDate: '2025 - 08 - 15',
+  reminder: true,
+  reminderH7: false,
+  reminderH3: true,
+};
+
 const VehicleDetailScreen = ({navigation}) => {
   return (
     <View style={styles.fullScreenContainer}>
@@ -47,7 +59,14 @@ const VehicleDetailScreen = ({navigation}) => {
       </ScrollView>
 
       <View style={styles.fixedButtonContainer}>
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity
+          style={styles.editButton}
+          // TAMBAHKAN ONPRESS: Navigasi ke EditVehicleScreen
+          onPress={() => {
+            navigation?.navigate('EditVehicle', {
+              vehicle: vehicleData, // Mengirim data ke halaman Edit
+            });
+          }}>
           <Text style={styles.editButtonText}>Edit</Text>
         </TouchableOpacity>
 
@@ -100,7 +119,7 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    fontSize: 14,
+    fontSize: 18,
     color: '#2E5E4E',
     marginBottom: 8,
     fontWeight: '500',
@@ -131,17 +150,17 @@ const styles = StyleSheet.create({
   },
 
   statusText: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#FFC107',
     fontFamily: 'Montserrat-SemiBold',
   },
   dateLabel: {
-    fontSize: 14,
+    fontSize: 18,
+    fontFamily: 'Montserrat-regular',
     color: '#2E5E4E',
     marginTop: 15,
     marginBottom: 5,
-    fontFamily: 'Montserrat-semiBold',
   },
   dateValue: {
     fontSize: 16,
