@@ -1,27 +1,76 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Switch,
-} from 'react-native';
-
-// Hapus import {useNavigation}
-import GoogleCalendarIcon from '../../assets/googlecalendar.svg';
-import DownButton from '../../assets/downbutton.svg';
-import CustomHeader from '../../components/molecules/CustomHeader'; // Import header baru
+// src/pages/AddVehicle/index.tsx
+import React, {useState} from 'react';
+import {View, StyleSheet, ScrollView, Switch, Text} from 'react-native';
+import CustomHeader from '../../components/molecules/CustomHeader';
 import Button from '../../components/atoms/Button';
+import TextInput from '../../components/molecules/TextInput';
+import Dropdown from '../../components/molecules/Dropdown';
+import DatePicker from '../../components/molecules/DatePicker';
+import MobilIcon from '../../assets/mobil.svg';
+import MotorIcon from '../../assets/motor.svg';
 
-// UBAH: Menerima 'navigation' dari props (standar untuk screen React Navigation)
 function AddVehicle({navigation}) {
+  const [jenisKendaraan, setJenisKendaraan] = useState('');
+  const [noPolisi, setNoPolisi] = useState('');
+  const [merekTahun, setMerekTahun] = useState('');
+  const [tanggalJatuhTempo, setTanggalJatuhTempo] = useState<Date | undefined>(
+    undefined,
+  );
+  const [reminderActive, setReminderActive] = useState(true);
+
+  const vehicleOptions = [
+    {
+      label: 'Mobil',
+      value: 'mobil',
+      icon: <MobilIcon width={24} height={24} />,
+    },
+    {
+      label: 'Motor',
+      value: 'motor',
+      icon: <MotorIcon width={24} height={24} />,
+    },
+  ];
+
+  const handleSave = () => {
+    // Validasi input
+    if (!jenisKendaraan) {
+      alert('Pilih jenis kendaraan terlebih dahulu');
+      return;
+    }
+    if (!noPolisi) {
+      alert('Masukkan nomor polisi');
+      return;
+    }
+    if (!merekTahun) {
+      alert('Masukkan merek dan tahun kendaraan');
+      return;
+    }
+    if (!tanggalJatuhTempo) {
+      alert('Pilih tanggal jatuh tempo pajak');
+      return;
+    }
+
+    // Logic untuk menyimpan data kendaraan
+    const vehicleData = {
+      jenisKendaraan,
+      noPolisi,
+      merekTahun,
+      tanggalJatuhTempo,
+      reminderActive,
+    };
+
+    console.log('Data Kendaraan:', vehicleData);
+
+    // Setelah berhasil simpan, kembali ke halaman sebelumnya
+    // navigation.goBack();
+    // atau navigasi ke halaman lain
+    // navigation.navigate('VehicleList');
+  };
+
   return (
     <View style={styles.container}>
-      {/* Panggil CustomHeader */}
       <CustomHeader
         title="Tambah Kendaraan"
-        // Panggil navigation.goBack() dari props yang diterima
         onBackPress={() => navigation.goBack()}
       />
 
@@ -30,153 +79,114 @@ function AddVehicle({navigation}) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
         <View style={styles.card}>
-          {/* Jenis Kendaraan */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Jenis Kendaraan</Text>
-            <TouchableOpacity style={styles.inputField}>
-              <Text style={styles.placeholder}>Pilih Jenis Kendaraan</Text>
-              <DownButton width={26} height={26} />
-            </TouchableOpacity>
-          </View>
+          {/* Dropdown Jenis Kendaraan */}
+          <Dropdown
+            label="Jenis Kendaraan"
+            placeholder="Pilih Jenis Kendaraan"
+            options={vehicleOptions}
+            value={jenisKendaraan}
+            onSelect={setJenisKendaraan}
+          />
 
           {/* Nomor Polisi */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Nomor Polisi</Text>
-            <TouchableOpacity style={styles.inputField}>
-              <Text style={styles.placeholder}>Masukkan Nomor Polisi</Text>
-            </TouchableOpacity>
-          </View>
+          <TextInput
+            label="Nomor Polisi"
+            placeholder="Masukkan Nomor Polisi"
+            value={noPolisi}
+            onChangeText={setNoPolisi}
+            autoCapitalize="characters"
+          />
 
           {/* Merek & Tahun Kendaraan */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Merek & Tahun Kendaraan</Text>
-            <TouchableOpacity style={styles.inputField}>
-              <Text style={styles.placeholder}>
-                Masukkan Merek & Tahun Kendaraan
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <TextInput
+            label="Merek & Tahun Kendaraan"
+            placeholder="Masukkan Merek & Tahun Kendaraan"
+            value={merekTahun}
+            onChangeText={setMerekTahun}
+          />
 
           {/* Tanggal Jatuh Tempo */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Tanggal Jatuh Tempo Pajak</Text>
-            <TouchableOpacity style={styles.inputField}>
-              <GoogleCalendarIcon
-                width={20}
-                height={20}
-                style={{marginRight: 8}}
-              />
-              <Text style={styles.placeholder}>
-                Masukkan Tanggal Jatuh Tempo Pajak
-              </Text>
-            </TouchableOpacity>
-          </View>
+          <DatePicker
+            label="Tanggal Jatuh Tempo Pajak"
+            placeholder="Masukkan Tanggal Jatuh Tempo Pajak"
+            value={tanggalJatuhTempo}
+            onChange={setTanggalJatuhTempo}
+          />
 
-          {/* Pengingat */}
+          {/* Switch Pengingat */}
           <View style={styles.switchRow}>
-            <Text style={styles.label}>Aktifkan Pengingat Pajak</Text>
+            <Text style={styles.switchLabel}>Aktifkan Pengingat Pajak</Text>
             <Switch
-              value={true}
+              value={reminderActive}
+              onValueChange={setReminderActive}
               trackColor={{false: '#C9C9C9', true: '#26634C'}}
               thumbColor="#FFF"
             />
           </View>
-
-          {/* Waktu Pengingat */}
-          <View style={styles.reminderSection}>
-            <Text style={styles.reminderTitle}>Waktu Pengingat</Text>
-
-            <View style={styles.checkboxRow}>
-              <View style={styles.checkbox} />
-              <Text style={styles.checkboxLabel}>H - 7</Text>
-            </View>
-
-            <View style={styles.checkboxRow}>
-              <View style={[styles.checkbox, styles.checkboxActive]} />
-              <Text style={styles.checkboxLabel}>H - 3</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Button */}
-        <View style={styles.buttonContainer}>
-          <Button
-            label="Simpan"
-            style={styles.saveButton}
-            textStyle={{fontFamily: 'Montserrat-Bold', fontSize: 22}}
-          />
         </View>
       </ScrollView>
+
+      {/* Tombol Simpan - Fixed di bawah */}
+      <View style={styles.buttonContainer}>
+        <Button
+          label="Simpan"
+          onPress={handleSave}
+          style={styles.saveButton}
+          textStyle={styles.saveButtonText}
+        />
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: '#F4FFF4'},
+export default AddVehicle;
 
-  scrollView: {flex: 1},
-  scrollContent: {padding: 30, paddingBottom: 10},
-  card: {marginTop: 16},
-  inputGroup: {marginBottom: 16},
-  label: {
-    fontFamily: 'Montserrat-Medium',
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#2D6A4F',
-    marginBottom: 6,
-  },
-  inputField: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFF',
-    borderRadius: 14,
-    height: 54,
-    paddingHorizontal: 14,
-  },
-  placeholder: {
-    fontFamily: 'Montserrat-Regular',
-    fontSize: 14,
-    color: '#9CA3AF',
+const styles = StyleSheet.create({
+  container: {
     flex: 1,
+    backgroundColor: '#F4FFF4',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    padding: 30,
+    paddingBottom: 20,
+  },
+  card: {
+    marginTop: 16,
   },
   switchRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 6,
-  },
-  reminderSection: {marginTop: 12},
-  reminderTitle: {
-    fontFamily: 'Montserrat-Bold',
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#2D6A4F',
+    marginTop: 10,
     marginBottom: 10,
   },
-  checkboxRow: {flexDirection: 'row', alignItems: 'center', marginTop: 10},
-  checkbox: {
-    width: 22,
-    height: 22,
-    borderRadius: 6,
-    borderWidth: 2,
-    borderColor: '#2D6A4F',
-    marginRight: 10,
+  switchLabel: {
+    fontSize: 13,
+    color: '#2A6E53',
+    fontFamily: 'Montserrat-Medium',
   },
-  checkboxActive: {backgroundColor: '#2D6A4F'},
-  checkboxLabel: {
-    fontFamily: 'Montserrat-Regular',
-    fontSize: 14,
-    color: '#2F3F35',
+  buttonContainer: {
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+    backgroundColor: '#F4FFF4',
+    borderTopColor: '#E0E0E0',
   },
-  buttonContainer: {marginTop: 91, paddingHorizontal: 20, marginBottom: 30},
   saveButton: {
-    width: 328,
+    width: '100%',
     height: 48,
     backgroundColor: '#2D6A4F',
     borderRadius: 100,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 160,
+  },
+  saveButtonText: {
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 22,
+    color: '#FFFFFF',
   },
 });
-
-export default AddVehicle;
