@@ -65,6 +65,9 @@ const VehicleDetailScreen = ({navigation}) => {
           onPress={() => {
             navigation?.navigate('EditVehicle', {
               vehicle: vehicleData, // Mengirim data ke halaman Edit
+          onPress={() => {
+            navigation.navigate('EditVehicle', {
+              plateNumber: 'DB 3527 AP', // optional: kirim data ke halaman edit
             });
           }}>
           <Text style={styles.editButtonText}>Edit</Text>

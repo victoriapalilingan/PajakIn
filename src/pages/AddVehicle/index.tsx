@@ -1,6 +1,18 @@
 // src/pages/AddVehicle/index.tsx
 import React, {useState} from 'react';
 import {View, StyleSheet, ScrollView, Switch, Text} from 'react-native';
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Switch,
+} from 'react-native';
+
+import GoogleCalendarIcon from '../../assets/googlecalendar.svg';
+import DownButton from '../../assets/downbutton.svg';
 import CustomHeader from '../../components/molecules/CustomHeader';
 import Button from '../../components/atoms/Button';
 import TextInput from '../../components/molecules/TextInput';
