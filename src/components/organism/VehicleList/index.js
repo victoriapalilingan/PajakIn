@@ -45,6 +45,7 @@ const VehicleList = () => {
               status={v.status}
               statusText={v.statusText}
               statusColor={v.statusColor}
+              onPressForward={() => handlePressForward(v)}
             />
             {i !== vehicles.length - 1 && <Gap height={9} />}
           </React.Fragment>

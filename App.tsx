@@ -10,6 +10,7 @@ import SignUp from './src/pages/SignUp';
 import HomeScreen from './src/pages/HomeScreen';
 import AddVehicle from './src/pages/AddVehicle';
 import VehicleDetailScreen from './src/pages/VehicleDetail';
+import EditVehicle from './src/pages/EditVehicle';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ const App = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="AddVehicle" component={AddVehicle} />
         <Stack.Screen name="DetailVehicle" component={VehicleDetailScreen} />
+        <Stack.Screen name="EditVehicle" component={EditVehicle} />
       </Stack.Navigator>
     </NavigationContainer>
   );

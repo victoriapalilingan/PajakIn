@@ -47,7 +47,13 @@ const VehicleDetailScreen = ({navigation}) => {
       </ScrollView>
 
       <View style={styles.fixedButtonContainer}>
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => {
+            navigation.navigate('EditVehicle', {
+              plateNumber: 'DB 3527 AP', // optional: kirim data ke halaman edit
+            });
+          }}>
           <Text style={styles.editButtonText}>Edit</Text>
         </TouchableOpacity>
 

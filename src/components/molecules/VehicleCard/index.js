@@ -1,18 +1,22 @@
 // src/components/molecules/VehicleCard.js
 import React from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import colors from '../../../styles/colors';
 import ForwardIcon from '../../../assets/Forward.svg'; // pastikan file ada
 
-const VehicleCard = ({
-  plate,
-  icon,
-  Icon,
-  status,
-  statusText,
-  statusColor,
-  onPressForward, // ← fungsi untuk klik panah
-}) => {
+const VehicleCard = ({plate, icon, Icon, status, statusText, statusColor}) => {
+  const navigation = useNavigation();
+
+  const handlePressForward = () => {
+    console.log('Forward icon ditekan, plate:', plate);
+    navigation.navigate('DetailVehicle', {
+      plate,
+      status,
+      statusText,
+      statusColor,
+    });
+  };
   return (
     <View style={styles.container}>
       {/* Bagian kiri: ikon kendaraan + plat */}
@@ -49,7 +53,7 @@ const VehicleCard = ({
 
         <TouchableOpacity
           style={styles.forwardButton}
-          onPress={onPressForward}
+          onPress={handlePressForward}
           activeOpacity={0.7}>
           <ForwardIcon width={16} height={16} />
         </TouchableOpacity>

@@ -8,7 +8,7 @@ const slides = [
   {
     id: 1,
     image: require('../../assets/onBoarding1.png'),
-    title: 'Peringatan Automatis Untukmu',
+    title: 'Peringatan Automatis\n Untukmu',
     description:
       'Biarkan kami yang mengingat tanggal penting. Notifikasi cerdas akan memastikan kamu tidak pernah melewatkan batas waktu lapor pajak.',
     buttonText: 'Lanjut',
@@ -16,7 +16,7 @@ const slides = [
   {
     id: 2,
     image: require('../../assets/onBoarding2.png'),
-    title: 'Arsip Digital Aman & Terpercaya',
+    title: 'Arsip Digital Aman \n& Terpercaya',
     description:
       'Selamat tinggal kertas berantakan! Kini semua bukti laporan aman, rapi, dan siap diakses langsung dari genggamanmu.',
     buttonText: 'Mulai Sekarang!',
@@ -87,9 +87,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   title: {
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'Montserrat-Bold',
     fontSize: 24,
-    fontWeight: '700',
     color: '#133126',
     textAlign: 'center',
     marginBottom: 10,
