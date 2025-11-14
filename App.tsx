@@ -11,6 +11,8 @@ import HomeScreen from './src/pages/HomeScreen';
 import AddVehicle from './src/pages/AddVehicle';
 import VehicleDetailScreen from './src/pages/VehicleDetail';
 import EditVehicle from './src/pages/EditVehicle';
+import UploadDokumen from './src/pages/UploadDokumen';
+import UnggahBerkas from './src/pages/AddDocument';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +30,7 @@ const App = () => {
         <Stack.Screen name="AddVehicle" component={AddVehicle} />
         <Stack.Screen name="DetailVehicle" component={VehicleDetailScreen} />
         <Stack.Screen name="EditVehicle" component={EditVehicle} />
+        <Stack.Screen name="UploadDokumen" component={UnggahBerkas} />
       </Stack.Navigator>
     </NavigationContainer>
   );

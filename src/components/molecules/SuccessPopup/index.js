@@ -1,15 +1,22 @@
+// SuccessPopup.tsx / .js
 import React from 'react';
 import {Modal, View, Text, StyleSheet} from 'react-native';
 import Backdrop from '../../atoms/Backdrop';
 import Button from '../../atoms/Button';
 import CheckMark from '../../../assets/Check Mark.svg';
 
-const SuccessPopup = ({visible, onClose, navigation}) => {
+const SuccessPopup = ({
+  visible,
+  onClose,
+  title = 'Berhasil!',
+  buttonLabel = 'OK',
+  onButtonPress,
+}) => {
   if (!visible) return null;
 
-  const handleNavigate = () => {
-    onClose(); // tutup popup
-    navigation.replace('SignIn'); // arahkan ke halaman SignIn
+  const handlePress = () => {
+    onClose && onClose();
+    onButtonPress && onButtonPress();
   };
 
   return (
@@ -26,11 +33,11 @@ const SuccessPopup = ({visible, onClose, navigation}) => {
             <CheckMark width={112} height={100} />
           </View>
 
-          <Text style={styles.title}>Akun Anda{'\n'}Berhasil Dibuat!</Text>
+          <Text style={styles.title}>{title}</Text>
 
           <Button
-            label="Masuk Sekarang"
-            onPress={handleNavigate}
+            label={buttonLabel}
+            onPress={handlePress}
             width={200}
             height={44}
           />
