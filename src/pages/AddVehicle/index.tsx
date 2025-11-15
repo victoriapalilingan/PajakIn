@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, ScrollView, Switch, Text} from 'react-native';
+
+import GoogleCalendarIcon from '../../assets/googlecalendar.svg';
+import DownButton from '../../assets/downbutton.svg';
 import CustomHeader from '../../components/molecules/CustomHeader';
 import Button from '../../components/atoms/Button';
 import TextInput from '../../components/molecules/TextInput';
@@ -7,6 +10,7 @@ import Dropdown from '../../components/molecules/Dropdown';
 import DatePicker from '../../components/molecules/DatePicker';
 import MobilIcon from '../../assets/mobil.svg';
 import MotorIcon from '../../assets/motor.svg';
+import SuccessPopup from '../../components/molecules/SuccessPopup';
 
 function AddVehicle({navigation}) {
   const [jenisKendaraan, setJenisKendaraan] = useState('');
@@ -16,6 +20,9 @@ function AddVehicle({navigation}) {
     undefined,
   );
   const [reminderActive, setReminderActive] = useState(true);
+
+  const [successVisible, setSuccessVisible] = useState(false);
+  const [savedVehicle, setSavedVehicle] = useState<any | null>(null);
 
   const vehicleOptions = [
     {
@@ -49,6 +56,7 @@ function AddVehicle({navigation}) {
     }
 
     const vehicleData = {
+      id: Date.now().toString(),
       jenisKendaraan,
       noPolisi,
       merekTahun,
@@ -84,12 +92,16 @@ function AddVehicle({navigation}) {
             value={noPolisi}
             onChangeText={setNoPolisi}
             autoCapitalize="characters"
+            width={355}
+            height={54}
           />
           <TextInput
             label="Merek & Tahun Kendaraan"
             placeholder="Masukkan Merek & Tahun Kendaraan"
             value={merekTahun}
             onChangeText={setMerekTahun}
+            width={355}
+            height={54}
           />
           <DatePicker
             label="Tanggal Jatuh Tempo Pajak"
@@ -117,6 +129,14 @@ function AddVehicle({navigation}) {
           textStyle={styles.saveButtonText}
         />
       </View>
+
+      <SuccessPopup
+        visible={successVisible}
+        onClose={() => setSuccessVisible(false)}
+        title={'Kendaraan\nberhasil ditambahkan!'}
+        buttonLabel="Unggah Dokumen"
+        onButtonPress={handleGoToAddDocument}
+      />
     </View>
   );
 }

@@ -1,37 +1,39 @@
 import React from 'react';
-import {SafeAreaView, Text, StyleSheet, View} from 'react-native';
-// Di file index.js atau App.js
-import {LogBox} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-// Menonaktifkan LogBox sepenuhnya (Hanya untuk debugging, jangan dibiarkan di production)
-LogBox.ignoreAllLogs();
+// import screens
+import SplashScreen from './src/pages/SplashScreen';
+import OnBoarding from './src/pages/onBoarding';
+import SignIn from './src/pages/SignIn';
+import SignUp from './src/pages/SignUp';
+import HomeScreen from './src/pages/HomeScreen';
+import AddVehicle from './src/pages/AddVehicle';
+import VehicleDetailScreen from './src/pages/VehicleDetail';
+import EditVehicle from './src/pages/EditVehicle';
+import UploadDokumen from './src/pages/UploadDokumen';
+import UnggahBerkas from './src/pages/AddDocument';
 
-export default function App(): React.JSX.Element {
+const Stack = createNativeStackNavigator();
+
+const App = () => {
   return (
-    <SafeAreaView style={styles.container}>
-      <View>
-        <Text style={styles.title}>Tes Font Montserrat Black</Text>
-        <Text style={styles.body}> teks biasa</Text>
-      </View>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="SplashScreen"
+        screenOptions={{headerShown: false}}>
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+        <Stack.Screen name="OnBoarding" component={OnBoarding} />
+        <Stack.Screen name="SignIn" component={SignIn} />
+        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="AddVehicle" component={AddVehicle} />
+        <Stack.Screen name="DetailVehicle" component={VehicleDetailScreen} />
+        <Stack.Screen name="EditVehicle" component={EditVehicle} />
+        <Stack.Screen name="UploadDokumen" component={UnggahBerkas} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  title: {
-    fontSize: 24,
-    color: '#000',
-    fontFamily: 'Montserrat-Black', // sesuai nama file font tanpa .ttf
-  },
-  body: {
-    fontSize: 18,
-    color: '#333',
-    marginTop: 10,
-  },
-});
+export default App;

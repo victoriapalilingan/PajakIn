@@ -61,17 +61,12 @@ const VehicleDetailScreen = ({navigation}) => {
       <View style={styles.fixedButtonContainer}>
         <TouchableOpacity
           style={styles.editButton}
-          // TAMBAHKAN ONPRESS: Navigasi ke EditVehicleScreen
           onPress={() => {
             navigation?.navigate('EditVehicle', {
               vehicle: vehicleData, // Mengirim data ke halaman Edit
             });
           }}>
           <Text style={styles.editButtonText}>Edit</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.deleteButton}>
-          <Text style={styles.deleteButtonText}>Hapus</Text>
         </TouchableOpacity>
       </View>
     </View>
