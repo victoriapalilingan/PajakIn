@@ -8,6 +8,7 @@ export default function Button({
   height = 44,
   color = '#2A6E54',
   textColor = '#FFFFFF',
+  fontSize = 22,
   disabled = false,
   leftIcon,
   iconSize = 24,
@@ -16,7 +17,6 @@ export default function Button({
 }) {
   const radius = height / 2;
 
-  // Jika ada ikon, tambahkan padding kiri agar teks tetap center
   const extraPadLeft = leftIcon ? iconSize + iconGap : 0;
 
   return (
@@ -35,7 +35,6 @@ export default function Button({
           paddingLeft: horizontalPadding + extraPadLeft,
         },
       ]}>
-      {/* Ikon di kiri (absolute), hanya jika dikirim */}
       {leftIcon ? (
         <View
           style={[
@@ -46,8 +45,9 @@ export default function Button({
         </View>
       ) : null}
 
-      {/* Label selalu center */}
-      <Text style={[styles.text, {color: textColor}]} numberOfLines={1}>
+      <Text
+        style={[styles.text, {color: textColor, fontSize}]}
+        numberOfLines={1}>
         {label}
       </Text>
     </TouchableOpacity>
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontSize: 22,
     fontFamily: 'Montserrat-SemiBold',
     letterSpacing: 0.2,
     textAlign: 'center',

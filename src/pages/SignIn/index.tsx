@@ -68,6 +68,7 @@ const LoginScreen = ({navigation}: any) => {
               textColor="#FFFFFF"
               width={255}
               height={38}
+              fontSize={24}
             />
           </View>
 

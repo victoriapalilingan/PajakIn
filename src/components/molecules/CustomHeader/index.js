@@ -1,14 +1,18 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-
 import GoBackIcon from '../../../assets/goback.svg';
 
 const CustomHeader = ({title, onBackPress}) => {
   return (
     <View style={styles.header}>
-      <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
-        <GoBackIcon width={55} height={55} />
-      </TouchableOpacity>
+      {/* Back button hanya muncul jika onBackPress ada */}
+      {onBackPress ? (
+        <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
+          <GoBackIcon width={55} height={55} />
+        </TouchableOpacity>
+      ) : (
+        <View style={styles.backButton} /> // placeholder, supaya title tetap center
+      )}
 
       <Text style={styles.headerTitle}>{title}</Text>
 
@@ -43,9 +47,11 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: '700',
     color: '#FEB800',
+    textAlign: 'center',
+    flex: 1,
   },
 
-  rightSpacer: {flex: 1},
+  rightSpacer: {width: 70}, // supaya title tetap simetris
 });
 
 export default CustomHeader;

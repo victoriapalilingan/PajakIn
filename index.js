@@ -1,6 +1,5 @@
 import {AppRegistry} from 'react-native';
 import {name as appName} from './app.json';
-import AddVehicle from './src/pages/AddVehicle';
-import App from './App';
+import RiwayatLaporan from './src/pages/ListDocument';
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => RiwayatLaporan);

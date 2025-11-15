@@ -11,6 +11,10 @@ const SuccessPopup = ({
   title = 'Berhasil!',
   buttonLabel = 'OK',
   onButtonPress,
+  buttonWidth = 200, // ← tambahkan prop ini
+  buttonHeight = 44, // ← tambahkan prop ini
+  buttonColor = '#2A6E54',
+  buttonFontSize = 22,
 }) => {
   if (!visible) return null;
 
@@ -38,8 +42,10 @@ const SuccessPopup = ({
           <Button
             label={buttonLabel}
             onPress={handlePress}
-            width={200}
-            height={44}
+            width={buttonWidth} // ← gunakan prop
+            height={buttonHeight} // ← gunakan prop
+            color={buttonColor}
+            fontSize={15}
           />
         </View>
       </View>

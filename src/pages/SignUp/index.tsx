@@ -31,6 +31,11 @@ const SignUp = ({navigation}) => {
   const [isAgreed, setIsAgreed] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false); // <-- state popup
 
+  const handleGoToAddDocument = () => {
+    setShowSuccess(false);
+    navigation.navigate('SignIn'); // or wherever you want to navigate after successful signup
+  };
+
   const fields = [
     {
       label: 'NIK',
@@ -159,7 +164,12 @@ const SignUp = ({navigation}) => {
       <SuccessPopup
         visible={showSuccess}
         onClose={() => setShowSuccess(false)}
-        navigation={navigation}
+        title={'Akun anda\n berhasil didaftar!'}
+        buttonLabel="Masuk Sekarang"
+        onButtonPress={handleGoToAddDocument}
+        buttonWidth={220} // ← custom lebar button
+        buttonHeight={50} // ← custom tinggi button
+        buttonColor="#2A6E54" // ← custom warna button (opsional)
       />
     </ImageBackground>
   );
@@ -226,9 +236,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 18,
     color: '#2A6E54',
-  },
-  logo: {
-    width: 300,
-    height: 96,
   },
 });
