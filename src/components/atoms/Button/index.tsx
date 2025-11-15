@@ -1,32 +1,6 @@
 import React from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  View,
-  StyleSheet,
-  // HAPUS TextStyle, karena tidak digunakan di kode Anda
-  ViewStyle,
-  DimensionValue, // Tipe ini digunakan di interface ButtonProps
-} from 'react-native';
+import {TouchableOpacity, Text, View, StyleSheet} from 'react-native';
 
-// 1. INTERFACE PROPS
-interface ButtonProps {
-  label: string;
-  onPress: () => void;
-  width?: DimensionValue;
-  height?: DimensionValue;
-  color?: string;
-  textColor?: string;
-  fontSize?: number;
-  disabled?: boolean;
-  leftIcon?: React.ReactNode;
-  iconSize?: number;
-  iconGap?: number;
-  horizontalPadding?: number;
-  style?: ViewStyle;
-}
-
-// 2. FUNGSI KOMPONEN
 export default function Button({
   label,
   onPress,
@@ -40,26 +14,27 @@ export default function Button({
   iconSize = 24,
   iconGap = 12,
   horizontalPadding = 20,
-  style,
-}: ButtonProps): JSX.Element {
-  const radius = Number(height) / 2;
-  const extraPadLeft = leftIcon ? (iconSize || 0) + iconGap : 0;
+}) {
+  const radius = height / 2;
 
-  const buttonStyle: ViewStyle = {
-    width,
-    height,
-    borderRadius: radius,
-    backgroundColor: disabled ? '#9BB8AC' : color,
-    paddingHorizontal: horizontalPadding,
-    paddingLeft: horizontalPadding + extraPadLeft,
-  };
+  const extraPadLeft = leftIcon ? iconSize + iconGap : 0;
 
   return (
     <TouchableOpacity
       activeOpacity={0.85}
       onPress={onPress}
       disabled={disabled}
-      style={[styles.base, buttonStyle, style]}>
+      style={[
+        styles.base,
+        {
+          width,
+          height,
+          borderRadius: radius,
+          backgroundColor: disabled ? '#9BB8AC' : color,
+          paddingHorizontal: horizontalPadding,
+          paddingLeft: horizontalPadding + extraPadLeft,
+        },
+      ]}>
       {leftIcon ? (
         <View
           style={[

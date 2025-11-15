@@ -1,90 +1,82 @@
+import {StyleSheet, View, Dimensions, Platform} from 'react-native';
 import React from 'react';
-import {View, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
-import BottomNavItem from '../../molecules/BottomNavItem';
-// HARUS TIGA TITIK (../../../)
-import AddButton from '../../../assets/ButtonAdd1.svg';
+import PropTypes from 'prop-types';
+import BottomBar from '../../molecules/BottomBar';
+import NavItem from '../../atoms/NavItem';
+import ButtonFab from '../../atoms/ButtonFab';
 
-const {width: screenWidth} = Dimensions.get('window');
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const FAB_SIZE = 65;
+const FAB_VERTICAL_OFFSET = -12;
 
-const navItems = [
-  {label: 'Home', iconType: 'home'},
-  {label: 'Riwayat', iconType: 'history'},
-  {label: 'Notifikasi', iconType: 'notification'},
-  {label: 'Profil', iconType: 'profile'},
-];
-
-export default function BottomNavigation({
-  activeScreen,
-  onNavigate,
+const BottomNavigation = ({
+  items,
+  activeKey,
+  onTabPress,
   onAddPress,
-}) {
+  fabIcon,
+}) => {
+  const safeAreaBottom = Platform.OS === 'ios' ? 20 : 0;
+
+  const leftItems = items.slice(0, 2);
+  const rightItems = items.slice(2, 4);
+
+  const renderNavItem = item => (
+    <NavItem
+      key={item.key}
+      label={item.label}
+      icon={item.icon}
+      active={activeKey === item.key}
+      onPress={() => onTabPress(item.key)}
+    />
+  );
+
+  const fabLeft = (SCREEN_WIDTH - FAB_SIZE) / 2;
+  const fabBottom = 35 + safeAreaBottom + FAB_VERTICAL_OFFSET;
+
   return (
-    <View style={styles.container}>
-      <View style={styles.navBar}>
-        {navItems.slice(0, 2).map(item => (
-          <BottomNavItem
-            key={item.label}
-            label={item.label}
-            iconType={item.iconType}
-            active={activeScreen === item.iconType}
-            onPress={() => onNavigate(item.iconType)}
-          />
-        ))}
-
-        <View style={styles.centerSpacer} />
-
-        {navItems.slice(2, 4).map(item => (
-          <BottomNavItem
-            key={item.label}
-            label={item.label}
-            iconType={item.iconType}
-            active={activeScreen === item.iconType}
-            onPress={() => onNavigate(item.iconType)}
-          />
-        ))}
+    <View style={styles.wrapper}>
+      <View style={styles.container}>
+        <BottomBar
+          leftItems={leftItems.map(renderNavItem)}
+          rightItems={rightItems.map(renderNavItem)}
+          safeAreaBottom={safeAreaBottom}
+        />
+        <View style={[styles.fabContainer, {left: fabLeft, bottom: fabBottom}]}>
+          <ButtonFab size={FAB_SIZE} onPress={onAddPress} icon={fabIcon} />
+        </View>
       </View>
-
-      <TouchableOpacity style={styles.addButton} onPress={onAddPress}>
-        <AddButton width={60} height={60} />
-      </TouchableOpacity>
     </View>
   );
-}
+};
+
+BottomNavigation.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      icon: PropTypes.elementType.isRequired,
+    }),
+  ).isRequired,
+  activeKey: PropTypes.string.isRequired,
+  onTabPress: PropTypes.func.isRequired,
+  onAddPress: PropTypes.func.isRequired,
+  fabIcon: PropTypes.elementType.isRequired,
+};
+
+export default BottomNavigation;
 
 const styles = StyleSheet.create({
-  container: {
+  wrapper: {
     position: 'absolute',
     bottom: 0,
-    width: screenWidth,
-    height: 70,
-    zIndex: 10,
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 10,
+    left: 0,
+    right: 0,
   },
-  navBar: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 60, // Lebih pendek dari container (70px) agar ada ruang putih di bawah
-    backgroundColor: '#2A6E54',
-    justifyContent: 'space-around',
-    paddingBottom: 10,
+  container: {
+    position: 'relative',
   },
-  centerSpacer: {
-    width: 60,
-    height: 60,
-  },
-  addButton: {
+  fabContainer: {
     position: 'absolute',
-    left: screenWidth / 2 - 30,
-    top: -20,
-    zIndex: 11,
-    shadowColor: '#000',
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    shadowOffset: {width: 0, height: 2},
-    elevation: 8,
   },
 });
