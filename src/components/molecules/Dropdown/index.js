@@ -1,4 +1,3 @@
-// src/components/molecules/Dropdown/index.tsx
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import DownButtonIcon from '../../../assets/downbutton.svg';
