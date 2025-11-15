@@ -150,13 +150,18 @@ function EditVehicle({navigation, route}) {
             value={noPolisi}
             onChangeText={setNoPolisi}
             autoCapitalize="characters"
+            width={355}
+            height={54}
           />
 
+          {/* Merek & Tahun Kendaraan */}
           <TextInput
             label="Merek & Tahun Kendaraan"
             placeholder="Masukkan Merek & Tahun Kendaraan"
             value={merekTahun}
             onChangeText={setMerekTahun}
+            width={355}
+            height={54}
           />
 
           <DatePicker
@@ -182,10 +187,10 @@ function EditVehicle({navigation, route}) {
       {/* Buttons Fixed di Bawah */}
       <View style={styles.buttonContainer}>
         <Button
-          label="Simpan Perubahan"
-          onPress={handleUpdate}
-          style={styles.updateButton}
-          textStyle={styles.updateButtonText}
+          label="Simpan"
+          onPress={handleSave}
+          style={styles.saveButton}
+          textStyle={styles.saveButtonText}
         />
       </View>
     </View>
