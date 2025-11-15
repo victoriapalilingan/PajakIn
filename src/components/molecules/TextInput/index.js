@@ -28,8 +28,7 @@ const TextInput: React.FC<CustomTextInputProps> = ({
   return (
     <View style={styles.container}>
       {label ? <Text style={styles.label}>{label}</Text> : null}
-      <View
-        style={[styles.inputWrapper, focused && styles.inputWrapperFocused]}>
+      <View style={[styles.inputWrapper, focused && styles.inputWrapperFocused]}>
         {leftElement && <View style={styles.leftIcon}>{leftElement}</View>}
         <RNTextInput
           style={[styles.input, style]}

@@ -1,4 +1,3 @@
-// src/pages/AddVehicle/index.tsx
 import React, {useState} from 'react';
 import {View, StyleSheet, ScrollView, Switch, Text} from 'react-native';
 import CustomHeader from '../../components/molecules/CustomHeader';
@@ -32,7 +31,6 @@ function AddVehicle({navigation}) {
   ];
 
   const handleSave = () => {
-    // Validasi input
     if (!jenisKendaraan) {
       alert('Pilih jenis kendaraan terlebih dahulu');
       return;
@@ -50,7 +48,6 @@ function AddVehicle({navigation}) {
       return;
     }
 
-    // Logic untuk menyimpan data kendaraan
     const vehicleData = {
       jenisKendaraan,
       noPolisi,
@@ -60,11 +57,6 @@ function AddVehicle({navigation}) {
     };
 
     console.log('Data Kendaraan:', vehicleData);
-
-    // Setelah berhasil simpan, kembali ke halaman sebelumnya
-    // navigation.goBack();
-    // atau navigasi ke halaman lain
-    // navigation.navigate('VehicleList');
   };
 
   return (
@@ -79,7 +71,6 @@ function AddVehicle({navigation}) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
         <View style={styles.card}>
-          {/* Dropdown Jenis Kendaraan */}
           <Dropdown
             label="Jenis Kendaraan"
             placeholder="Pilih Jenis Kendaraan"
@@ -87,8 +78,6 @@ function AddVehicle({navigation}) {
             value={jenisKendaraan}
             onSelect={setJenisKendaraan}
           />
-
-          {/* Nomor Polisi */}
           <TextInput
             label="Nomor Polisi"
             placeholder="Masukkan Nomor Polisi"
@@ -96,24 +85,18 @@ function AddVehicle({navigation}) {
             onChangeText={setNoPolisi}
             autoCapitalize="characters"
           />
-
-          {/* Merek & Tahun Kendaraan */}
           <TextInput
             label="Merek & Tahun Kendaraan"
             placeholder="Masukkan Merek & Tahun Kendaraan"
             value={merekTahun}
             onChangeText={setMerekTahun}
           />
-
-          {/* Tanggal Jatuh Tempo */}
           <DatePicker
             label="Tanggal Jatuh Tempo Pajak"
             placeholder="Masukkan Tanggal Jatuh Tempo Pajak"
             value={tanggalJatuhTempo}
             onChange={setTanggalJatuhTempo}
           />
-
-          {/* Switch Pengingat */}
           <View style={styles.switchRow}>
             <Text style={styles.switchLabel}>Aktifkan Pengingat Pajak</Text>
             <Switch
@@ -126,7 +109,6 @@ function AddVehicle({navigation}) {
         </View>
       </ScrollView>
 
-      {/* Tombol Simpan - Fixed di bawah */}
       <View style={styles.buttonContainer}>
         <Button
           label="Simpan"
@@ -175,7 +157,6 @@ const styles = StyleSheet.create({
     borderTopColor: '#E0E0E0',
   },
   saveButton: {
-    width: '100%',
     height: 48,
     backgroundColor: '#2D6A4F',
     borderRadius: 100,
