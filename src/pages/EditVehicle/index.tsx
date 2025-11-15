@@ -182,17 +182,18 @@ function EditVehicle({navigation, route}) {
             />
           </View>
         </View>
+        <View style={styles.buttonContainer}>
+          <Button
+            label="Simpan Perubahan"
+            onPress={handleUpdate}
+            style={styles.updateButton}
+            textStyle={styles.updateButtonText}
+            width={355}
+          />
+        </View>
       </ScrollView>
 
       {/* Buttons Fixed di Bawah */}
-      <View style={styles.buttonContainer}>
-        <Button
-          label="Simpan Perubahan"
-          onPress={handleUpdate}
-          style={styles.updateButton}
-          textStyle={styles.updateButtonText}
-        />
-      </View>
     </View>
   );
 }
@@ -227,12 +228,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-Medium',
   },
   buttonContainer: {
-    paddingHorizontal: 30,
     paddingVertical: 20,
     backgroundColor: '#F4FFF4',
     borderTopColor: '#E0E0E0',
     marginTop: 10,
-    marginBottom: 165,
   },
   updateButton: {
     width: '100%',
