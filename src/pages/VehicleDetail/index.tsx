@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,9 @@ import {
 
 import CustomHeader from '../../components/molecules/CustomHeader';
 import CheckmarkIcon from '../../assets/checkmark.svg';
+import SuccessPopup from '../../components/molecules/SuccessPopup';
 
-// TAMBAHKAN: Dummy Data untuk navigasi
+// Dummy Data untuk navigasi edit
 const vehicleData = {
   id: 'DB3527AP',
   type: 'Mobil',
@@ -23,6 +24,16 @@ const vehicleData = {
 };
 
 const VehicleDetailScreen = ({navigation}) => {
+  const [successVisible, setSuccessVisible] = useState(false);
+
+  const handleDeleteVehicle = () => {
+    // TODO: logika hapus kendaraan (API / AsyncStorage / context / dsb)
+    console.log('Vehicle deleted:', vehicleData);
+
+    // Setelah benar-benar terhapus:
+    setSuccessVisible(true);
+  };
+
   return (
     <View style={styles.fullScreenContainer}>
       <CustomHeader
@@ -63,12 +74,35 @@ const VehicleDetailScreen = ({navigation}) => {
           style={styles.editButton}
           onPress={() => {
             navigation?.navigate('EditVehicle', {
-              vehicle: vehicleData, // Mengirim data ke halaman Edit
+              vehicle: vehicleData,
             });
           }}>
           <Text style={styles.editButtonText}>Edit</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={handleDeleteVehicle}>
+          <Text style={styles.deleteButtonText}>Hapus</Text>
+        </TouchableOpacity>
       </View>
+
+      {/* SUCCESS POPUP */}
+      <SuccessPopup
+        visible={successVisible}
+        title="Kendaraan berhasil dihapus"
+        buttonLabel="Kembali ke Home"
+        buttonWidth={230}
+        buttonHeight={51}
+        onClose={() => setSuccessVisible(false)}
+        onButtonPress={() => {
+          setSuccessVisible(false);
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Home'}],
+          });
+        }}
+      />
     </View>
   );
 };
@@ -81,7 +115,6 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     flex: 1,
   },
-
   fixedButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -93,7 +126,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     marginTop: 10,
   },
-
   content: {
     padding: 40,
     paddingBottom: 10,
@@ -104,15 +136,11 @@ const styles = StyleSheet.create({
     padding: 30,
     marginBottom: 20,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
-
   label: {
     fontSize: 18,
     color: '#2E5E4E',
@@ -139,11 +167,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-
   checkmarkIconStyle: {
     marginRight: 10,
   },
-
   statusText: {
     fontSize: 22,
     fontWeight: 'bold',
@@ -163,7 +189,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontFamily: 'Montserrat-SemiBold',
   },
-
   editButton: {
     flex: 1,
     backgroundColor: '#FFC107',

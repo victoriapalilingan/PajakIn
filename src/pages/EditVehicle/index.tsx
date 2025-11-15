@@ -187,10 +187,10 @@ function EditVehicle({navigation, route}) {
       {/* Buttons Fixed di Bawah */}
       <View style={styles.buttonContainer}>
         <Button
-          label="Simpan"
-          onPress={handleSave}
-          style={styles.saveButton}
-          textStyle={styles.saveButtonText}
+          label="Simpan Perubahan"
+          onPress={handleUpdate}
+          style={styles.updateButton}
+          textStyle={styles.updateButtonText}
         />
       </View>
     </View>
