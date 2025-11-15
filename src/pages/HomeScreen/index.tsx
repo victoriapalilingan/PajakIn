@@ -27,7 +27,7 @@ import BtnDetailIcon from '../../assets/Pencil.svg';
 
 const tabs = [
   {key: 'home', label: 'Home', icon: HomeIcon},
-  {key: 'riwayat', label: 'Riwayat', icon: ReceiptIcon},
+  {key: 'riwayat', label: 'Dokumen', icon: ReceiptIcon},
   {key: 'notifikasi', label: 'Notifikasi', icon: BellIcon},
   {key: 'profil', label: 'Profil', icon: UserIcon},
 ];
@@ -65,7 +65,7 @@ const HomeScreen = ({navigation}) => {
           backgroundColor="transparent"
           barStyle="dark-content"
         />
-        <Gap height={25} />
+        <Gap height={0} />
         <HomeHeader />
         <Gap height={24} />
         <VehicleList />

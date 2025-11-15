@@ -88,6 +88,7 @@ const UnggahBerkas = ({navigation}) => {
             onPress={handleSave}
             style={styles.saveButton}
             textStyle={styles.saveButtonText}
+            width={355}
           />
         </View>
       </ScrollView>
@@ -223,7 +224,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    marginBottom: 160,
   },
 
   saveButtonText: {
