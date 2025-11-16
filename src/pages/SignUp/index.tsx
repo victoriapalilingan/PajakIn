@@ -237,4 +237,8 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     color: '#2A6E54',
   },
+  logo: {
+    width: 300,
+    height: 96,
+  },
 });
