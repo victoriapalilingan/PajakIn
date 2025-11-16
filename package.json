@@ -10,11 +10,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "lucide-react-native": "^0.553.0",
-    "nativewind": "^4.2.1",
     "@react-native-community/datetimepicker": "^8.5.0",
+    "@react-navigation/bottom-tabs": "^7.8.5",
     "@react-navigation/native": "^7.1.19",
     "@react-navigation/native-stack": "^7.6.2",
+    "lucide-react-native": "^0.553.0",
+    "nativewind": "^4.2.1",
     "react": "18.3.1",
     "react-native": "0.77.0",
     "react-native-document-picker": "^9.3.1",

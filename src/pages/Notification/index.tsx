@@ -1,35 +1,78 @@
-import React from 'react';
-import {View, Text, StyleSheet, ScrollView, Dimensions} from 'react-native';
-// Pastikan path ini benar
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  Platform,
+} from 'react-native';
+
 import NotificationCard from '../../components/molecules/NotificationCard';
-// TAMBAHAN: Import BottomNavigation
 import BottomNavigation from '../../components/organism/BottomNavigation';
+
+// SESUAIKAN PATH INI DENGAN LOKASI FILE CustomHeader-MU
+import CustomHeader from '../../components/molecules/CustomHeader';
+
+import BottomPopup from '../../components/molecules/BottomPopup';
+import Button from '../../components/atoms/Button';
+import Gap from '../../components/atoms/Gap';
+
+import ButtonPlus from '../../assets/ButtonAdd1.svg';
+import HomeIcon from '../../assets/White Home Page.svg';
+import ReceiptIcon from '../../assets/Activity History.svg';
+import BellIcon from '../../assets/Active Doorbell.svg';
+import UserIcon from '../../assets/Profile.svg';
+import BtnCarIcon from '../../assets/WhiteMobil.svg';
+import BtnDetailIcon from '../../assets/Pencil.svg';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-// 1. KOREKSI: Gunakan alias yang lebih ringkas dan hindari TypedNotificationCard
-// Definisikan tipe untuk props NotificationCard
-interface CardProps {
-  title: string;
-  subtitle: string;
-  type: 'warning' | 'success';
-}
+// Tidak perlu interface dan typing di JS
+const Card = NotificationCard;
 
-// Type Assertion Helper untuk menghilangkan error/warning type
-const Card = NotificationCard as React.ComponentType<CardProps>;
+// Tabs bottom navigation
+const tabs = [
+  {key: 'home', label: 'Home', icon: HomeIcon},
+  {key: 'riwayat', label: 'Dokumen', icon: ReceiptIcon},
+  {key: 'notifikasi', label: 'Notifikasi', icon: BellIcon},
+  {key: 'profil', label: 'Profil', icon: UserIcon},
+];
 
-// HAPUS SEMUA VARIABEL YANG TIDAK TERPAKAI SEPERTI HEADER_CLEARANCE
-
-export default function Notification(): JSX.Element {
+export default function Notification({navigation}) {
   // Hitung padding horizontal agar Card (lebar 318) terpusat
-  const horizontalPadding: number = (screenWidth - 318) / 2;
+  const horizontalPadding = (screenWidth - 318) / 2;
+
+  // tab yang sedang aktif
+  const [activeTab, setActiveTab] = useState('notifikasi');
+
+  // state untuk popup
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  const handleTabPress = key => {
+    setActiveTab(key);
+    console.log('Navigating to', key);
+    // kalau pakai React Navigation:
+    // navigation.navigate(key);
+  };
+
+  const openPopup = () => setPopupVisible(true);
+  const closePopup = () => setPopupVisible(false);
+
+  const handleAddVehicle = () => {
+    console.log('Tambah Kendaraan');
+  };
+
+  const handleDetailVehicle = () => {
+    console.log('Detail Kendaraan');
+  };
+
   return (
     <View style={styles.fullScreenContainer}>
-      <View style={styles.header}>
-        <View style={styles.headerTextContainer}>
-          <Text style={styles.headerText}>Notifikasi</Text>
-        </View>
-      </View>
+      {/* CUSTOM HEADER */}
+      <CustomHeader title="Notifikasi" alignLeft />
+
+      <Gap height={24} />
 
       <ScrollView
         contentContainerStyle={[
@@ -54,16 +97,51 @@ export default function Notification(): JSX.Element {
           subtitle="Reminder - 10 Okt 2025 - 07.50"
         />
 
-        {/* Mengganti inline style height: 50 dengan style sheet */}
         <View style={styles.scrollSpacer} />
       </ScrollView>
 
       {/* BOTTOM NAVIGATION BAR */}
       <BottomNavigation
-        activeScreen="notification"
-        onNavigate={(screen: string) => console.log('Navigating to', screen)}
-        onAddPress={() => console.log('Add Button Pressed')}
+        items={tabs}
+        activeKey={activeTab}
+        onTabPress={handleTabPress}
+        onAddPress={openPopup}
+        fabIcon={ButtonPlus}
       />
+
+      {/* POPUP BOTTOM SHEET */}
+      <BottomPopup
+        visible={popupVisible}
+        onClose={closePopup}
+        safeBottom={Platform.OS === 'ios' ? 20 : 0}>
+        <Button
+          label="Tambah Kendaraan"
+          onPress={() => {
+            closePopup();
+            handleAddVehicle();
+          }}
+          color="#F5C84C"
+          textColor="#FFFFFF"
+          width={348}
+          height={51}
+          iconGap={10}
+          leftIcon={<BtnCarIcon width={24} height={24} color="#FFFFFF" />}
+        />
+        <Gap height={12} />
+        <Button
+          label="Detail Kendaraan"
+          onPress={() => {
+            closePopup();
+            handleDetailVehicle();
+          }}
+          color="#2A6E54"
+          textColor="#FFFFFF"
+          width={348}
+          height={51}
+          iconGap={10}
+          leftIcon={<BtnDetailIcon width={24} height={24} color="#FFFFFF" />}
+        />
+      </BottomPopup>
     </View>
   );
 }
@@ -71,43 +149,13 @@ export default function Notification(): JSX.Element {
 const styles = StyleSheet.create({
   fullScreenContainer: {
     flex: 1,
-    backgroundColor: '#F7F7F7',
+    backgroundColor: '#F1FEF0',
   },
-
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: screenWidth + 60,
-    height: 180,
-    backgroundColor: '#2A6E54',
-    borderBottomLeftRadius: 71.5,
-    borderBottomRightRadius: 71.5,
-    overflow: 'hidden',
-    zIndex: 1,
-    transform: [{translateX: -27}, {translateY: -23}],
-  },
-
-  headerTextContainer: {
-    left: 65,
-    top: 122,
-    width: 150,
-    height: 39,
-    position: 'absolute',
-  },
-
-  headerText: {
-    color: '#FEB800',
-    fontSize: 28,
-    fontFamily: 'Montserrat-Bold',
-  },
-
   content: {
-    paddingTop: 235,
+    paddingTop: 24, // tidak perlu lagi 235 karena header sudah bukan absolute
     paddingBottom: 40,
     zIndex: 0,
   },
-
   scrollSpacer: {
     height: 100,
   },
