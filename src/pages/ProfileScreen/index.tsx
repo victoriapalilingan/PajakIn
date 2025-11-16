@@ -1,4 +1,4 @@
-// src/pages/ProfileScreen/index.tsx
+// src/pages/ProfileScreen/index.js
 import React from 'react';
 import {
   View,
@@ -9,32 +9,18 @@ import {
   StatusBar,
 } from 'react-native';
 
-// Import molekul (JSX) - Pastikan Anda punya index.d.ts untuk typing
 import InputField from '../../components/molecules/InputField';
 import BottomNavigation from '../../components/organism/BottomNavigation';
-// Import atoms
 import {TextBase} from '../../components/atoms/TextBase';
 
 const {width: screenWidth} = Dimensions.get('window');
 
-// --- KONSTANTA & STYLING WARNA ---
 const HEADER_COLOR = '#386641';
 const BACKGROUND_COLOR = '#F5F9F1';
 const TEXT_COLOR = '#386641';
-// Hapus HEADER_END_PADDING karena kita tidak menggunakannya lagi
 
-// --- TYPING STATE ---
-interface ProfileState {
-  namaLengkap: string;
-  nomorTelepon: string;
-  alamatEmail: string;
-  nik: string;
-  npwp: string;
-}
-
-// --- FUNGSI UTAMA ---
-export default function ProfileScreen(): JSX.Element {
-  const [profile, setProfile] = React.useState<ProfileState>({
+export default function ProfileScreen() {
+  const [profile, setProfile] = React.useState({
     namaLengkap: 'Nama Lengkap',
     nomorTelepon: 'Nomor Telepon',
     alamatEmail: 'Alamat Email',
@@ -42,8 +28,7 @@ export default function ProfileScreen(): JSX.Element {
     npwp: '09.876.543.2-101.987',
   });
 
-  // Fungsi dengan tipe yang eksplisit untuk menghilangkan error 'any'
-  const handleChange = (field: keyof ProfileState, value: string): void => {
+  const handleChange = (field, value) => {
     setProfile(prev => ({...prev, [field]: value}));
   };
 
@@ -51,15 +36,14 @@ export default function ProfileScreen(): JSX.Element {
     <View style={styles.fullScreenContainer}>
       <StatusBar barStyle="light-content" backgroundColor={HEADER_COLOR} />
 
-      {/* 1. Header Melengkung - Sudah di-fix tingginya */}
+      {/* Header hijau di belakang */}
       <View style={styles.headerContainer} />
 
-      {/* 2. ScrollView untuk Konten Profil */}
+      {/* Konten Scroll */}
       <ScrollView
         showsVerticalScrollIndicator={false}
-        // Hapus contentContainerStyle yang berisi paddingTop yang bermasalah
         contentContainerStyle={styles.content}>
-        {/* Foto Profil - Tambahkan margin negatif untuk menariknya ke atas */}
+        {/* Foto Profil */}
         <View style={styles.profileImageWrapper}>
           <Image
             source={{uri: 'https://i.pravatar.cc/150?img=49'}}
@@ -67,39 +51,36 @@ export default function ProfileScreen(): JSX.Element {
           />
         </View>
 
-        {/* Konten di dalam ScrollView */}
+        {/* Form Profil */}
         <View style={styles.formContent}>
-          {/* Judul: Menggunakan TextBase (contoh) */}
           <TextBase style={styles.mainTitle} weight="Bold">
             Perbarui Profil
           </TextBase>
-          {/* InputFields yang di-edit */}
+
           <InputField
             label="Nama Lengkap"
             placeholder="Nama Lengkap"
             value={profile.namaLengkap}
-            onChangeText={(text: string) => handleChange('namaLengkap', text)}
+            onChangeText={text => handleChange('namaLengkap', text)}
           />
           <InputField
             label="Nomor Telepon"
             placeholder="Nomor Telepon"
             value={profile.nomorTelepon}
-            onChangeText={(text: string) => handleChange('nomorTelepon', text)}
+            onChangeText={text => handleChange('nomorTelepon', text)}
           />
           <InputField
             label="Alamat Email"
             placeholder="Alamat Email"
             value={profile.alamatEmail}
-            onChangeText={(text: string) => handleChange('alamatEmail', text)}
+            onChangeText={text => handleChange('alamatEmail', text)}
           />
-          {/* Input NIK: isLocked=true tidak memerlukan onChangeText */}
           <InputField
             label="NIK"
             placeholder="NIK"
             isLocked={true}
             value={profile.nik}
           />
-          {/* Input NPWP */}
           <InputField
             label="NPWP"
             placeholder="NPWP"
@@ -107,20 +88,20 @@ export default function ProfileScreen(): JSX.Element {
             value={profile.npwp}
           />
         </View>
+
         <View style={styles.scrollSpacer} />
       </ScrollView>
 
-      {/* 3. BOTTOM NAVIGATION BAR */}
+      {/* Bottom Navigation – sesuaikan props dengan versi JS-mu */}
       <BottomNavigation
         activeScreen="profil"
-        onNavigate={(screen: string) => console.log('Navigating to', screen)}
+        onNavigate={screen => console.log('Navigating to', screen)}
         onAddPress={() => console.log('Add Button Pressed')}
       />
     </View>
   );
 }
 
-// --- PERBAIKAN STYLING ---
 const styles = StyleSheet.create({
   fullScreenContainer: {
     flex: 1,
@@ -130,7 +111,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     width: screenWidth,
-    // PERBAIKAN 1: Tinggi diubah dari 180 menjadi 120 untuk mengurangi area hijau
     height: 0,
     backgroundColor: HEADER_COLOR,
     borderBottomLeftRadius: 50,
@@ -138,14 +118,11 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   content: {
-    // PERBAIKAN 2: Hanya mempertahankan padding bawah agar tidak tertutup nav bar
     paddingBottom: 100,
     alignItems: 'center',
     zIndex: 0,
-    // Hapus paddingTop di sini
   },
   profileImageWrapper: {
-    // PERBAIKAN 3: Gunakan margin negatif untuk menarik foto ke atas
     marginTop: 50,
     width: 100,
     height: 100,
@@ -170,10 +147,9 @@ const styles = StyleSheet.create({
     color: TEXT_COLOR,
     marginTop: 15,
     marginBottom: 30,
-    // Anda mungkin perlu menambahkan fontFamily: 'Montserrat-Bold' jika belum terdaftar secara global
   },
   formContent: {
-    width: screenWidth * 0.9, // Memberi sedikit ruang di tepi
+    width: screenWidth * 0.9,
     alignItems: 'center',
   },
   scrollSpacer: {
