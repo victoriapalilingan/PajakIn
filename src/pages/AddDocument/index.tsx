@@ -43,7 +43,11 @@ const UnggahBerkas = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader title="Unggah Berkas" onBackPress={handleBackPress} />
+      <CustomHeader
+        title="Unggah Berkas"
+        titleSize={24}
+        onBackPress={handleBackPress}
+      />
 
       <ScrollView
         style={styles.scrollView}

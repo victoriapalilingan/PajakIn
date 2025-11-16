@@ -1,6 +1,5 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import PropTypes from 'prop-types';
 import IconSvg from '../IconSvg';
 
 const NavItem = ({label, active, activeIcon, inactiveIcon, onPress}) => {
@@ -15,17 +14,12 @@ const NavItem = ({label, active, activeIcon, inactiveIcon, onPress}) => {
       <View style={styles.iconWrapper}>
         <IconSvg source={IconSource} size={38} />
       </View>
-      <Text style={[styles.label, {color: labelColor}]}>{label}</Text>
+
+      <Text style={[styles.label, {color: labelColor}]} numberOfLines={1}>
+        {label}
+      </Text>
     </TouchableOpacity>
   );
-};
-
-NavItem.propTypes = {
-  label: PropTypes.string.isRequired,
-  active: PropTypes.bool,
-  activeIcon: PropTypes.elementType.isRequired,
-  inactiveIcon: PropTypes.elementType.isRequired,
-  onPress: PropTypes.func,
 };
 
 export default NavItem;
@@ -44,7 +38,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   label: {
-    fontFamily: 'Poppins-Medium',
+    fontFamily: 'Montserrat-Medium',
     fontSize: 11,
     textAlign: 'center',
     letterSpacing: -0.2,

@@ -1,6 +1,5 @@
 import {StyleSheet, View, Dimensions, Platform} from 'react-native';
 import React from 'react';
-import PropTypes from 'prop-types';
 import BottomBar from '../../molecules/BottomBar';
 import NavItem from '../../atoms/NavItem';
 import ButtonFab from '../../atoms/ButtonFab';
@@ -43,27 +42,13 @@ const BottomNavigation = ({
           rightItems={rightItems.map(renderNavItem)}
           safeAreaBottom={safeAreaBottom}
         />
+
         <View style={[styles.fabContainer, {left: fabLeft, bottom: fabBottom}]}>
           <ButtonFab size={FAB_SIZE} onPress={onAddPress} icon={fabIcon} />
         </View>
       </View>
     </View>
   );
-};
-
-BottomNavigation.propTypes = {
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      activeIcon: PropTypes.elementType.isRequired,
-      inactiveIcon: PropTypes.elementType.isRequired,
-    }),
-  ).isRequired,
-  activeKey: PropTypes.string.isRequired,
-  onTabPress: PropTypes.func.isRequired,
-  onAddPress: PropTypes.func.isRequired,
-  fabIcon: PropTypes.elementType.isRequired,
 };
 
 export default BottomNavigation;

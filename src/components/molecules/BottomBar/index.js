@@ -1,6 +1,5 @@
 import {StyleSheet, View, Dimensions} from 'react-native';
 import React from 'react';
-import PropTypes from 'prop-types';
 import Svg, {Path, Defs, LinearGradient, Stop} from 'react-native-svg';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -49,8 +48,10 @@ const BottomBar = ({leftItems, rightItems, safeAreaBottom}) => {
             <Stop offset="100" stopColor="#205942ff" stopOpacity="1" />
           </LinearGradient>
         </Defs>
+
         <Path d={pathData} fill="url(#barGradient)" />
       </Svg>
+
       <View style={[styles.itemsContainer, {paddingBottom: safePadding}]}>
         <View style={styles.leftSection}>{leftItems}</View>
         <View style={styles.centerSpacer} />
@@ -58,12 +59,6 @@ const BottomBar = ({leftItems, rightItems, safeAreaBottom}) => {
       </View>
     </View>
   );
-};
-
-BottomBar.propTypes = {
-  leftItems: PropTypes.node,
-  rightItems: PropTypes.node,
-  safeAreaBottom: PropTypes.number,
 };
 
 export default BottomBar;
