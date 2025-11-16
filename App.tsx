@@ -14,10 +14,11 @@ import VehicleDetailScreen from './src/pages/VehicleDetail';
 import EditVehicle from './src/pages/EditVehicle';
 import ListDocumentScreen from './src/pages/ListDocument';
 import Notification from './src/pages/Notification';
+import UnggahBerkas from './src/pages/AddDocument';
 
 import BottomNavigation from './src/components/organism/BottomNavigation';
 
-// ⬇️ ganti import icon jadi active/inactive
+// icons active/inactive
 import HomeActive from './src/assets/HomeActive.svg';
 import HomeInactive from './src/assets/HomeInactive.svg';
 
@@ -35,7 +36,6 @@ import ButtonPlus from './src/assets/ButtonAdd1.svg';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// ⚠️ sekarang pakai activeIcon + inactiveIcon
 const TAB_ITEMS = [
   {
     key: 'home',
@@ -117,6 +117,7 @@ const App = () => (
       <Stack.Screen name="Main" component={MainTabs} />
 
       <Stack.Screen name="AddVehicle" component={AddVehicle} />
+      <Stack.Screen name="AddDocument" component={UnggahBerkas} />
       <Stack.Screen name="DetailVehicle" component={VehicleDetailScreen} />
       <Stack.Screen name="EditVehicle" component={EditVehicle} />
     </Stack.Navigator>

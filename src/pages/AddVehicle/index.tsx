@@ -75,7 +75,7 @@ function AddVehicle({navigation}) {
 
   const handleGoToAddDocument = () => {
     // ganti 'UploadDokumen' dengan nama route halaman unggah berkas kamu
-    navigation.navigate('UploadDokumen', {
+    navigation.navigate('AddDocument', {
       vehicle: savedVehicle,
     });
 
