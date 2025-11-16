@@ -1,4 +1,3 @@
-// src/components/molecules/DatePicker/index.tsx
 import React, {useState} from 'react';
 import {
   View,
@@ -10,19 +9,7 @@ import {
 } from 'react-native';
 import GoogleCalendarIcon from '../../../assets/googlecalendar.svg';
 
-interface DatePickerProps {
-  label?: string;
-  placeholder?: string;
-  value?: Date;
-  onChange: (date: Date) => void;
-}
-
-const DatePicker: React.FC<DatePickerProps> = ({
-  label,
-  placeholder,
-  value,
-  onChange,
-}) => {
+const DatePicker = ({label, placeholder, value, onChange}) => {
   const [showPicker, setShowPicker] = useState(false);
   const [tempDate, setTempDate] = useState({
     day: value ? new Date(value).getDate() : 1,
@@ -48,7 +35,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   const currentYear = new Date().getFullYear();
   const years = Array.from({length: 10}, (_, i) => currentYear + i);
 
-  const formatDate = (dateValue?: Date) => {
+  const formatDate = dateValue => {
     if (!dateValue) return '';
     const d = new Date(dateValue);
     const day = String(d.getDate()).padStart(2, '0');
@@ -66,6 +53,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   return (
     <View style={styles.container}>
       {label ? <Text style={styles.label}>{label}</Text> : null}
+
       <TouchableOpacity
         style={styles.inputWrapper}
         onPress={() => setShowPicker(true)}
@@ -73,6 +61,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
         <View style={styles.leftIcon}>
           <GoogleCalendarIcon width={20} height={20} />
         </View>
+
         <Text style={[styles.dateText, !value && styles.placeholderText]}>
           {value ? formatDate(value) : placeholder}
         </Text>
@@ -91,7 +80,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
             <Text style={styles.modalTitle}>Pilih Tanggal</Text>
 
             <View style={styles.pickerRow}>
-              {/* Day Picker */}
+              {/* Day */}
               <View style={styles.pickerColumn}>
                 <Text style={styles.pickerLabel}>Tanggal</Text>
                 <ScrollView
@@ -117,7 +106,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
                 </ScrollView>
               </View>
 
-              {/* Month Picker */}
+              {/* Month */}
               <View style={styles.pickerColumn}>
                 <Text style={styles.pickerLabel}>Bulan</Text>
                 <ScrollView
@@ -144,7 +133,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
                 </ScrollView>
               </View>
 
-              {/* Year Picker */}
+              {/* Year */}
               <View style={styles.pickerColumn}>
                 <Text style={styles.pickerLabel}>Tahun</Text>
                 <ScrollView
@@ -178,6 +167,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
                 onPress={() => setShowPicker(false)}>
                 <Text style={styles.cancelButtonText}>Batal</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={[styles.button, styles.confirmButton]}
                 onPress={handleConfirm}>
@@ -194,9 +184,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
 export default DatePicker;
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 20,
-  },
+  container: {marginBottom: 20},
   label: {
     fontSize: 13,
     color: '#2A6E53',
@@ -218,18 +206,15 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 2,
   },
-  leftIcon: {
-    marginRight: 8,
-  },
+  leftIcon: {marginRight: 8},
   dateText: {
     flex: 1,
     fontSize: 14,
     color: '#020202',
     fontFamily: 'Montserrat-Regular',
   },
-  placeholderText: {
-    color: '#9E9E9E',
-  },
+  placeholderText: {color: '#9E9E9E'},
+
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -250,6 +235,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
+
   pickerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -278,9 +264,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: '#E0E0E0',
   },
-  pickerItemSelected: {
-    backgroundColor: '#E8F5E9',
-  },
+  pickerItemSelected: {backgroundColor: '#E8F5E9'},
   pickerItemText: {
     fontSize: 14,
     fontFamily: 'Montserrat-Regular',
@@ -290,6 +274,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-Bold',
     color: '#2A6E53',
   },
+
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -301,12 +286,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
-  cancelButton: {
-    backgroundColor: '#F5F5F5',
-  },
-  confirmButton: {
-    backgroundColor: '#2D6A4F',
-  },
+  cancelButton: {backgroundColor: '#F5F5F5'},
+  confirmButton: {backgroundColor: '#2D6A4F'},
   cancelButtonText: {
     fontSize: 14,
     fontFamily: 'Montserrat-Medium',

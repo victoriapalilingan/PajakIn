@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, ScrollView, Switch, Text, Alert} from 'react-native';
+
 import CustomHeader from '../../components/molecules/CustomHeader';
 import Button from '../../components/atoms/Button';
 import TextInput from '../../components/molecules/TextInput';
@@ -8,7 +9,12 @@ import DatePicker from '../../components/molecules/DatePicker';
 import MobilIcon from '../../assets/mobil.svg';
 import MotorIcon from '../../assets/motor.svg';
 
-function EditVehicle({navigation, route}) {
+const vehicleOptions = [
+  {label: 'Mobil', value: 'mobil', icon: <MobilIcon width={24} height={24} />},
+  {label: 'Motor', value: 'motor', icon: <MotorIcon width={24} height={24} />},
+];
+
+const EditVehicle = ({navigation, route}) => {
   const vehicleData = route?.params?.vehicleData;
 
   const [jenisKendaraan, setJenisKendaraan] = useState('');
@@ -18,39 +24,28 @@ function EditVehicle({navigation, route}) {
   const [reminderActive, setReminderActive] = useState(true);
 
   useEffect(() => {
-    if (vehicleData) {
-      setJenisKendaraan(vehicleData.jenisKendaraan || '');
-      setNoPolisi(vehicleData.noPolisi || '');
-      setMerekTahun(vehicleData.merekTahun || '');
-
-      if (vehicleData.tanggalJatuhTempo) {
-        const date =
-          vehicleData.tanggalJatuhTempo instanceof Date
-            ? vehicleData.tanggalJatuhTempo
-            : new Date(vehicleData.tanggalJatuhTempo);
-        setTanggalJatuhTempo(date);
-      }
-
-      setReminderActive(
-        vehicleData.reminderActive !== undefined
-          ? vehicleData.reminderActive
-          : true,
-      );
+    if (!vehicleData) {
+      return;
     }
-  }, [vehicleData]);
 
-  const vehicleOptions = [
-    {
-      label: 'Mobil',
-      value: 'mobil',
-      icon: <MobilIcon width={24} height={24} />,
-    },
-    {
-      label: 'Motor',
-      value: 'motor',
-      icon: <MotorIcon width={24} height={24} />,
-    },
-  ];
+    setJenisKendaraan(vehicleData.jenisKendaraan || '');
+    setNoPolisi(vehicleData.noPolisi || '');
+    setMerekTahun(vehicleData.merekTahun || '');
+
+    if (vehicleData.tanggalJatuhTempo) {
+      const date =
+        vehicleData.tanggalJatuhTempo instanceof Date
+          ? vehicleData.tanggalJatuhTempo
+          : new Date(vehicleData.tanggalJatuhTempo);
+      setTanggalJatuhTempo(date);
+    }
+
+    setReminderActive(
+      vehicleData.reminderActive !== undefined
+        ? vehicleData.reminderActive
+        : true,
+    );
+  }, [vehicleData]);
 
   const handleUpdate = () => {
     if (!jenisKendaraan) {
@@ -100,10 +95,7 @@ function EditVehicle({navigation, route}) {
       'Konfirmasi Hapus',
       'Apakah Anda yakin ingin menghapus kendaraan ini?',
       [
-        {
-          text: 'Batal',
-          style: 'cancel',
-        },
+        {text: 'Batal', style: 'cancel'},
         {
           text: 'Hapus',
           style: 'destructive',
@@ -154,7 +146,6 @@ function EditVehicle({navigation, route}) {
             height={54}
           />
 
-          {/* Merek & Tahun Kendaraan */}
           <TextInput
             label="Merek & Tahun Kendaraan"
             placeholder="Masukkan Merek & Tahun Kendaraan"
@@ -171,7 +162,6 @@ function EditVehicle({navigation, route}) {
             onChange={setTanggalJatuhTempo}
           />
 
-          {/* Switch Pengingat */}
           <View style={styles.switchRow}>
             <Text style={styles.switchLabel}>Aktifkan Pengingat Pajak</Text>
             <Switch
@@ -182,6 +172,7 @@ function EditVehicle({navigation, route}) {
             />
           </View>
         </View>
+
         <View style={styles.buttonContainer}>
           <Button
             label="Simpan Perubahan"
@@ -192,11 +183,9 @@ function EditVehicle({navigation, route}) {
           />
         </View>
       </ScrollView>
-
-      {/* Buttons Fixed di Bawah */}
     </View>
   );
-}
+};
 
 export default EditVehicle;
 

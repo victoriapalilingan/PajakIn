@@ -1,9 +1,7 @@
-// src/pages/AddVehicle/index.tsx
+// src/pages/AddVehicle/index.js
 import React, {useState} from 'react';
 import {View, StyleSheet, ScrollView, Switch, Text} from 'react-native';
 
-import GoogleCalendarIcon from '../../assets/googlecalendar.svg';
-import DownButton from '../../assets/downbutton.svg';
 import CustomHeader from '../../components/molecules/CustomHeader';
 import Button from '../../components/atoms/Button';
 import TextInput from '../../components/molecules/TextInput';
@@ -13,33 +11,22 @@ import MobilIcon from '../../assets/mobil.svg';
 import MotorIcon from '../../assets/motor.svg';
 import SuccessPopup from '../../components/molecules/SuccessPopup';
 
-function AddVehicle({navigation}) {
+const vehicleOptions = [
+  {label: 'Mobil', value: 'mobil', icon: <MobilIcon width={24} height={24} />},
+  {label: 'Motor', value: 'motor', icon: <MotorIcon width={24} height={24} />},
+];
+
+const AddVehicle = ({navigation}) => {
   const [jenisKendaraan, setJenisKendaraan] = useState('');
   const [noPolisi, setNoPolisi] = useState('');
   const [merekTahun, setMerekTahun] = useState('');
-  const [tanggalJatuhTempo, setTanggalJatuhTempo] = useState<Date | undefined>(
-    undefined,
-  );
+  const [tanggalJatuhTempo, setTanggalJatuhTempo] = useState(null);
   const [reminderActive, setReminderActive] = useState(true);
 
   const [successVisible, setSuccessVisible] = useState(false);
-  const [savedVehicle, setSavedVehicle] = useState<any | null>(null);
-
-  const vehicleOptions = [
-    {
-      label: 'Mobil',
-      value: 'mobil',
-      icon: <MobilIcon width={24} height={24} />,
-    },
-    {
-      label: 'Motor',
-      value: 'motor',
-      icon: <MotorIcon width={24} height={24} />,
-    },
-  ];
+  const [savedVehicle, setSavedVehicle] = useState(null);
 
   const handleSave = () => {
-    // Validasi input
     if (!jenisKendaraan) {
       alert('Pilih jenis kendaraan terlebih dahulu');
       return;
@@ -57,7 +44,6 @@ function AddVehicle({navigation}) {
       return;
     }
 
-    // Logic untuk menyimpan data kendaraan
     const vehicleData = {
       id: Date.now().toString(),
       jenisKendaraan,
@@ -74,15 +60,7 @@ function AddVehicle({navigation}) {
   };
 
   const handleGoToAddDocument = () => {
-    // ganti 'UploadDokumen' dengan nama route halaman unggah berkas kamu
-    navigation.navigate('AddDocument', {
-      vehicle: savedVehicle,
-    });
-
-    // Setelah berhasil simpan, kembali ke halaman sebelumnya
-    // navigation.goBack();
-    // atau navigasi ke halaman lain
-    // navigation.navigate('VehicleList');
+    navigation.navigate('AddDocument', {vehicle: savedVehicle});
   };
 
   return (
@@ -97,7 +75,6 @@ function AddVehicle({navigation}) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
         <View style={styles.card}>
-          {/* Dropdown Jenis Kendaraan */}
           <Dropdown
             label="Jenis Kendaraan"
             placeholder="Pilih Jenis Kendaraan"
@@ -106,7 +83,6 @@ function AddVehicle({navigation}) {
             onSelect={setJenisKendaraan}
           />
 
-          {/* Nomor Polisi */}
           <TextInput
             label="Nomor Polisi"
             placeholder="Masukkan Nomor Polisi"
@@ -117,7 +93,6 @@ function AddVehicle({navigation}) {
             height={54}
           />
 
-          {/* Merek & Tahun Kendaraan */}
           <TextInput
             label="Merek & Tahun Kendaraan"
             placeholder="Masukkan Merek & Tahun Kendaraan"
@@ -127,7 +102,6 @@ function AddVehicle({navigation}) {
             height={54}
           />
 
-          {/* Tanggal Jatuh Tempo */}
           <DatePicker
             label="Tanggal Jatuh Tempo Pajak"
             placeholder="Masukkan Tanggal Jatuh Tempo Pajak"
@@ -135,7 +109,6 @@ function AddVehicle({navigation}) {
             onChange={setTanggalJatuhTempo}
           />
 
-          {/* Switch Pengingat */}
           <View style={styles.switchRow}>
             <Text style={styles.switchLabel}>Aktifkan Pengingat Pajak</Text>
             <Switch
@@ -146,6 +119,7 @@ function AddVehicle({navigation}) {
             />
           </View>
         </View>
+
         <View style={styles.buttonContainer}>
           <Button
             label="Simpan"
@@ -157,18 +131,16 @@ function AddVehicle({navigation}) {
         </View>
       </ScrollView>
 
-      {/* Tombol Simpan - Fixed di bawah */}
-
       <SuccessPopup
         visible={successVisible}
         onClose={() => setSuccessVisible(false)}
-        title={'Kendaraan\nberhasil ditambahkan!'}
+        title={'Kendaraan berhasil ditambahkan!'}
         buttonLabel="Unggah Dokumen"
         onButtonPress={handleGoToAddDocument}
       />
     </View>
   );
-}
+};
 
 export default AddVehicle;
 

@@ -11,7 +11,7 @@ import VehicleDetailScreen from './src/pages/VehicleDetail';
 import EditVehicle from './src/pages/EditVehicle';
 import UnggahBerkas from './src/pages/AddDocument';
 
-import MainTabs from './src/navigation/MainTabs'; // ⬅️ organism/tab template
+import MainTabs from './src/navigation/MainTabs';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,10 +25,7 @@ const App = () => (
       <Stack.Screen name="SignIn" component={SignIn} />
       <Stack.Screen name="SignUp" component={SignUp} />
 
-      {/* ORGANISM: bottom tab main app */}
       <Stack.Screen name="Main" component={MainTabs} />
-
-      {/* Halaman detail (bukan bagian tab) */}
       <Stack.Screen name="AddVehicle" component={AddVehicle} />
       <Stack.Screen name="AddDocument" component={UnggahBerkas} />
       <Stack.Screen name="DetailVehicle" component={VehicleDetailScreen} />

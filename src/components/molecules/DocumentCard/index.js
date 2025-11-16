@@ -1,57 +1,59 @@
+// components/molecules/DocumentCard.js
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import GoBackIcon from '../../../assets/goback.svg';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import IconBox from '../atoms/IconBox';
 
-const CustomHeader = ({title, onBackPress}) => {
+const DocumentCard = ({code, imageSource, onPress}) => {
   return (
-    <View style={styles.header}>
-      {/* Back button hanya muncul jika onBackPress ada */}
-      {onBackPress ? (
-        <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
-          <GoBackIcon width={55} height={55} />
-        </TouchableOpacity>
-      ) : (
-        <View style={styles.backButton} /> // placeholder, supaya title tetap center
-      )}
-
-      <Text style={styles.headerTitle}>{title}</Text>
-
-      <View style={styles.rightSpacer} />
-    </View>
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={onPress}
+      style={styles.wrapper}>
+      <View style={styles.card}>
+        <Image
+          source={imageSource}
+          style={styles.cardImage}
+          resizeMode="cover"
+        />
+        <View style={styles.cardInfo}>
+          <IconBox />
+          <Text style={styles.codeText}>{code}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: '#26634C',
-    paddingTop: 46,
-    paddingBottom: 22,
-    paddingHorizontal: 18,
+  wrapper: {
+    marginBottom: 16,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  cardImage: {
+    width: '100%',
+    height: 140,
+  },
+  cardInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomLeftRadius: 40,
-    borderBottomRightRadius: 40,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
-
-  backButton: {
-    width: 70,
-    height: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 1,
-    marginLeft: 15,
-  },
-
-  headerTitle: {
+  codeText: {
     fontFamily: 'Montserrat-SemiBold',
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#FEB800',
-    textAlign: 'center',
-    flex: 1,
+    fontSize: 14,
+    color: '#2A6E54',
+    letterSpacing: 0.5,
   },
-
-  rightSpacer: {width: 70}, // supaya title tetap simetris
 });
 
-export default CustomHeader;
+export default DocumentCard;

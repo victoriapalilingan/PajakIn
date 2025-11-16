@@ -37,7 +37,7 @@ const HomeScreen = ({navigation}) => {
           backgroundColor="transparent"
           barStyle="dark-content"
         />
-        <Gap height={0} />
+        <Gap height={24} />
         <HomeHeader />
         <Gap height={24} />
         <VehicleList onPressDetail={handleDetailVehicle} />
@@ -63,7 +63,7 @@ const HomeScreen = ({navigation}) => {
 
 export default HomeScreen;
 
-const NAV_HEIGHT_GUESS = 40; // cukup sedikit padding bawah
+const NAV_HEIGHT_GUESS = 40;
 
 const styles = StyleSheet.create({
   container: {flex: 1, backgroundColor: '#F5F5F5'},

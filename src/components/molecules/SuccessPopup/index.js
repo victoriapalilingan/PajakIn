@@ -1,4 +1,3 @@
-// SuccessPopup.tsx / .js
 import React from 'react';
 import {Modal, View, Text, StyleSheet} from 'react-native';
 import Backdrop from '../../atoms/Backdrop';
@@ -11,8 +10,8 @@ const SuccessPopup = ({
   title = 'Berhasil!',
   buttonLabel = 'OK',
   onButtonPress,
-  buttonWidth = 200, // ← tambahkan prop ini
-  buttonHeight = 44, // ← tambahkan prop ini
+  buttonWidth = 200,
+  buttonHeight = 44,
   buttonColor = '#2A6E54',
   buttonFontSize = 22,
 }) => {
@@ -42,10 +41,10 @@ const SuccessPopup = ({
           <Button
             label={buttonLabel}
             onPress={handlePress}
-            width={buttonWidth} // ← gunakan prop
-            height={buttonHeight} // ← gunakan prop
+            width={buttonWidth}
+            height={buttonHeight}
             color={buttonColor}
-            fontSize={15}
+            fontSize={14}
           />
         </View>
       </View>

@@ -2,27 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import DownButtonIcon from '../../../assets/downbutton.svg';
 
-interface DropdownOption {
-  label: string;
-  value: string;
-  icon?: React.ReactNode;
-}
-
-interface DropdownProps {
-  label?: string;
-  placeholder?: string;
-  value?: string;
-  options: DropdownOption[];
-  onSelect: (value: string) => void;
-}
-
-const Dropdown: React.FC<DropdownProps> = ({
-  label,
-  placeholder,
-  value,
-  options,
-  onSelect,
-}) => {
+const Dropdown = ({label, placeholder, value, options, onSelect}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const selectedOption = options.find(opt => opt.value === value);
@@ -110,6 +90,8 @@ const styles = StyleSheet.create({
   },
   iconWrapper: {
     marginLeft: 8,
+    // catatan: 'transition' sebenarnya tidak didukung di React Native,
+    // tapi dibiarkan karena kamu minta styling tidak diubah
     transition: 'transform 0.3s',
   },
   iconRotated: {

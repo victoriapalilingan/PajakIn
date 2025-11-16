@@ -1,15 +1,8 @@
-// src/components/atoms/TextBase.tsx
+// src/components/atoms/TextBase.js
 import React from 'react';
-import {Text, TextProps, StyleSheet} from 'react-native';
+import {Text, StyleSheet} from 'react-native';
 
-// Definisikan tipe font family yang sering digunakan
-type FontWeight = 'Bold' | 'Medium' | 'Regular' | 'Light';
-
-interface CustomTextProps extends TextProps {
-  weight?: FontWeight;
-}
-
-const getFontFamily = (weight: FontWeight): string => {
+const getFontFamily = weight => {
   switch (weight) {
     case 'Bold':
       return 'Montserrat-Bold';
@@ -24,12 +17,7 @@ const getFontFamily = (weight: FontWeight): string => {
   }
 };
 
-export const TextBase: React.FC<CustomTextProps> = ({
-  children,
-  weight = 'Regular',
-  style,
-  ...props
-}) => {
+export const TextBase = ({children, weight = 'Regular', style, ...props}) => {
   const fontFamilyStyle = {fontFamily: getFontFamily(weight)};
 
   return (
@@ -41,7 +29,6 @@ export const TextBase: React.FC<CustomTextProps> = ({
 
 const styles = StyleSheet.create({
   base: {
-    // Warna teks default bisa didefinisikan di sini jika ada
-    color: '#386641', // Menggunakan warna hijau tua dari desain
+    color: '#386641', // warna default
   },
 });

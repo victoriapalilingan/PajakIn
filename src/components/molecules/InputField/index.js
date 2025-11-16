@@ -1,9 +1,5 @@
-// src/components/molecules/InputField/index.js
-
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-
-// PERBAIKAN PATH: Menggunakan '../../' untuk mencapai src/components/atoms
 import {TextBase} from '../../atoms/TextBase';
 import {TextInputBase} from '../../atoms/TextInputBase';
 import SecureIcon from '../../../assets/Secure.svg';
@@ -17,12 +13,10 @@ export default function InputField({
 }) {
   return (
     <View style={styles.inputGroup}>
-      {/* Menggunakan TextBase untuk label */}
       <TextBase style={styles.inputLabel} weight="Regular">
         {label}
       </TextBase>
       <View style={styles.inputWrapper}>
-        {/* Menggunakan TextInputBase */}
         <TextInputBase
           style={[styles.textInput, isLocked && styles.lockedInput]}
           placeholder={placeholder}
@@ -48,8 +42,8 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 14,
     marginBottom: 5,
-    // --- LOKASI PERUBAHAN WARNA LABEL ---
-    color: '#386641', // Ganti dengan warna yang Anda inginkan (misalnya, warna header)
+    color: '#386641',
+    fontFamily: 'Montserrat-Medium',
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -59,6 +53,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
+    fontFamily: 'Montserrat-Light',
   },
   lockedInput: {
     backgroundColor: '#F0F0F0',
