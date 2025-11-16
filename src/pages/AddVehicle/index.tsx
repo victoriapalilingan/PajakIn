@@ -67,6 +67,7 @@ const AddVehicle = ({navigation}) => {
     <View style={styles.container}>
       <CustomHeader
         title="Tambah Kendaraan"
+        titleSize={19}
         onBackPress={() => navigation.goBack()}
       />
 

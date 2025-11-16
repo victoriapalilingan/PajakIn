@@ -2,19 +2,23 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import GoBackIcon from '../../../assets/goback.svg';
 
-const CustomHeader = ({title, onBackPress}) => {
+const CustomHeader = ({title, onBackPress, titleSize = 27}) => {
   return (
     <View style={styles.header}>
-      {/* Back button hanya muncul jika onBackPress ada */}
       {onBackPress ? (
         <TouchableOpacity onPress={onBackPress} style={styles.backButton}>
-          <GoBackIcon width={55} height={55} />
+          <GoBackIcon width={40} height={61} />
         </TouchableOpacity>
       ) : (
-        <View style={styles.backButton} /> // placeholder, supaya title tetap center
+        <View style={styles.backButton} />
       )}
 
-      <Text style={styles.headerTitle}>{title}</Text>
+      <Text
+        style={[styles.headerTitle, {fontSize: titleSize}]}
+        numberOfLines={1}
+        ellipsizeMode="tail">
+        {title}
+      </Text>
 
       <View style={styles.rightSpacer} />
     </View>
@@ -24,6 +28,7 @@ const CustomHeader = ({title, onBackPress}) => {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: '#26634C',
+    height: 135,
     paddingTop: 46,
     paddingBottom: 22,
     paddingHorizontal: 18,
@@ -38,20 +43,19 @@ const styles = StyleSheet.create({
     height: 48,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 1,
     marginLeft: 15,
   },
 
   headerTitle: {
-    fontFamily: 'Montserrat-SemiBold',
-    fontSize: 28,
-    fontWeight: '700',
+    flex: 1,
+    fontFamily: 'Montserrat-Bold',
     color: '#FEB800',
     textAlign: 'center',
-    flex: 1,
   },
 
-  rightSpacer: {width: 70}, // supaya title tetap simetris
+  rightSpacer: {
+    width: 70,
+  },
 });
 
 export default CustomHeader;

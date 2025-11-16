@@ -6,6 +6,7 @@ import {
   Dimensions,
   Image,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 
 import InputField from '../../components/molecules/InputField';
@@ -30,6 +31,13 @@ export default function ProfileScreen() {
     setProfile(prev => ({...prev, [field]: value}));
   };
 
+  // Fungsi saat tekan foto
+  const handleSelectPhoto = () => {
+    console.log('Select Profile Photo');
+    // nanti sambungkan ke image picker
+    // launchImageLibrary(...);
+  };
+
   return (
     <View style={styles.fullScreenContainer}>
       <StatusBar barStyle="light-content" backgroundColor={HEADER_COLOR} />
@@ -39,12 +47,16 @@ export default function ProfileScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}>
-        <View style={styles.profileImageWrapper}>
+        {/* FOTO PROFIL */}
+        <TouchableOpacity
+          style={styles.profileImageWrapper}
+          onPress={handleSelectPhoto}
+          activeOpacity={0.7}>
           <Image
             source={{uri: 'https://i.pravatar.cc/150?img=49'}}
             style={styles.profileImage}
           />
-        </View>
+        </TouchableOpacity>
 
         <View style={styles.formContent}>
           <TextBase style={styles.mainTitle} weight="Bold">

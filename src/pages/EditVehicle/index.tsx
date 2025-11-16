@@ -81,7 +81,7 @@ const EditVehicle = ({navigation, route}) => {
       {
         text: 'OK',
         onPress: () => {
-          navigation.navigate('VehicleDetail', {
+          navigation.navigate('DetailVehicle', {
             vehicleData: updatedData,
             updated: true,
           });
@@ -106,7 +106,7 @@ const EditVehicle = ({navigation, route}) => {
               {
                 text: 'OK',
                 onPress: () => {
-                  navigation.navigate('VehicleList');
+                  navigation.navigate('DetailVehicle');
                 },
               },
             ]);
@@ -120,6 +120,7 @@ const EditVehicle = ({navigation, route}) => {
     <View style={styles.container}>
       <CustomHeader
         title="Edit Kendaraan"
+        titleSize={24}
         onBackPress={() => navigation.goBack()}
       />
 

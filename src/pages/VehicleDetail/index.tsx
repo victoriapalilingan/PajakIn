@@ -4,9 +4,8 @@ import {View, Text, StyleSheet, ScrollView} from 'react-native';
 import CustomHeader from '../../components/molecules/CustomHeader';
 import CheckmarkIcon from '../../assets/checkmark.svg';
 import SuccessPopup from '../../components/molecules/SuccessPopup';
-import Button from '../../components/atoms/Button'; // ⬅️ PAKAI BUTTON ATOM
+import Button from '../../components/atoms/Button';
 
-// Dummy Data untuk navigasi edit
 const vehicleData = {
   id: 'DB3527AP',
   type: 'Mobil',
@@ -30,6 +29,7 @@ const VehicleDetailScreen = ({navigation}) => {
     <View style={styles.fullScreenContainer}>
       <CustomHeader
         title="Detail Kendaraan"
+        titleSize={22}
         onBackPress={() => navigation?.goBack()}
       />
 
@@ -61,7 +61,6 @@ const VehicleDetailScreen = ({navigation}) => {
         </View>
       </ScrollView>
 
-      {/* BUTTON BAWAH PAKAI KOMPONEN BUTTON */}
       <View style={styles.fixedButtonContainer}>
         <View style={styles.buttonWrapper}>
           <Button
@@ -90,7 +89,6 @@ const VehicleDetailScreen = ({navigation}) => {
         </View>
       </View>
 
-      {/* SUCCESS POPUP */}
       <SuccessPopup
         visible={successVisible}
         title="Kendaraan berhasil dihapus"
@@ -195,7 +193,6 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     flex: 1,
-    //  gap antar tombol:
     marginRight: 5,
     marginLeft: 5,
   },
