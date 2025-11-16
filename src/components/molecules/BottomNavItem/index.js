@@ -6,13 +6,13 @@ import {TouchableOpacity, Text, StyleSheet, View} from 'react-native';
 // HARUS TIGA TITIK (../../../) UNTUK MENGAKSES SRC/ASSETS
 import HomeIcon from '../../../assets/Home.svg';
 import HistoryIcon from '../../../assets/ActivityHistory1.svg';
-import NotificationIcon from '../../../assets/Doorbell1.svg';
-import ProfileIcon from '../../../assets/Profile.svg';
+import NotificationIcon from '../../../assets/Doorbell.svg';
+import ProfileIcon from '../../../assets/Profile1.svg';
 
 // Fungsi untuk memilih ikon
 const Icon = ({type, isActive}) => {
   // Warna ikon: Hijau Tua Aktif, Abu-abu Inaktif
-  const iconColor = isActive ? '#2A6E54' : '#f52121ff';
+  const iconColor = isActive ? '#2A6E54' : '#ffffffff';
   const size = 24;
 
   let IconComponent;
@@ -38,7 +38,7 @@ const Icon = ({type, isActive}) => {
 
 // Komponen Utama BottomNavItem
 const BottomNavItem = ({label, iconType, active, onPress}) => {
-  const textColor = active ? '#aa713cff' : '#f87e7eff';
+  const textColor = active ? '#3caa80ff' : '#ffffffff';
 
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
