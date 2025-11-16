@@ -1,11 +1,14 @@
 import React from 'react';
-import {View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
-// Definisikan Interface
-interface GapProps {
-  height: number;
-}
+const Gap = ({height}) => {
+  return <View style={[styles.gap, {height}]} />;
+};
 
-export default function Gap({height}: GapProps): JSX.Element {
-  return <View style={{height}} />;
-}
+export default Gap;
+
+const styles = StyleSheet.create({
+  gap: {
+    width: '100%',
+  },
+});
