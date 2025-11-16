@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import GoBackIcon from '../../../assets/goback.svg';
 
-const CustomHeader = ({title, onBackPress, alignLeft = false}) => {
+const CustomHeader = ({title, onBackPress}) => {
   return (
     <View style={styles.header}>
       {/* Back button hanya muncul jika onBackPress ada */}
@@ -11,18 +11,11 @@ const CustomHeader = ({title, onBackPress, alignLeft = false}) => {
           <GoBackIcon width={55} height={55} />
         </TouchableOpacity>
       ) : (
-        <View style={styles.backButton} /> // placeholder, supaya layout konsisten
+        <View style={styles.backButton} /> // placeholder, supaya title tetap center
       )}
 
-      <Text
-        style={[
-          styles.headerTitle,
-          alignLeft && styles.headerTitleLeft, // ⬅️ override kalau mau kiri
-        ]}>
-        {title}
-      </Text>
+      <Text style={styles.headerTitle}>{title}</Text>
 
-      {/* spacer kanan tetap, biar header lain masih center */}
       <View style={styles.rightSpacer} />
     </View>
   );
@@ -55,17 +48,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#FEB800',
     textAlign: 'center',
-    flex: 1, // default: untuk center
+    flex: 1,
   },
 
-  // ⬇️ tambahan style untuk yang mau kiri
-  headerTitleLeft: {
-    textAlign: 'left',
-    flex: 0,
-    marginLeft: -50, // boleh kamu atur lagi supaya pas selera
-  },
-
-  rightSpacer: {width: 70},
+  rightSpacer: {width: 70}, // supaya title tetap simetris
 });
 
 export default CustomHeader;
