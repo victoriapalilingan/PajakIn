@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 18,
-    paddingVertical: 14, // KOREKSI: Jarak antar Card menjadi 24px
-    marginBottom: 24, // KOREKSI: Drop shadow halus
+    paddingVertical: 14,
+    marginBottom: 24,
 
     shadowColor: '#000000',
     shadowOpacity: 0.1,
@@ -47,13 +47,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
-    // Latar belakang ikon sudah dihapus
   },
 
   textWrap: {
     flex: 1,
     paddingRight: 5,
-    // KOREKSI: Hapus padding vertikal untuk alignment sempurna // paddingTop: 4, // paddingBottom: 4,
   },
 
   title: {
