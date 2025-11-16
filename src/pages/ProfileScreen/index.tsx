@@ -1,4 +1,3 @@
-// src/pages/ProfileScreen/index.js
 import React from 'react';
 import {
   View,
@@ -10,7 +9,6 @@ import {
 } from 'react-native';
 
 import InputField from '../../components/molecules/InputField';
-import BottomNavigation from '../../components/organism/BottomNavigation';
 import {TextBase} from '../../components/atoms/TextBase';
 
 const {width: screenWidth} = Dimensions.get('window');
@@ -36,14 +34,11 @@ export default function ProfileScreen() {
     <View style={styles.fullScreenContainer}>
       <StatusBar barStyle="light-content" backgroundColor={HEADER_COLOR} />
 
-      {/* Header hijau di belakang */}
       <View style={styles.headerContainer} />
 
-      {/* Konten Scroll */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}>
-        {/* Foto Profil */}
         <View style={styles.profileImageWrapper}>
           <Image
             source={{uri: 'https://i.pravatar.cc/150?img=49'}}
@@ -51,7 +46,6 @@ export default function ProfileScreen() {
           />
         </View>
 
-        {/* Form Profil */}
         <View style={styles.formContent}>
           <TextBase style={styles.mainTitle} weight="Bold">
             Perbarui Profil
@@ -91,13 +85,6 @@ export default function ProfileScreen() {
 
         <View style={styles.scrollSpacer} />
       </ScrollView>
-
-      {/* Bottom Navigation – sesuaikan props dengan versi JS-mu */}
-      <BottomNavigation
-        activeScreen="profil"
-        onNavigate={screen => console.log('Navigating to', screen)}
-        onAddPress={() => console.log('Add Button Pressed')}
-      />
     </View>
   );
 }

@@ -1,15 +1,10 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import {View, Text, StyleSheet, ScrollView} from 'react-native';
 
 import CustomHeader from '../../components/molecules/CustomHeader';
 import CheckmarkIcon from '../../assets/checkmark.svg';
 import SuccessPopup from '../../components/molecules/SuccessPopup';
+import Button from '../../components/atoms/Button'; // ⬅️ PAKAI BUTTON ATOM
 
 // Dummy Data untuk navigasi edit
 const vehicleData = {
@@ -27,10 +22,7 @@ const VehicleDetailScreen = ({navigation}) => {
   const [successVisible, setSuccessVisible] = useState(false);
 
   const handleDeleteVehicle = () => {
-    // TODO: logika hapus kendaraan (API / AsyncStorage / context / dsb)
     console.log('Vehicle deleted:', vehicleData);
-
-    // Setelah benar-benar terhapus:
     setSuccessVisible(true);
   };
 
@@ -69,22 +61,33 @@ const VehicleDetailScreen = ({navigation}) => {
         </View>
       </ScrollView>
 
+      {/* BUTTON BAWAH PAKAI KOMPONEN BUTTON */}
       <View style={styles.fixedButtonContainer}>
-        <TouchableOpacity
-          style={styles.editButton}
-          onPress={() => {
-            navigation?.navigate('EditVehicle', {
-              vehicle: vehicleData,
-            });
-          }}>
-          <Text style={styles.editButtonText}>Edit</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonWrapper}>
+          <Button
+            label="Edit"
+            onPress={() =>
+              navigation?.navigate('EditVehicle', {vehicle: vehicleData})
+            }
+            width="100%"
+            height={51}
+            color="#FFC107"
+            textColor="#FFFFFFFF"
+            fontSize={20}
+          />
+        </View>
 
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={handleDeleteVehicle}>
-          <Text style={styles.deleteButtonText}>Hapus</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonWrapper}>
+          <Button
+            label="Hapus"
+            onPress={handleDeleteVehicle}
+            width="100%"
+            height={51}
+            color="#E53935"
+            textColor="#FFFFFF"
+            fontSize={20}
+          />
+        </View>
       </View>
 
       {/* SUCCESS POPUP */}
@@ -99,7 +102,7 @@ const VehicleDetailScreen = ({navigation}) => {
           setSuccessVisible(false);
           navigation.reset({
             index: 0,
-            routes: [{name: 'Home'}],
+            routes: [{name: 'Main'}],
           });
         }}
       />
@@ -114,17 +117,6 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     flex: 1,
-  },
-  fixedButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingTop: 15,
-    paddingBottom: 25,
-    backgroundColor: '#E8F5E9',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    marginTop: 10,
   },
   content: {
     padding: 40,
@@ -189,43 +181,23 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontFamily: 'Montserrat-SemiBold',
   },
-  editButton: {
+
+  fixedButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 15,
+    paddingBottom: 25,
+    backgroundColor: '#E8F5E9',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    marginTop: 10,
+  },
+  buttonWrapper: {
     flex: 1,
-    backgroundColor: '#FFC107',
-    paddingVertical: 15,
-    borderRadius: 100,
-    marginRight: 10,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 10},
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  editButtonText: {
-    color: '#ffffffff',
-    fontSize: 25,
-    fontWeight: 'bold',
-    fontFamily: 'Montserrat-Bold',
-  },
-  deleteButton: {
-    flex: 1,
-    backgroundColor: '#E53935',
-    paddingVertical: 15,
-    borderRadius: 100,
-    marginLeft: 10,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  deleteButtonText: {
-    color: '#FFFFFF',
-    fontSize: 25,
-    fontWeight: 'bold',
-    fontFamily: 'Montserrat-Bold',
+    //  gap antar tombol:
+    marginRight: 5,
+    marginLeft: 5,
   },
 });
 
