@@ -1,11 +1,12 @@
 import React from 'react';
 import {TouchableOpacity, Text, StyleSheet, View} from 'react-native';
 
-import HomeIcon from '../../../assets/Home.svg';
-import HistoryIcon from '../../../assets/ActivityHistory1.svg';
-import NotificationIcon from '../../../assets/Doorbell.svg';
-import ProfileIcon from '../../../assets/Profile1.svg';
-
+import {
+  HomeIcon,
+  HistoryIcon,
+  NotificationIcon,
+  ProfileIcon,
+} from '../../../assets';
 const Icon = ({type, isActive}) => {
   const iconColor = isActive ? '#2A6E54' : '#ffffffff';
   const size = 24;

@@ -1,8 +1,7 @@
 import React from 'react';
 import {Modal, View, Text, StyleSheet} from 'react-native';
-import Backdrop from '../../atoms/Backdrop';
-import Button from '../../atoms/Button';
-import CheckMark from '../../../assets/Check Mark.svg';
+import {Backdrop, Button} from '../../atoms';
+import {CheckMark} from '../../../assets';
 
 const SuccessPopup = ({
   visible,

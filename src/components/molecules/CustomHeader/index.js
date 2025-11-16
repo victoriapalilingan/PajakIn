@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import GoBackIcon from '../../../assets/goback.svg';
+import {GoBackIcon} from '../../../assets';
 
 const CustomHeader = ({title, onBackPress, titleSize = 27}) => {
   return (

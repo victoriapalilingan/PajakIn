@@ -4,8 +4,7 @@ import VehicleCard from '../../molecules/VehicleCard';
 import colors from '../../../styles/colors';
 import Gap from '../../atoms/Gap';
 
-import MotorIcon from '../../../assets/motor.svg';
-import MobilIcon from '../../../assets/mobil.svg';
+import {MotorIcon, MobilIcon} from '../../../assets';
 
 const VehicleList = () => {
   const vehicles = [

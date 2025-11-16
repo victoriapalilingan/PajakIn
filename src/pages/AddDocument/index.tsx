@@ -7,9 +7,8 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import CustomHeader from '../../components/molecules/CustomHeader';
-import Button from '../../components/atoms/Button';
-import UploadIcon from '../../assets/Upload.svg';
+import {CustomHeader, Button} from '../../components';
+import {UploadIcon} from '../../assets';
 
 const UnggahBerkas = ({navigation}) => {
   const [selectedFile, setSelectedFile] = useState(null);

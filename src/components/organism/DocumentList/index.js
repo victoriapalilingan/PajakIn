@@ -1,7 +1,6 @@
-// components/organisms/DocumentList.js
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import DocumentCard from '../molecules/DocumentCard';
+import {DocumentCard} from '../..';
 
 const DocumentList = ({documents, onItemPress}) => {
   return (

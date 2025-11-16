@@ -6,17 +6,19 @@ import ListDocumentScreen from '../pages/ListDocument';
 import Notification from '../pages/Notification';
 import ProfileScreen from '../pages/ProfileScreen';
 
-import BottomNavigation from '../components/organism/BottomNavigation';
-import ButtonPlus from '../assets/ButtonAdd1.svg';
+import {BottomNavigation} from '../components';
 
-import HomeActive from '../assets/HomeActive.svg';
-import HomeInactive from '../assets/HomeInactive.svg';
-import DocActive from '../assets/DocActive.svg';
-import DocInactive from '../assets/DocInactive.svg';
-import BellActive from '../assets/BellActive.svg';
-import BellInactive from '../assets/BellInactive.svg';
-import UserActive from '../assets/UserActive.svg';
-import UserInactive from '../assets/UserInactive.svg';
+import {
+  ButtonPlus,
+  HomeActive,
+  HomeInactive,
+  DocActive,
+  DocInactive,
+  BellActive,
+  BellInactive,
+  UserActive,
+  UserInactive,
+} from '../assets';
 
 const Tab = createBottomTabNavigator();
 

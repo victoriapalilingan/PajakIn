@@ -1,16 +1,12 @@
 import React from 'react';
 import {View, Text, StyleSheet, ScrollView, Dimensions} from 'react-native';
 
-import NotificationCard from '../../components/molecules/NotificationCard';
-import CustomHeader from '../../components/molecules/CustomHeader';
-import Gap from '../../components/atoms/Gap';
-
+import {NotificationCard, CustomHeader, Gap} from '../../components';
 const {width: screenWidth} = Dimensions.get('window');
 
 const Card = NotificationCard;
 
 export default function Notification() {
-  // Hitung padding horizontal agar Card (lebar 318) terpusat
   const horizontalPadding = (screenWidth - 318) / 2;
 
   const documents = [
@@ -33,12 +29,10 @@ export default function Notification() {
 
   return (
     <View style={styles.fullScreenContainer}>
-      {/* HEADER */}
       <CustomHeader title="Notifikasi" alignLeft />
 
       <Gap height={24} />
 
-      {/* LIST NOTIFIKASI */}
       <ScrollView
         contentContainerStyle={[
           styles.content,

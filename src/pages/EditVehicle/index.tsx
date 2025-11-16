@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet, ScrollView, Switch, Text, Alert} from 'react-native';
 
-import CustomHeader from '../../components/molecules/CustomHeader';
-import Button from '../../components/atoms/Button';
-import TextInput from '../../components/molecules/TextInput';
-import Dropdown from '../../components/molecules/Dropdown';
-import DatePicker from '../../components/molecules/DatePicker';
-import MobilIcon from '../../assets/mobil.svg';
-import MotorIcon from '../../assets/motor.svg';
+import {
+  CustomHeader,
+  Button,
+  TextInput,
+  Dropdown,
+  DatePicker,
+} from '../../components';
+import {MobilIcon, MotorIcon} from '../../assets';
 
 const vehicleOptions = [
   {label: 'Mobil', value: 'mobil', icon: <MobilIcon width={24} height={24} />},

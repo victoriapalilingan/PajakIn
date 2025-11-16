@@ -9,7 +9,7 @@ import {
   Text,
 } from 'react-native';
 
-import CustomHeader from '../../components/molecules/CustomHeader';
+import {CustomHeader} from '../../components';
 
 const ListDocumentScreen = () => {
   const documents = [

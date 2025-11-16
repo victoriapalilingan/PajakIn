@@ -9,13 +9,8 @@ import {
   Image,
 } from 'react-native';
 
-import TextInput from '../../components/molecules/TextInput';
-import Button from '../../components/atoms/Button';
-import Gap from '../../components/atoms/Gap';
-import Card from '../../components/molecules/Card';
-
-import EmailIcon from '../../assets/Mobile Email.svg';
-import PassIcon from '../../assets/Lock.svg';
+import {TextInput, Button, Gap, Card} from '../../components';
+import {EmailIcon, PassIcon} from '../../assets';
 
 const LoginScreen = ({navigation}: any) => {
   return (

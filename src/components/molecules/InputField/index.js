@@ -1,9 +1,7 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {TextBase} from '../../atoms/TextBase';
-import {TextInputBase} from '../../atoms/TextInputBase';
-import SecureIcon from '../../../assets/Secure.svg';
-
+import {TextBase, TextInputBase} from '../../atoms';
+import {SecureIcon} from '../../../assets';
 export default function InputField({
   label,
   placeholder,

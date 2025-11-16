@@ -1,7 +1,5 @@
 import {View, Text, StyleSheet} from 'react-native';
-
-import ErrorIcon from '../../../assets/Error.svg';
-import CheckedIcon from '../../../assets/CheckedCheckbox.svg';
+import {ErrorIcon, CheckedIcon} from '../../../assets';
 
 export default function NotificationCard({title, subtitle, type}) {
   const Icon = type === 'warning' ? ErrorIcon : CheckedIcon;

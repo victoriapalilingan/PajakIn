@@ -7,13 +7,8 @@ import {
   StatusBar,
 } from 'react-native';
 
-import HomeHeader from '../../components/organism/HomeHeader';
-import VehicleList from '../../components/organism/VehicleList';
-import Button from '../../components/atoms/Button';
-import Gap from '../../components/atoms/Gap';
-
-// SVG lokal
-import PlusIcon from '../../assets/Add.svg';
+import {HomeHeader, VehicleList, Button, Gap} from '../../components';
+import {PlusIcon} from '../../assets';
 
 const HomeScreen = ({navigation}) => {
   const handleAddVehicle = () => {
@@ -37,7 +32,7 @@ const HomeScreen = ({navigation}) => {
           backgroundColor="transparent"
           barStyle="dark-content"
         />
-        <Gap height={24} />
+        <Gap height={10} />
         <HomeHeader />
         <Gap height={24} />
         <VehicleList onPressDetail={handleDetailVehicle} />

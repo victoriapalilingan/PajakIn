@@ -11,17 +11,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import Card from '../../components/molecules/Card';
-import TextInput from '../../components/molecules/TextInput';
-import CheckBox from '../../components/molecules/CheckBox';
-import Gap from '../../components/atoms/Gap';
-import Button from '../../components/atoms/Button';
-import SuccessPopup from '../../components/molecules/SuccessPopup';
+import {
+  Card,
+  TextInput,
+  CheckBox,
+  Gap,
+  Button,
+  SuccessPopup,
+} from '../../components';
 
-import IdentificationIcon from '../../assets/Identification Documents.svg';
-import MaleIcon from '../../assets/Collaborator Male.svg';
-import EmailIcon from '../../assets/Mobile Email.svg';
-import PassIcon from '../../assets/Lock.svg';
+import {IdentificationIcon, MaleIcon, EmailIcon, PassIcon} from '../../assets';
 
 const fields = [
   {

@@ -1,7 +1,5 @@
-// components/molecules/DocumentCard.js
 import React from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
-import IconBox from '../atoms/IconBox';
 
 const DocumentCard = ({code, imageSource, onPress}) => {
   return (

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import DownButtonIcon from '../../../assets/downbutton.svg';
+import {DownButtonIcon} from '../../../assets';
 
 const Dropdown = ({label, placeholder, value, options, onSelect}) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -90,8 +90,6 @@ const styles = StyleSheet.create({
   },
   iconWrapper: {
     marginLeft: 8,
-    // catatan: 'transition' sebenarnya tidak didukung di React Native,
-    // tapi dibiarkan karena kamu minta styling tidak diubah
     transition: 'transform 0.3s',
   },
   iconRotated: {

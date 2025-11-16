@@ -9,8 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import InputField from '../../components/molecules/InputField';
-import {TextBase} from '../../components/atoms/TextBase';
+import {InputField, TextBase, Gap} from '../../components';
 
 const {width: screenWidth} = Dimensions.get('window');
 
@@ -41,6 +40,7 @@ export default function ProfileScreen() {
   return (
     <View style={styles.fullScreenContainer}>
       <StatusBar barStyle="light-content" backgroundColor={HEADER_COLOR} />
+      <Gap height={24} />
 
       <View style={styles.headerContainer} />
 

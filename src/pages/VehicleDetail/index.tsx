@@ -1,10 +1,8 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
 
-import CustomHeader from '../../components/molecules/CustomHeader';
-import CheckmarkIcon from '../../assets/checkmark.svg';
-import SuccessPopup from '../../components/molecules/SuccessPopup';
-import Button from '../../components/atoms/Button';
+import {CustomHeader, SuccessPopup, Button} from '../../components';
+import {CheckmarkIcon} from '../../assets';
 
 const vehicleData = {
   id: 'DB3527AP',
