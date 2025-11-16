@@ -1,16 +1,18 @@
 // metro.config.js
 const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 
-const defaultConfig = getDefaultConfig(__dirname);
-
-module.exports = mergeConfig(defaultConfig, {
+const config = {
   transformer: {
-    // Pakai transformer agar .svg bisa diimport sebagai komponen
     babelTransformerPath: require.resolve('react-native-svg-transformer'),
   },
   resolver: {
-    // Keluarkan 'svg' dari assetExts dan masukkan ke sourceExts
-    assetExts: defaultConfig.resolver.assetExts.filter(ext => ext !== 'svg'),
-    sourceExts: [...defaultConfig.resolver.sourceExts, 'svg'],
+    // Memastikan PNG/JPG/dll. TETAP ada di assetExts
+    assetExts: getDefaultConfig(__dirname).resolver.assetExts.filter(
+      ext => ext !== 'svg',
+    ),
+    // Menambahkan 'svg' ke sourceExts
+    sourceExts: [...getDefaultConfig(__dirname).resolver.sourceExts, 'svg'],
   },
-});
+};
+
+module.exports = mergeConfig(getDefaultConfig(__dirname), config);

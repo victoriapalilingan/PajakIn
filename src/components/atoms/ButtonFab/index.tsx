@@ -1,53 +1,66 @@
+import {StyleSheet, TouchableOpacity, Platform} from 'react-native';
 import React from 'react';
-import {TouchableOpacity, View, StyleSheet, ViewStyle} from 'react-native';
-// Hapus DimensionValue dari import di sini
+import PropTypes from 'prop-types';
+import Svg, {Circle, Defs, LinearGradient, Stop} from 'react-native-svg';
 
-// Definisikan Interface
-interface ButtonFabProps {
-  size?: number; // Misal 56
-  onPress: () => void;
-  icon: React.ReactNode;
-  style?: ViewStyle;
-}
-
-export default function ButtonFab({
-  size = 56,
-  onPress,
-  icon,
-  style,
-}: ButtonFabProps): JSX.Element {
-  const radius = size / 2;
+const ButtonFab = ({size, onPress, icon}) => {
+  const fabSize = size || 63;
+  const Icon = icon;
 
   return (
     <TouchableOpacity
-      activeOpacity={0.8}
+      style={[styles.container, {width: fabSize, height: fabSize}]}
       onPress={onPress}
-      style={[
-        styles.base,
-        {
-          width: size,
-          height: size,
-          borderRadius: radius,
-        },
-        style,
-      ]}>
-      <View style={styles.iconContainer}>{icon}</View>
+      activeOpacity={0.85}>
+      <Svg width={fabSize} height={fabSize} style={styles.svgCircle}>
+        <Defs>
+          <LinearGradient id="fabGradient" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor="#F4C542" stopOpacity="1" />
+            <Stop offset="1" stopColor="#FFE9B0" stopOpacity="1" />
+          </LinearGradient>
+        </Defs>
+        <Circle
+          cx={fabSize / 2}
+          cy={fabSize / 2}
+          r={(fabSize - 2) / 2}
+          fill="url(#fabGradient)"
+        />
+      </Svg>
+      <Icon width={30} height={30} color="#2A6E54" style={styles.icon} />
     </TouchableOpacity>
   );
-}
+};
+
+ButtonFab.propTypes = {
+  size: PropTypes.number,
+  onPress: PropTypes.func,
+  icon: PropTypes.elementType.isRequired,
+};
+
+export default ButtonFab;
 
 const styles = StyleSheet.create({
-  base: {
-    backgroundColor: '#FEB800',
-    justifyContent: 'center',
+  container: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 100,
     alignItems: 'center',
-    elevation: 6,
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowOffset: {width: 0, height: 4},
-    shadowRadius: 6,
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 6},
+        shadowOpacity: 0.25,
+        shadowRadius: 10,
+      },
+      android: {
+        elevation: 10,
+      },
+    }),
   },
-  iconContainer: {
-    // Optional styling for the icon wrapper
+  svgCircle: {
+    position: 'absolute',
+  },
+  icon: {
+    zIndex: 1,
   },
 });
