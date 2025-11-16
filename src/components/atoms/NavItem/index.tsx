@@ -3,10 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import IconSvg from '../IconSvg';
 
-const NavItem = ({label, icon, active, onPress}) => {
-  const isActive = active || false;
-  const iconColor = isActive ? '#FFC727' : '#FFFFFF';
-  const labelColor = isActive ? '#FFFFFF' : 'rgba(255,255,255,0.9)';
+const NavItem = ({label, active, activeIcon, inactiveIcon, onPress}) => {
+  const IconSource = active ? activeIcon : inactiveIcon;
+  const labelColor = active ? '#FFFFFF' : 'rgba(255,255,255,0.9)';
 
   return (
     <TouchableOpacity
@@ -14,7 +13,7 @@ const NavItem = ({label, icon, active, onPress}) => {
       onPress={onPress}
       activeOpacity={0.7}>
       <View style={styles.iconWrapper}>
-        <IconSvg source={icon} size={38} color={iconColor} />
+        <IconSvg source={IconSource} size={38} />
       </View>
       <Text style={[styles.label, {color: labelColor}]}>{label}</Text>
     </TouchableOpacity>
@@ -23,8 +22,9 @@ const NavItem = ({label, icon, active, onPress}) => {
 
 NavItem.propTypes = {
   label: PropTypes.string.isRequired,
-  icon: PropTypes.elementType.isRequired,
   active: PropTypes.bool,
+  activeIcon: PropTypes.elementType.isRequired,
+  inactiveIcon: PropTypes.elementType.isRequired,
   onPress: PropTypes.func,
 };
 

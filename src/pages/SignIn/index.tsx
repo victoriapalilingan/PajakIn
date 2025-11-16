@@ -63,7 +63,7 @@ const LoginScreen = ({navigation}: any) => {
           <View style={{marginLeft: 25}}>
             <Button
               label="Login"
-              onPress={() => navigation.replace('Home')}
+              onPress={() => navigation.replace('Main')}
               color="#2A6E54"
               textColor="#FFFFFF"
               width={255}

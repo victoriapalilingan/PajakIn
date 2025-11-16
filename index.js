@@ -4,4 +4,4 @@ import AddVehicle from './src/pages/AddVehicle';
 import App from './App';
 import Notification from './src/pages/Notification';
 
-AppRegistry.registerComponent(appName, () => Notification);
+AppRegistry.registerComponent(appName, () => App);

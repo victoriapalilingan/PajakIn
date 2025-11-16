@@ -25,8 +25,9 @@ const BottomNavigation = ({
     <NavItem
       key={item.key}
       label={item.label}
-      icon={item.icon}
       active={activeKey === item.key}
+      activeIcon={item.activeIcon}
+      inactiveIcon={item.inactiveIcon}
       onPress={() => onTabPress(item.key)}
     />
   );
@@ -55,7 +56,8 @@ BottomNavigation.propTypes = {
     PropTypes.shape({
       key: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
-      icon: PropTypes.elementType.isRequired,
+      activeIcon: PropTypes.elementType.isRequired,
+      inactiveIcon: PropTypes.elementType.isRequired,
     }),
   ).isRequired,
   activeKey: PropTypes.string.isRequired,
