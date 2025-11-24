@@ -22,6 +22,10 @@ import {
 
 import {IdentificationIcon, MaleIcon, EmailIcon, PassIcon} from '../../assets';
 
+import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import {showMessage} from 'react-native-flash-message';
+import {getDatabase, ref, set} from 'firebase/database';
+
 const fields = [
   {
     label: 'NIK',
@@ -60,17 +64,127 @@ const SignUp = ({navigation}) => {
   const [isAgreed, setIsAgreed] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
+  const [nik, setNik] = useState('');
+  const [fullname, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // mapping TextInput dengan state berdasarkan label
+  const getFieldProps = label => {
+    switch (label) {
+      case 'NIK':
+        return {
+          value: nik,
+          onChangeText: setNik,
+        };
+      case 'Nama Lengkap':
+        return {
+          value: fullname,
+          onChangeText: setFullName,
+        };
+      case 'Email atau No Hp':
+        return {
+          value: email,
+          onChangeText: setEmail,
+        };
+      case 'Password':
+        return {
+          value: password,
+          onChangeText: setPassword,
+        };
+      case 'Konfirmasi Password':
+        return {
+          value: confirmPassword,
+          onChangeText: setConfirmPassword,
+        };
+      default:
+        return {};
+    }
+  };
+
+  const onSubmit = async () => {
+    if (!isAgreed) {
+      showMessage({
+        message:
+          'Harap setujui Ketentuan dan Kebijakan Privasi terlebih dahulu',
+        type: 'danger',
+      });
+      return;
+    }
+
+    if (!nik || !fullname || !email || !password || !confirmPassword) {
+      showMessage({
+        message: 'Semua field wajib diisi',
+        type: 'danger',
+      });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      showMessage({
+        message: 'Password dan Konfirmasi Password tidak sama',
+        type: 'danger',
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const auth = getAuth(); // pakai default app yg sudah di-init di App.tsx
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password,
+      );
+
+      const user = userCredential.user;
+      console.log('User created:', user);
+
+      // Simpan data tambahan ke Realtime Database
+      const db = getDatabase();
+      await set(ref(db, 'users/' + user.uid), {
+        uid: user.uid,
+        nik: nik,
+        fullname: fullname,
+        email: email.trim(),
+        createdAt: new Date().toISOString(),
+      });
+
+      setShowSuccess(true);
+    } catch (error) {
+      console.log('Signup error code:', error.code);
+      console.log('Signup error msg:', error.message);
+
+      let msg = 'Gagal mendaftarkan akun';
+
+      if (error.code === 'auth/email-already-in-use') {
+        msg = 'Email sudah terdaftar, silakan gunakan email lain atau masuk.';
+      } else if (error.code === 'auth/invalid-email') {
+        msg = 'Format email tidak valid.';
+      } else if (error.code === 'auth/weak-password') {
+        msg = 'Password terlalu lemah, minimal 6 karakter.';
+      }
+
+      showMessage({
+        message: msg,
+        type: 'danger',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const goToSignIn = () => {
     setShowSuccess(false);
     navigation.navigate('SignIn');
   };
 
   const handleContinue = () => {
-    if (!isAgreed) {
-      console.log('Harap setujui Ketentuan dan Kebijakan Privasi');
-      return;
-    }
-    setShowSuccess(true);
+    // tombol "Daftar Sekarang" sekarang benar2 mendaftar
+    onSubmit();
   };
 
   return (
@@ -101,12 +215,15 @@ const SignUp = ({navigation}) => {
               </Text>
               <Gap height={18} />
 
-              {fields.map((f, idx) => (
-                <View key={f.label}>
-                  <TextInput {...f} width={255} height={36} />
-                  {idx < fields.length - 1 && <Gap height={2} />}
-                </View>
-              ))}
+              {fields.map((f, idx) => {
+                const fieldProps = getFieldProps(f.label);
+                return (
+                  <View key={f.label}>
+                    <TextInput {...f} {...fieldProps} width={255} height={36} />
+                    {idx < fields.length - 1 && <Gap height={2} />}
+                  </View>
+                );
+              })}
 
               <Gap height={4} />
 
@@ -122,12 +239,13 @@ const SignUp = ({navigation}) => {
                 <Gap height={16} />
 
                 <Button
-                  label="Daftar Sekarang"
+                  label={loading ? 'Memproses...' : 'Daftar Sekarang'}
                   onPress={handleContinue}
                   color="#2A6E54"
                   textColor="#FFFFFF"
                   width={255}
                   height={38}
+                  disabled={loading}
                 />
 
                 <Gap height={10} />
