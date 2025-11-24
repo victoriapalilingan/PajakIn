@@ -13,6 +13,10 @@ import UnggahBerkas from './src/pages/AddDocument';
 
 import MainTabs from './src/navigation/MainTabs';
 
+import FlashMessage from 'react-native-flash-message';
+
+import './src/config/Firebase';
+
 const Stack = createNativeStackNavigator();
 
 const App = () => (
@@ -28,9 +32,11 @@ const App = () => (
       <Stack.Screen name="Main" component={MainTabs} />
       <Stack.Screen name="AddVehicle" component={AddVehicle} />
       <Stack.Screen name="AddDocument" component={UnggahBerkas} />
+
       <Stack.Screen name="DetailVehicle" component={VehicleDetailScreen} />
       <Stack.Screen name="EditVehicle" component={EditVehicle} />
     </Stack.Navigator>
+    <FlashMessage position="top" />
   </NavigationContainer>
 );
 

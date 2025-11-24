@@ -1,44 +1,208 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
 
 import {CustomHeader, SuccessPopup, Button} from '../../components';
 import {CheckmarkIcon} from '../../assets';
 
-const vehicleData = {
-  id: 'DB3527AP',
-  type: 'Mobil',
-  plateNumber: 'DB 3527 AP',
-  brandYear: 'Toyota Innova (2020)',
-  dueDate: '2025 - 08 - 15',
-  reminder: true,
-  reminderH7: false,
-  reminderH3: true,
+import {getAuth} from 'firebase/auth';
+import {getDatabase, ref, onValue, remove} from 'firebase/database';
+
+const formatDisplayDate = dateString => {
+  if (!dateString || dateString === '-') {
+    return '-';
+  }
+
+  try {
+    const date = new Date(dateString);
+    const day = date.getDate();
+
+    const monthNames = [
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
+    ];
+
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${day} ${month} ${year}`;
+  } catch {
+    return dateString;
+  }
 };
 
-const VehicleDetailScreen = ({navigation}) => {
+const VehicleDetailScreen = ({navigation, route}) => {
+  const vehicleId = route?.params?.vehicleId;
+
+  const [vehicle, setVehicle] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [successVisible, setSuccessVisible] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  // Fetch detail kendaraan
+  useEffect(() => {
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+
+    if (!currentUser || !vehicleId) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+
+    const db = getDatabase();
+    const vehicleRef = ref(db, `vehicles/${currentUser.uid}/${vehicleId}`);
+
+    const unsubscribe = onValue(
+      vehicleRef,
+      snapshot => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+
+          setVehicle({
+            id: vehicleId,
+            noPolisi: data.noPolisi || '-',
+            jenisKendaraan: data.jenisKendaraan || '-',
+            merekTahun: data.merekTahun || '-',
+            tanggalJatuhTempo: data.tanggalJatuhTempo || '-',
+            reminderActive: data.reminderActive ?? true,
+            ...data,
+          });
+        } else {
+          setVehicle(null);
+        }
+        setLoading(false);
+      },
+      () => {
+        setLoading(false);
+      },
+    );
+
+    return () => unsubscribe();
+  }, [vehicleId]);
 
   const handleDeleteVehicle = () => {
-    console.log('Vehicle deleted:', vehicleData);
-    setSuccessVisible(true);
+    if (!vehicleId) return;
+
+    Alert.alert(
+      'Konfirmasi Hapus',
+      'Apakah Anda yakin ingin menghapus kendaraan ini?',
+      [
+        {text: 'Batal', style: 'cancel'},
+        {
+          text: 'Hapus',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setDeleting(true);
+              const auth = getAuth();
+              const uid = auth.currentUser?.uid;
+
+              if (!uid) {
+                Alert.alert('Error', 'User tidak ditemukan');
+                return;
+              }
+
+              const db = getDatabase();
+              await remove(ref(db, `vehicles/${uid}/${vehicleId}`));
+
+              setSuccessVisible(true);
+            } catch (err) {
+              console.log('Delete error:', err);
+              Alert.alert('Error', 'Gagal menghapus kendaraan');
+            } finally {
+              setDeleting(false);
+            }
+          },
+        },
+      ],
+    );
   };
+
+  if (loading) {
+    return (
+      <View style={styles.fullScreenContainer}>
+        <CustomHeader
+          title="Detail Kendaraan"
+          titleSize={22}
+          onBackPress={() => navigation.goBack()}
+        />
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color="#2E5E4E" />
+          <Text style={styles.loadingText}>Memuat data kendaraan...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  if (!vehicleId || !vehicle) {
+    return (
+      <View style={styles.fullScreenContainer}>
+        <CustomHeader
+          title="Detail Kendaraan"
+          titleSize={22}
+          onBackPress={() => navigation.goBack()}
+        />
+        <View style={styles.centerContainer}>
+          <Text style={styles.errorText}>
+            {!vehicleId
+              ? 'ID kendaraan tidak valid'
+              : 'Data kendaraan tidak ditemukan'}
+          </Text>
+
+          <Button
+            label="Kembali"
+            onPress={() => navigation.goBack()}
+            width={150}
+            height={45}
+            color="#2E5E4E"
+            textColor="#FFFFFF"
+            fontSize={16}
+          />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.fullScreenContainer}>
       <CustomHeader
         title="Detail Kendaraan"
         titleSize={22}
-        onBackPress={() => navigation?.goBack()}
+        onBackPress={() => navigation.goBack()}
       />
 
       <ScrollView style={styles.scrollViewContent}>
         <View style={styles.content}>
+          {/* Data Kendaraan */}
           <View style={styles.card}>
             <Text style={styles.label}>Nomor Polisi</Text>
-            <Text style={styles.plateNumber}>DB 3527 AP</Text>
-            <Text style={styles.vehicleInfo}>Mobil, Toyota Innova (2020)</Text>
+            <Text style={styles.plateNumber}>{vehicle.noPolisi}</Text>
+
+            <Text style={styles.vehicleInfo}>
+              {vehicle.jenisKendaraan === 'mobil' ? 'Mobil' : 'Motor'},{' '}
+              {vehicle.merekTahun}
+            </Text>
           </View>
 
+          {/* Status Pajak */}
           <View style={styles.card}>
             <Text style={styles.label}>Status Pajak</Text>
 
@@ -53,47 +217,60 @@ const VehicleDetailScreen = ({navigation}) => {
               </View>
             </View>
 
-            <Text style={styles.dateLabel}>Tanggal Jatuh tempo Pajak</Text>
-            <Text style={styles.dateValue}>2025 - 08 - 15</Text>
+            <Text style={styles.dateLabel}>Tanggal Jatuh Tempo Pajak</Text>
+            <Text style={styles.dateValue}>
+              {formatDisplayDate(vehicle.tanggalJatuhTempo)}
+            </Text>
+          </View>
+
+          {/* Reminder */}
+          <View style={styles.card}>
+            <Text style={styles.label}>Pengingat Pajak</Text>
+            <Text style={styles.reminderStatus}>
+              {vehicle.reminderActive ? '🔔 Aktif' : '🔕 Nonaktif'}
+            </Text>
           </View>
         </View>
       </ScrollView>
 
+      {/* Tombol Edit & Hapus */}
       <View style={styles.fixedButtonContainer}>
         <View style={styles.buttonWrapper}>
           <Button
             label="Edit"
             onPress={() =>
-              navigation?.navigate('EditVehicle', {vehicle: vehicleData})
+              navigation.navigate('EditVehicle', {vehicleId: vehicle.id})
             }
             width="100%"
             height={51}
             color="#FFC107"
-            textColor="#FFFFFFFF"
+            textColor="#FFFFFF"
             fontSize={20}
+            disabled={deleting}
           />
         </View>
 
         <View style={styles.buttonWrapper}>
           <Button
-            label="Hapus"
+            label={deleting ? 'Menghapus...' : 'Hapus'}
             onPress={handleDeleteVehicle}
             width="100%"
             height={51}
             color="#E53935"
             textColor="#FFFFFF"
             fontSize={20}
+            disabled={deleting}
           />
         </View>
       </View>
 
+      {/* Popup Berhasil Hapus */}
       <SuccessPopup
         visible={successVisible}
         title="Kendaraan berhasil dihapus"
         buttonLabel="Kembali ke Home"
         buttonWidth={230}
         buttonHeight={51}
-        onClose={() => setSuccessVisible(false)}
         onButtonPress={() => {
           setSuccessVisible(false);
           navigation.reset({
@@ -106,10 +283,31 @@ const VehicleDetailScreen = ({navigation}) => {
   );
 };
 
+export default VehicleDetailScreen;
+
 const styles = StyleSheet.create({
   fullScreenContainer: {
     flex: 1,
     backgroundColor: '#E8F5E9',
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: '#2E5E4E',
+    fontFamily: 'Montserrat-Regular',
+  },
+  errorText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontFamily: 'Montserrat-Regular',
   },
   scrollViewContent: {
     flex: 1,
@@ -133,7 +331,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#2E5E4E',
     marginBottom: 8,
-    fontWeight: '500',
     fontFamily: 'Montserrat-SemiBold',
   },
   plateNumber: {
@@ -160,24 +357,27 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 22,
-    fontWeight: 'bold',
     color: '#FFC107',
     fontFamily: 'Montserrat-SemiBold',
   },
   dateLabel: {
     fontSize: 18,
-    fontFamily: 'Montserrat-regular',
-    color: '#2E5E4E',
     marginTop: 15,
     marginBottom: 5,
+    color: '#2E5E4E',
+    fontFamily: 'Montserrat-Regular',
   },
   dateValue: {
     fontSize: 16,
     color: '#2E5E4E',
-    fontWeight: '500',
     fontFamily: 'Montserrat-SemiBold',
   },
-
+  reminderStatus: {
+    fontSize: 18,
+    marginTop: 5,
+    color: '#2E5E4E',
+    fontFamily: 'Montserrat-SemiBold',
+  },
   fixedButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -191,9 +391,6 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     flex: 1,
-    marginRight: 5,
-    marginLeft: 5,
+    marginHorizontal: 5,
   },
 });
-
-export default VehicleDetailScreen;

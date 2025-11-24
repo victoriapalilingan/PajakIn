@@ -1,5 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, ScrollView, Switch, Text, Alert} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Switch,
+  Text,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
+
+import {getAuth} from 'firebase/auth';
+import {getDatabase, ref, update, onValue, push, set} from 'firebase/database';
 
 import {
   CustomHeader,
@@ -8,6 +19,7 @@ import {
   Dropdown,
   DatePicker,
 } from '../../components';
+
 import {MobilIcon, MotorIcon} from '../../assets';
 
 const vehicleOptions = [
@@ -16,106 +28,132 @@ const vehicleOptions = [
 ];
 
 const EditVehicle = ({navigation, route}) => {
-  const vehicleData = route?.params?.vehicleData;
+  const vehicleId = route?.params?.vehicleId;
 
   const [jenisKendaraan, setJenisKendaraan] = useState('');
   const [noPolisi, setNoPolisi] = useState('');
   const [merekTahun, setMerekTahun] = useState('');
   const [tanggalJatuhTempo, setTanggalJatuhTempo] = useState(null);
   const [reminderActive, setReminderActive] = useState(true);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch kendaraan
   useEffect(() => {
-    if (!vehicleData) {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (!user || !vehicleId) {
+      setLoading(false);
+      Alert.alert('Error', 'Data kendaraan tidak ditemukan', [
+        {text: 'OK', onPress: () => navigation.goBack()},
+      ]);
       return;
     }
 
-    setJenisKendaraan(vehicleData.jenisKendaraan || '');
-    setNoPolisi(vehicleData.noPolisi || '');
-    setMerekTahun(vehicleData.merekTahun || '');
+    const db = getDatabase();
+    const vehicleRef = ref(db, `vehicles/${user.uid}/${vehicleId}`);
 
-    if (vehicleData.tanggalJatuhTempo) {
-      const date =
-        vehicleData.tanggalJatuhTempo instanceof Date
-          ? vehicleData.tanggalJatuhTempo
-          : new Date(vehicleData.tanggalJatuhTempo);
-      setTanggalJatuhTempo(date);
-    }
+    const unsubscribe = onValue(
+      vehicleRef,
+      snapshot => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
 
-    setReminderActive(
-      vehicleData.reminderActive !== undefined
-        ? vehicleData.reminderActive
-        : true,
+          setJenisKendaraan(data.jenisKendaraan || '');
+          setNoPolisi(data.noPolisi || '');
+          setMerekTahun(data.merekTahun || '');
+
+          if (data.tanggalJatuhTempo) {
+            const date =
+              data.tanggalJatuhTempo instanceof Date
+                ? data.tanggalJatuhTempo
+                : new Date(data.tanggalJatuhTempo);
+
+            setTanggalJatuhTempo(date);
+          }
+
+          setReminderActive(
+            data.reminderActive !== undefined ? data.reminderActive : true,
+          );
+        } else {
+          Alert.alert('Error', 'Data kendaraan tidak ditemukan', [
+            {text: 'OK', onPress: () => navigation.goBack()},
+          ]);
+        }
+
+        setLoading(false);
+      },
+      () => {
+        Alert.alert('Error', 'Gagal memuat data kendaraan', [
+          {text: 'OK', onPress: () => navigation.goBack()},
+        ]);
+        setLoading(false);
+      },
     );
-  }, [vehicleData]);
 
-  const handleUpdate = () => {
-    if (!jenisKendaraan) {
-      Alert.alert('Perhatian', 'Pilih jenis kendaraan terlebih dahulu');
-      return;
-    }
-    if (!noPolisi) {
-      Alert.alert('Perhatian', 'Masukkan nomor polisi');
-      return;
-    }
-    if (!merekTahun) {
-      Alert.alert('Perhatian', 'Masukkan merek dan tahun kendaraan');
-      return;
-    }
-    if (!tanggalJatuhTempo) {
-      Alert.alert('Perhatian', 'Pilih tanggal jatuh tempo pajak');
-      return;
-    }
+    return () => unsubscribe();
+  }, [vehicleId, navigation]);
+
+  // Update data kendaraan
+  const handleUpdate = async () => {
+    if (!jenisKendaraan)
+      return Alert.alert('Perhatian', 'Pilih jenis kendaraan');
+    if (!noPolisi) return Alert.alert('Perhatian', 'Masukkan nomor polisi');
+    if (!merekTahun)
+      return Alert.alert('Perhatian', 'Masukkan merek & tahun kendaraan');
+    if (!tanggalJatuhTempo)
+      return Alert.alert('Perhatian', 'Pilih tanggal jatuh tempo pajak');
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (!user) return Alert.alert('Perhatian', 'Silakan login terlebih dahulu');
+
+    const now = new Date();
 
     const updatedData = {
-      id: vehicleData?.id,
       jenisKendaraan,
       noPolisi,
       merekTahun,
-      tanggalJatuhTempo,
+      tanggalJatuhTempo: tanggalJatuhTempo.toISOString(),
       reminderActive,
+      updatedAt: now.toISOString(),
     };
 
-    console.log('Data Sebelum Update:', vehicleData);
-    console.log('Data Setelah Update:', updatedData);
+    try {
+      const db = getDatabase();
 
-    Alert.alert('Berhasil', 'Data kendaraan berhasil diperbarui', [
-      {
-        text: 'OK',
-        onPress: () => {
-          navigation.navigate('DetailVehicle', {
-            vehicleData: updatedData,
-            updated: true,
-          });
-        },
-      },
-    ]);
+      await update(ref(db, `vehicles/${user.uid}/${vehicleId}`), updatedData);
+
+      // Kirim notifikasi
+      const notifRef = push(ref(db, `notifications/${user.uid}`));
+
+      await set(notifRef, {
+        id: notifRef.key,
+        type: 'success',
+        title: `Data kendaraan ${noPolisi} diperbarui`,
+        subtitle: `Edit kendaraan • ${now.toLocaleString('id-ID')}`,
+        timestamp: now.getTime(),
+        category: 'vehicle-edit',
+        read: false,
+      });
+
+      Alert.alert('Berhasil', 'Data kendaraan berhasil diperbarui', [
+        {text: 'OK', onPress: () => navigation.goBack()},
+      ]);
+    } catch (error) {
+      Alert.alert('Gagal', 'Gagal memperbarui kendaraan, coba lagi.');
+    }
   };
 
-  const handleDelete = () => {
-    Alert.alert(
-      'Konfirmasi Hapus',
-      'Apakah Anda yakin ingin menghapus kendaraan ini?',
-      [
-        {text: 'Batal', style: 'cancel'},
-        {
-          text: 'Hapus',
-          style: 'destructive',
-          onPress: () => {
-            console.log('Deleted vehicle ID:', vehicleData?.id);
-
-            Alert.alert('Berhasil', 'Kendaraan berhasil dihapus', [
-              {
-                text: 'OK',
-                onPress: () => {
-                  navigation.navigate('DetailVehicle');
-                },
-              },
-            ]);
-          },
-        },
-      ],
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#2D6A4F" />
+        <Text style={styles.loadingText}>Memuat data kendaraan...</Text>
+      </View>
     );
-  };
+  }
 
   return (
     <View style={styles.container}>
@@ -196,6 +234,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F4FFF4',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F4FFF4',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: '#2A6E53',
+    fontFamily: 'Montserrat-Medium',
+  },
   scrollView: {
     flex: 1,
   },
@@ -221,7 +271,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     paddingVertical: 20,
     backgroundColor: '#F4FFF4',
-    borderTopColor: '#E0E0E0',
     marginTop: 10,
   },
   updateButton: {
