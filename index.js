@@ -9,5 +9,6 @@ import EditVehicle from './src/pages/EditVehicle';
 import SignUp from './src/pages/SignUp';
 import {Edit} from 'lucide-react-native';
 import ListDocumentScreen from './src/pages/ListDocument';
+import UnggahBerkas from './src/pages/AddDocument';
 
 AppRegistry.registerComponent(appName, () => App);

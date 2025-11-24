@@ -21,8 +21,6 @@ import {
 import {NullPhoto} from '../../assets';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {showMessage} from 'react-native-flash-message';
-
-// Custom hook
 import useProfile from '../../hooks/useProfile';
 
 const {width: screenWidth} = Dimensions.get('window');
@@ -48,6 +46,10 @@ const ProfileScreen = ({navigation}) => {
 
   const photoSource = photoBase64 ? {uri: photoBase64} : NullPhoto;
 
+  const flash = (message, type) => {
+    showMessage({message, type});
+  };
+
   const handleChange = (field, value) => {
     setProfile(prev => ({...prev, [field]: value}));
   };
@@ -63,40 +65,29 @@ const ProfileScreen = ({navigation}) => {
       });
 
       if (result.didCancel) {
-        showMessage({
-          message: 'Pemilihan foto dibatalkan',
-          type: 'warning',
-        });
+        flash('Pemilihan foto dibatalkan', 'warning');
         return;
       }
 
       if (result.errorCode) {
-        showMessage({
-          message: 'Gagal memilih foto: ' + result.errorMessage,
-          type: 'danger',
-        });
+        flash('Gagal memilih foto: ' + result.errorMessage, 'danger');
         return;
       }
 
-      if (result.assets && result.assets.length > 0) {
-        const asset = result.assets[0];
-        const base64 = `data:${asset.type || 'image/jpeg'};base64,${
-          asset.base64
-        }`;
-
-        setPhotoBase64(base64);
-
-        showMessage({
-          message: 'Foto berhasil dipilih',
-          type: 'success',
-        });
+      const asset = result.assets?.[0];
+      if (!asset?.base64) {
+        flash('Gagal memproses foto', 'danger');
+        return;
       }
+
+      const base64 = `data:${asset.type || 'image/jpeg'};base64,${
+        asset.base64
+      }`;
+      setPhotoBase64(base64);
+      flash('Foto berhasil dipilih', 'success');
     } catch (error) {
       console.log('Image picker error:', error);
-      showMessage({
-        message: 'Terjadi kesalahan saat memilih foto',
-        type: 'danger',
-      });
+      flash('Terjadi kesalahan saat memilih foto', 'danger');
     }
   };
 
@@ -107,17 +98,12 @@ const ProfileScreen = ({navigation}) => {
     }
 
     setSaving(true);
-
     try {
       await saveProfile(profile);
-
-      showMessage({
-        message: 'Profil berhasil disimpan!',
-        type: 'success',
-      });
+      flash('Profil berhasil disimpan!', 'success');
     } catch (error) {
       console.log('Save profile error:', error);
-      Alert.alert('Error', error.message || 'Gagal menyimpan profil');
+      Alert.alert('Error', error?.message || 'Gagal menyimpan profil');
     } finally {
       setSaving(false);
     }
@@ -125,21 +111,11 @@ const ProfileScreen = ({navigation}) => {
 
   const performLogout = async () => {
     setLoggingOut(true);
-
     try {
       await logout();
-
       setLogoutVisible(false);
-
-      showMessage({
-        message: 'Berhasil logout',
-        type: 'success',
-      });
-
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'SignIn'}],
-      });
+      flash('Berhasil logout', 'success');
+      navigation.reset({index: 0, routes: [{name: 'SignIn'}]});
     } catch (error) {
       console.log('Logout error:', error);
       Alert.alert('Error', 'Gagal logout. Silakan coba lagi.');
@@ -147,10 +123,6 @@ const ProfileScreen = ({navigation}) => {
     } finally {
       setLoggingOut(false);
     }
-  };
-
-  const handleLogout = () => {
-    setLogoutVisible(true);
   };
 
   if (loading) {
@@ -243,7 +215,7 @@ const ProfileScreen = ({navigation}) => {
 
           <Button
             label="Logout"
-            onPress={handleLogout}
+            onPress={() => setLogoutVisible(true)}
             width={screenWidth * 0.85}
             height={50}
             color="#D9534F"
@@ -254,7 +226,6 @@ const ProfileScreen = ({navigation}) => {
         <View style={styles.scrollSpacer} />
       </ScrollView>
 
-      {/* Popup Konfirmasi Logout */}
       <ConfirmationPopup
         visible={logoutVisible}
         onClose={() => setLogoutVisible(false)}
