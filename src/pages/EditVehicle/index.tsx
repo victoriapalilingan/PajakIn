@@ -9,9 +9,6 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import {getAuth} from 'firebase/auth';
-import {getDatabase, ref, update, onValue, push, set} from 'firebase/database';
-
 import {
   CustomHeader,
   Button,
@@ -21,6 +18,12 @@ import {
 } from '../../components';
 
 import {MobilIcon, MotorIcon} from '../../assets';
+
+// Custom hooks
+import {useVehicle} from '../../hooks/useVehicles';
+
+// Utils
+import {parseDate} from '../../utils/Date/';
 
 const vehicleOptions = [
   {label: 'Mobil', value: 'mobil', icon: <MobilIcon width={24} height={24} />},
@@ -35,81 +38,46 @@ const EditVehicle = ({navigation, route}) => {
   const [merekTahun, setMerekTahun] = useState('');
   const [tanggalJatuhTempo, setTanggalJatuhTempo] = useState(null);
   const [reminderActive, setReminderActive] = useState(true);
-  const [loading, setLoading] = useState(true);
 
-  // Fetch kendaraan
+  // Use custom hook for single vehicle
+  const {vehicle, loading, error, updateVehicleData} = useVehicle(vehicleId);
+
+  // Populate form when vehicle data is loaded
   useEffect(() => {
-    const auth = getAuth();
-    const user = auth.currentUser;
+    if (vehicle) {
+      setJenisKendaraan(vehicle.jenisKendaraan || '');
+      setNoPolisi(vehicle.noPolisi || '');
+      setMerekTahun(vehicle.merekTahun || '');
+      setTanggalJatuhTempo(parseDate(vehicle.tanggalJatuhTempo));
+      setReminderActive(
+        vehicle.reminderActive !== undefined ? vehicle.reminderActive : true,
+      );
+    }
+  }, [vehicle]);
 
-    if (!user || !vehicleId) {
-      setLoading(false);
+  // Handle error
+  useEffect(() => {
+    if (error) {
       Alert.alert('Error', 'Data kendaraan tidak ditemukan', [
         {text: 'OK', onPress: () => navigation.goBack()},
       ]);
-      return;
     }
+  }, [error, navigation]);
 
-    const db = getDatabase();
-    const vehicleRef = ref(db, `vehicles/${user.uid}/${vehicleId}`);
-
-    const unsubscribe = onValue(
-      vehicleRef,
-      snapshot => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-
-          setJenisKendaraan(data.jenisKendaraan || '');
-          setNoPolisi(data.noPolisi || '');
-          setMerekTahun(data.merekTahun || '');
-
-          if (data.tanggalJatuhTempo) {
-            const date =
-              data.tanggalJatuhTempo instanceof Date
-                ? data.tanggalJatuhTempo
-                : new Date(data.tanggalJatuhTempo);
-
-            setTanggalJatuhTempo(date);
-          }
-
-          setReminderActive(
-            data.reminderActive !== undefined ? data.reminderActive : true,
-          );
-        } else {
-          Alert.alert('Error', 'Data kendaraan tidak ditemukan', [
-            {text: 'OK', onPress: () => navigation.goBack()},
-          ]);
-        }
-
-        setLoading(false);
-      },
-      () => {
-        Alert.alert('Error', 'Gagal memuat data kendaraan', [
-          {text: 'OK', onPress: () => navigation.goBack()},
-        ]);
-        setLoading(false);
-      },
-    );
-
-    return () => unsubscribe();
-  }, [vehicleId, navigation]);
-
-  // Update data kendaraan
   const handleUpdate = async () => {
-    if (!jenisKendaraan)
+    // Validation
+    if (!jenisKendaraan) {
       return Alert.alert('Perhatian', 'Pilih jenis kendaraan');
-    if (!noPolisi) return Alert.alert('Perhatian', 'Masukkan nomor polisi');
-    if (!merekTahun)
+    }
+    if (!noPolisi) {
+      return Alert.alert('Perhatian', 'Masukkan nomor polisi');
+    }
+    if (!merekTahun) {
       return Alert.alert('Perhatian', 'Masukkan merek & tahun kendaraan');
-    if (!tanggalJatuhTempo)
+    }
+    if (!tanggalJatuhTempo) {
       return Alert.alert('Perhatian', 'Pilih tanggal jatuh tempo pajak');
-
-    const auth = getAuth();
-    const user = auth.currentUser;
-
-    if (!user) return Alert.alert('Perhatian', 'Silakan login terlebih dahulu');
-
-    const now = new Date();
+    }
 
     const updatedData = {
       jenisKendaraan,
@@ -117,26 +85,10 @@ const EditVehicle = ({navigation, route}) => {
       merekTahun,
       tanggalJatuhTempo: tanggalJatuhTempo.toISOString(),
       reminderActive,
-      updatedAt: now.toISOString(),
     };
 
     try {
-      const db = getDatabase();
-
-      await update(ref(db, `vehicles/${user.uid}/${vehicleId}`), updatedData);
-
-      // Kirim notifikasi
-      const notifRef = push(ref(db, `notifications/${user.uid}`));
-
-      await set(notifRef, {
-        id: notifRef.key,
-        type: 'success',
-        title: `Data kendaraan ${noPolisi} diperbarui`,
-        subtitle: `Edit kendaraan • ${now.toLocaleString('id-ID')}`,
-        timestamp: now.getTime(),
-        category: 'vehicle-edit',
-        read: false,
-      });
+      await updateVehicleData(updatedData);
 
       Alert.alert('Berhasil', 'Data kendaraan berhasil diperbarui', [
         {text: 'OK', onPress: () => navigation.goBack()},

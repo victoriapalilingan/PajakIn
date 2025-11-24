@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView, Switch, Text, Alert} from 'react-native';
+import {View, StyleSheet, ScrollView, Switch, Text} from 'react-native';
 
 import {
   CustomHeader,
@@ -11,9 +11,8 @@ import {
 } from '../../components';
 
 import {MobilIcon, MotorIcon} from '../../assets';
-
-import {getAuth} from 'firebase/auth';
-import {getDatabase, ref, set, push} from 'firebase/database';
+import {useVehicles} from '../../hooks/useVehicles';
+import {showMessage} from 'react-native-flash-message';
 
 const vehicleOptions = [
   {label: 'Mobil', value: 'mobil', icon: <MobilIcon width={24} height={24} />},
@@ -27,75 +26,65 @@ const AddVehicle = ({navigation}) => {
   const [tanggalJatuhTempo, setTanggalJatuhTempo] = useState(null);
   const [reminderActive, setReminderActive] = useState(true);
 
+  const [saving, setSaving] = useState(false);
   const [successVisible, setSuccessVisible] = useState(false);
   const [savedVehicle, setSavedVehicle] = useState(null);
 
-  const handleSave = async () => {
+  const {addVehicle} = useVehicles();
+
+  const showError = message => {
+    showMessage({
+      message,
+      type: 'danger',
+    });
+  };
+
+  const validateForm = () => {
     if (!jenisKendaraan) {
-      Alert.alert('Validasi', 'Pilih jenis kendaraan terlebih dahulu');
-      return;
+      showError('Pilih jenis kendaraan terlebih dahulu');
+      return false;
     }
     if (!noPolisi) {
-      Alert.alert('Validasi', 'Masukkan nomor polisi');
-      return;
+      showError('Masukkan nomor polisi');
+      return false;
     }
     if (!merekTahun) {
-      Alert.alert('Validasi', 'Masukkan merek dan tahun kendaraan');
-      return;
+      showError('Masukkan merek dan tahun kendaraan');
+      return false;
     }
     if (!tanggalJatuhTempo) {
-      Alert.alert('Validasi', 'Pilih tanggal jatuh tempo pajak');
-      return;
+      showError('Pilih tanggal jatuh tempo pajak');
+      return false;
     }
+    return true;
+  };
 
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
-
-    if (!currentUser) {
-      Alert.alert('Informasi', 'Silakan login terlebih dahulu');
-      return;
-    }
-
-    const now = new Date();
-    const vehicleId = Date.now().toString();
+  const handleSave = async () => {
+    if (!validateForm()) return;
 
     const vehicleData = {
-      id: vehicleId,
       jenisKendaraan,
-      noPolisi,
-      merekTahun,
+      noPolisi: noPolisi.trim().toUpperCase(),
+      merekTahun: merekTahun.trim(),
       tanggalJatuhTempo: tanggalJatuhTempo.toISOString(),
       reminderActive,
-      createdAt: now.toISOString(),
     };
 
+    setSaving(true);
+
     try {
-      const db = getDatabase();
+      const vehicleId = await addVehicle(vehicleData);
 
-      // Simpan kendaraan
-      await set(
-        ref(db, `vehicles/${currentUser.uid}/${vehicleId}`),
-        vehicleData,
-      );
-
-      // Simpan notifikasi
-      const notifRef = push(ref(db, `notifications/${currentUser.uid}`));
-
-      await set(notifRef, {
-        id: notifRef.key,
-        type: 'success',
-        title: `Kendaraan ${noPolisi} berhasil ditambahkan`,
-        subtitle: `Tambah kendaraan • ${now.toLocaleString('id-ID')}`,
-        timestamp: now.getTime(),
-        category: 'vehicle-add',
-        read: false,
+      setSavedVehicle({
+        id: vehicleId,
+        ...vehicleData,
       });
-
-      setSavedVehicle(vehicleData);
       setSuccessVisible(true);
     } catch (error) {
       console.log('Error simpan kendaraan:', error);
-      Alert.alert('Error', 'Gagal menyimpan kendaraan, coba lagi.');
+      showError('Gagal menyimpan kendaraan, coba lagi.');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -166,11 +155,12 @@ const AddVehicle = ({navigation}) => {
 
         <View style={styles.buttonContainer}>
           <Button
-            label="Simpan"
+            label={saving ? 'Menyimpan...' : 'Simpan'}
             onPress={handleSave}
             style={styles.saveButton}
             textStyle={styles.saveButtonText}
             width={355}
+            disabled={saving}
           />
         </View>
       </ScrollView>

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -8,11 +8,16 @@ import {
   Alert,
 } from 'react-native';
 
-import {CustomHeader, SuccessPopup, Button} from '../../components';
+import {
+  CustomHeader,
+  SuccessPopup,
+  ConfirmationPopup,
+  Button,
+} from '../../components';
 import {CheckmarkIcon} from '../../assets';
 
-import {getAuth} from 'firebase/auth';
-import {getDatabase, ref, onValue, remove} from 'firebase/database';
+// Custom hook
+import {useVehicleDetail} from '../../hooks/useVehicleDetail';
 
 const formatDisplayDate = dateString => {
   if (!dateString || dateString === '-') {
@@ -50,90 +55,30 @@ const formatDisplayDate = dateString => {
 const VehicleDetailScreen = ({navigation, route}) => {
   const vehicleId = route?.params?.vehicleId;
 
-  const [vehicle, setVehicle] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [successVisible, setSuccessVisible] = useState(false);
+  const [confirmVisible, setConfirmVisible] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  // Fetch detail kendaraan
-  useEffect(() => {
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
+  const {vehicle, loading, error, deleteVehicle} = useVehicleDetail(vehicleId);
 
-    if (!currentUser || !vehicleId) {
-      setLoading(false);
+  const handleDeleteVehicle = async () => {
+    if (!vehicleId) {
       return;
     }
 
-    setLoading(true);
+    try {
+      setDeleting(true);
+      await deleteVehicle();
 
-    const db = getDatabase();
-    const vehicleRef = ref(db, `vehicles/${currentUser.uid}/${vehicleId}`);
-
-    const unsubscribe = onValue(
-      vehicleRef,
-      snapshot => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-
-          setVehicle({
-            id: vehicleId,
-            noPolisi: data.noPolisi || '-',
-            jenisKendaraan: data.jenisKendaraan || '-',
-            merekTahun: data.merekTahun || '-',
-            tanggalJatuhTempo: data.tanggalJatuhTempo || '-',
-            reminderActive: data.reminderActive ?? true,
-            ...data,
-          });
-        } else {
-          setVehicle(null);
-        }
-        setLoading(false);
-      },
-      () => {
-        setLoading(false);
-      },
-    );
-
-    return () => unsubscribe();
-  }, [vehicleId]);
-
-  const handleDeleteVehicle = () => {
-    if (!vehicleId) return;
-
-    Alert.alert(
-      'Konfirmasi Hapus',
-      'Apakah Anda yakin ingin menghapus kendaraan ini?',
-      [
-        {text: 'Batal', style: 'cancel'},
-        {
-          text: 'Hapus',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              setDeleting(true);
-              const auth = getAuth();
-              const uid = auth.currentUser?.uid;
-
-              if (!uid) {
-                Alert.alert('Error', 'User tidak ditemukan');
-                return;
-              }
-
-              const db = getDatabase();
-              await remove(ref(db, `vehicles/${uid}/${vehicleId}`));
-
-              setSuccessVisible(true);
-            } catch (err) {
-              console.log('Delete error:', err);
-              Alert.alert('Error', 'Gagal menghapus kendaraan');
-            } finally {
-              setDeleting(false);
-            }
-          },
-        },
-      ],
-    );
+      setConfirmVisible(false);
+      setSuccessVisible(true);
+    } catch (err) {
+      console.log('Delete error:', err);
+      Alert.alert('Error', err.message || 'Gagal menghapus kendaraan');
+      setConfirmVisible(false);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   if (loading) {
@@ -164,7 +109,7 @@ const VehicleDetailScreen = ({navigation, route}) => {
           <Text style={styles.errorText}>
             {!vehicleId
               ? 'ID kendaraan tidak valid'
-              : 'Data kendaraan tidak ditemukan'}
+              : error || 'Data kendaraan tidak ditemukan'}
           </Text>
 
           <Button
@@ -252,8 +197,8 @@ const VehicleDetailScreen = ({navigation, route}) => {
 
         <View style={styles.buttonWrapper}>
           <Button
-            label={deleting ? 'Menghapus...' : 'Hapus'}
-            onPress={handleDeleteVehicle}
+            label="Hapus"
+            onPress={() => setConfirmVisible(true)}
             width="100%"
             height={51}
             color="#E53935"
@@ -264,7 +209,21 @@ const VehicleDetailScreen = ({navigation, route}) => {
         </View>
       </View>
 
-      {/* Popup Berhasil Hapus */}
+      {/* Popup Konfirmasi Hapus */}
+      <ConfirmationPopup
+        visible={confirmVisible}
+        onClose={() => setConfirmVisible(false)}
+        title="Konfirmasi Hapus"
+        message={`Apakah Anda yakin ingin menghapus kendaraan ${vehicle?.noPolisi}?`}
+        confirmLabel="Hapus"
+        cancelLabel="Batal"
+        onConfirm={handleDeleteVehicle}
+        onCancel={() => setConfirmVisible(false)}
+        confirmButtonColor="#E53935"
+        cancelButtonColor="#9E9E9E"
+        loading={deleting}
+      />
+
       <SuccessPopup
         visible={successVisible}
         title="Kendaraan berhasil dihapus"

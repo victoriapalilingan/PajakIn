@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -12,146 +12,49 @@ import {
   Alert,
 } from 'react-native';
 
-import {CustomHeader} from '../../components';
+import {CustomHeader, ConfirmationPopup} from '../../components';
 
-import {getAuth} from 'firebase/auth';
-import {
-  getDatabase,
-  ref,
-  onValue,
-  remove,
-  update,
-  push,
-  set,
-} from 'firebase/database';
+// Custom hooks
+import {useDocuments} from '../../hooks/useDocuments';
 
-interface Document {
-  id: string;
-  vehicleId: string;
-  vehiclePlate: string;
-  imageBase64: string;
-  fileName: string;
-  fileType: string;
-  uploadedAt: string;
-}
+// Utils
+import {formatDate} from '../../utils/Date';
+import {getImageSource} from '../../utils/ImageHelper';
 
 const ListDocumentScreen = ({navigation}) => {
-  const [documents, setDocuments] = useState<Document[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [selectedDoc, setSelectedDoc] = useState(null);
 
-  useEffect(() => {
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
+  // Use custom hook for documents
+  const {documents, loading, removeDocument} = useDocuments();
 
-    if (!currentUser) {
-      setLoading(false);
-      return;
+  const handleDeleteDocument = doc => {
+    setSelectedDoc(doc);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedDoc) return;
+
+    setDeleteLoading(true);
+    try {
+      await removeDocument(selectedDoc);
+
+      Alert.alert('Sukses', 'Dokumen berhasil dihapus');
+      setShowDeleteConfirm(false);
+      setSelectedDoc(null);
+    } catch (error) {
+      console.log('Delete error:', error);
+      Alert.alert('Error', 'Gagal menghapus dokumen');
+    } finally {
+      setDeleteLoading(false);
     }
-
-    const db = getDatabase();
-    const documentsRef = ref(db, `documents/${currentUser.uid}`);
-
-    const unsubscribe = onValue(
-      documentsRef,
-      snapshot => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const list: Document[] = Object.keys(data).map(key => ({
-            id: key,
-            ...data[key],
-          }));
-
-          list.sort(
-            (a, b) =>
-              new Date(b.uploadedAt).getTime() -
-              new Date(a.uploadedAt).getTime(),
-          );
-
-          setDocuments(list);
-        } else {
-          setDocuments([]);
-        }
-        setLoading(false);
-      },
-      error => {
-        console.log('Error fetching documents:', error);
-        setLoading(false);
-      },
-    );
-
-    return () => unsubscribe();
-  }, []);
-
-  const handleDeleteDocument = (doc: Document) => {
-    Alert.alert(
-      'Hapus Dokumen',
-      `Apakah Anda yakin ingin menghapus dokumen untuk ${doc.vehiclePlate}?`,
-      [
-        {text: 'Batal', style: 'cancel'},
-        {
-          text: 'Hapus',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              const auth = getAuth();
-              const uid = auth.currentUser?.uid;
-              if (!uid) {
-                Alert.alert('Error', 'Silakan login terlebih dahulu');
-                return;
-              }
-
-              const db = getDatabase();
-
-              await remove(ref(db, `documents/${uid}/${doc.id}`));
-
-              if (doc.vehicleId) {
-                const vehicleRef = ref(db, `vehicles/${uid}/${doc.vehicleId}`);
-                await update(vehicleRef, {
-                  documentName: null,
-                  documentType: null,
-                  documentUploadedAt: null,
-                  hasDocument: false,
-                });
-              }
-
-              const now = new Date();
-              const timestamp = now.getTime();
-              const notifRef = push(ref(db, `notifications/${uid}`));
-              await set(notifRef, {
-                id: notifRef.key,
-                type: 'warning',
-                title: `Dokumen untuk ${doc.vehiclePlate || '-'} dihapus`,
-                subtitle: `Hapus dokumen • ${now.toLocaleString('id-ID')}`,
-                timestamp,
-                category: 'document-delete',
-                read: false,
-              });
-
-              Alert.alert('Sukses', 'Dokumen berhasil dihapus');
-            } catch (error) {
-              console.log('Delete error:', error);
-              Alert.alert('Error', 'Gagal menghapus dokumen');
-            }
-          },
-        },
-      ],
-    );
   };
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('id-ID', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    });
-  };
-
-  const getImageSource = (base64: string, fileType: string) => {
-    if (!base64) return null;
-    const mimeType = fileType || 'image/jpeg';
-    return {uri: `data:${mimeType};base64,${base64}`};
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setSelectedDoc(null);
   };
 
   if (loading) {
@@ -247,6 +150,20 @@ const ListDocumentScreen = ({navigation}) => {
           </Text>
         )}
       </ScrollView>
+
+      <ConfirmationPopup
+        visible={showDeleteConfirm}
+        onClose={cancelDelete}
+        title="Hapus Dokumen"
+        message={`Apakah Anda yakin ingin menghapus dokumen untuk ${selectedDoc?.vehiclePlate}?`}
+        confirmLabel="Hapus"
+        cancelLabel="Batal"
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+        loading={deleteLoading}
+        confirmButtonColor="#E53935"
+        cancelButtonColor="#9E9E9E"
+      />
     </SafeAreaView>
   );
 };

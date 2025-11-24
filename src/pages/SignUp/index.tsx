@@ -21,10 +21,9 @@ import {
 } from '../../components';
 
 import {IdentificationIcon, MaleIcon, EmailIcon, PassIcon} from '../../assets';
-
-import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
 import {showMessage} from 'react-native-flash-message';
-import {getDatabase, ref, set} from 'firebase/database';
+
+import {useAuth} from '../../hooks/';
 
 const fields = [
   {
@@ -71,7 +70,8 @@ const SignUp = ({navigation}) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // mapping TextInput dengan state berdasarkan label
+  const {register} = useAuth();
+
   const getFieldProps = label => {
     switch (label) {
       case 'NIK':
@@ -133,26 +133,14 @@ const SignUp = ({navigation}) => {
     setLoading(true);
 
     try {
-      const auth = getAuth(); // pakai default app yg sudah di-init di App.tsx
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email.trim(),
+      const user = await register({
+        email,
         password,
-      );
-
-      const user = userCredential.user;
-      console.log('User created:', user);
-
-      // Simpan data tambahan ke Realtime Database
-      const db = getDatabase();
-      await set(ref(db, 'users/' + user.uid), {
-        uid: user.uid,
-        nik: nik,
-        fullname: fullname,
-        email: email.trim(),
-        createdAt: new Date().toISOString(),
+        nik,
+        fullname,
       });
 
+      console.log('User created:', user);
       setShowSuccess(true);
     } catch (error) {
       console.log('Signup error code:', error.code);
@@ -183,7 +171,6 @@ const SignUp = ({navigation}) => {
   };
 
   const handleContinue = () => {
-    // tombol "Daftar Sekarang" sekarang benar2 mendaftar
     onSubmit();
   };
 

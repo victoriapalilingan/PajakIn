@@ -1,6 +1,7 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {StatusBar} from 'react-native';
 
 import SplashScreen from './src/pages/SplashScreen';
 import OnBoarding from './src/pages/onBoarding';
@@ -36,7 +37,14 @@ const App = () => (
       <Stack.Screen name="DetailVehicle" component={VehicleDetailScreen} />
       <Stack.Screen name="EditVehicle" component={EditVehicle} />
     </Stack.Navigator>
-    <FlashMessage position="top" />
+
+    <FlashMessage
+      position="top"
+      floating
+      statusBarHeight={StatusBar.currentHeight || 0}
+      style={{marginTop: StatusBar.currentHeight || 0}}
+      offset={10} // jarak dikit dari atas
+    />
   </NavigationContainer>
 );
 

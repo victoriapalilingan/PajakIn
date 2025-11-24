@@ -1,7 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
-  View,
   StyleSheet,
+  View,
   ScrollView,
   Dimensions,
   Image,
@@ -11,13 +11,19 @@ import {
   Alert,
 } from 'react-native';
 
-import {InputField, TextBase, Gap, Button} from '../../components';
+import {
+  InputField,
+  TextBase,
+  Gap,
+  Button,
+  ConfirmationPopup,
+} from '../../components';
 import {NullPhoto} from '../../assets';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {showMessage} from 'react-native-flash-message';
 
-import {getAuth, signOut} from 'firebase/auth';
-import {getDatabase, ref, onValue, update, push, set} from 'firebase/database';
+// Custom hook
+import useProfile from '../../hooks/useProfile';
 
 const {width: screenWidth} = Dimensions.get('window');
 
@@ -25,61 +31,22 @@ const HEADER_COLOR = '#386641';
 const BACKGROUND_COLOR = '#F5F9F1';
 const TEXT_COLOR = '#386641';
 
-export default function ProfileScreen({navigation}) {
-  const [photo, setPhoto] = useState(NullPhoto);
-  const [photoBase64, setPhotoBase64] = useState('');
-  const [loading, setLoading] = useState(true);
+const ProfileScreen = ({navigation}) => {
   const [saving, setSaving] = useState(false);
+  const [logoutVisible, setLogoutVisible] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
-  const [profile, setProfile] = useState({
-    fullname: '',
-    phone: '',
-    email: '',
-    nik: '',
-    npwp: '',
-  });
+  const {
+    profile,
+    setProfile,
+    photoBase64,
+    setPhotoBase64,
+    loading,
+    saveProfile,
+    logout,
+  } = useProfile();
 
-  useEffect(() => {
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
-
-    if (!currentUser) {
-      setLoading(false);
-      return;
-    }
-
-    const db = getDatabase();
-    const userRef = ref(db, `users/${currentUser.uid}`);
-
-    const unsubscribe = onValue(
-      userRef,
-      snapshot => {
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-
-          setProfile({
-            fullname: data.fullname || '',
-            phone: data.phone || '',
-            email: data.email || currentUser.email || '',
-            nik: data.nik || '',
-            npwp: data.npwp || '',
-          });
-
-          if (data.photo) {
-            setPhotoBase64(data.photo);
-            setPhoto({uri: data.photo});
-          }
-        }
-        setLoading(false);
-      },
-      error => {
-        console.log('Error fetching user:', error);
-        setLoading(false);
-      },
-    );
-
-    return () => unsubscribe();
-  }, []);
+  const photoSource = photoBase64 ? {uri: photoBase64} : NullPhoto;
 
   const handleChange = (field, value) => {
     setProfile(prev => ({...prev, [field]: value}));
@@ -118,7 +85,6 @@ export default function ProfileScreen({navigation}) {
         }`;
 
         setPhotoBase64(base64);
-        setPhoto({uri: base64});
 
         showMessage({
           message: 'Foto berhasil dipilih',
@@ -135,14 +101,6 @@ export default function ProfileScreen({navigation}) {
   };
 
   const handleSaveProfile = async () => {
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
-
-    if (!currentUser) {
-      Alert.alert('Error', 'Silakan login terlebih dahulu');
-      return;
-    }
-
     if (!profile.fullname.trim()) {
       Alert.alert('Perhatian', 'Nama lengkap tidak boleh kosong');
       return;
@@ -151,32 +109,7 @@ export default function ProfileScreen({navigation}) {
     setSaving(true);
 
     try {
-      const db = getDatabase();
-      const userRef = ref(db, `users/${currentUser.uid}`);
-
-      const now = new Date();
-      const timestamp = now.getTime();
-
-      await update(userRef, {
-        fullname: profile.fullname.trim(),
-        phone: profile.phone.trim(),
-        email: profile.email.trim(),
-        nik: profile.nik.trim(),
-        npwp: profile.npwp.trim(),
-        photo: photoBase64,
-        updatedAt: now.toISOString(),
-      });
-
-      const notifRef = push(ref(db, `notifications/${currentUser.uid}`));
-      await set(notifRef, {
-        id: notifRef.key,
-        type: 'success',
-        title: 'Profil berhasil diperbarui',
-        subtitle: `Update profil • ${now.toLocaleString('id-ID')}`,
-        timestamp,
-        category: 'profile-update',
-        read: false,
-      });
+      await saveProfile(profile);
 
       showMessage({
         message: 'Profil berhasil disimpan!',
@@ -184,16 +117,20 @@ export default function ProfileScreen({navigation}) {
       });
     } catch (error) {
       console.log('Save profile error:', error);
-      Alert.alert('Error', 'Gagal menyimpan profil');
+      Alert.alert('Error', error.message || 'Gagal menyimpan profil');
     } finally {
       setSaving(false);
     }
   };
 
   const performLogout = async () => {
-    const auth = getAuth();
+    setLoggingOut(true);
+
     try {
-      await signOut(auth);
+      await logout();
+
+      setLogoutVisible(false);
+
       showMessage({
         message: 'Berhasil logout',
         type: 'success',
@@ -206,23 +143,14 @@ export default function ProfileScreen({navigation}) {
     } catch (error) {
       console.log('Logout error:', error);
       Alert.alert('Error', 'Gagal logout. Silakan coba lagi.');
+      setLogoutVisible(false);
+    } finally {
+      setLoggingOut(false);
     }
   };
 
   const handleLogout = () => {
-    Alert.alert(
-      'Konfirmasi Logout',
-      'Apakah Anda yakin ingin keluar dari akun?',
-      [
-        {text: 'Batal', style: 'cancel'},
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: performLogout,
-        },
-      ],
-      {cancelable: true},
-    );
+    setLogoutVisible(true);
   };
 
   if (loading) {
@@ -250,7 +178,7 @@ export default function ProfileScreen({navigation}) {
               style={styles.profileImageWrapper}
               onPress={handleSelectPhoto}
               activeOpacity={0.7}>
-              <Image source={photo} style={styles.profileImage} />
+              <Image source={photoSource} style={styles.profileImage} />
             </TouchableOpacity>
           </View>
           <TouchableOpacity onPress={handleSelectPhoto}>
@@ -325,9 +253,26 @@ export default function ProfileScreen({navigation}) {
 
         <View style={styles.scrollSpacer} />
       </ScrollView>
+
+      {/* Popup Konfirmasi Logout */}
+      <ConfirmationPopup
+        visible={logoutVisible}
+        onClose={() => setLogoutVisible(false)}
+        title="Konfirmasi Logout"
+        message="Apakah Anda yakin ingin keluar dari akun?"
+        confirmLabel="Logout"
+        cancelLabel="Batal"
+        onConfirm={performLogout}
+        onCancel={() => setLogoutVisible(false)}
+        confirmButtonColor="#D9534F"
+        cancelButtonColor="#9E9E9E"
+        loading={loggingOut}
+      />
     </View>
   );
-}
+};
+
+export default ProfileScreen;
 
 const styles = StyleSheet.create({
   fullScreenContainer: {
