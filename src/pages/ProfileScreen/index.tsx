@@ -134,7 +134,6 @@ export default function ProfileScreen({navigation}) {
     }
   };
 
-  // Simpan profil ke Firebase + buat notifikasi activity
   const handleSaveProfile = async () => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
@@ -168,7 +167,6 @@ export default function ProfileScreen({navigation}) {
         updatedAt: now.toISOString(),
       });
 
-      // Tambah notifikasi ke /notifications/{uid}
       const notifRef = push(ref(db, `notifications/${currentUser.uid}`));
       await set(notifRef, {
         id: notifRef.key,
@@ -192,7 +190,6 @@ export default function ProfileScreen({navigation}) {
     }
   };
 
-  // Logout dengan konfirmasi
   const performLogout = async () => {
     const auth = getAuth();
     try {
@@ -247,7 +244,6 @@ export default function ProfileScreen({navigation}) {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}>
-        {/* Foto Profil */}
         <View style={styles.profileContainer}>
           <View style={styles.profileBorder}>
             <TouchableOpacity
