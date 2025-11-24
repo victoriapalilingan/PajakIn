@@ -102,10 +102,8 @@ const ListDocumentScreen = ({navigation}) => {
 
               const db = getDatabase();
 
-              // Hapus dari documents collection
               await remove(ref(db, `documents/${uid}/${doc.id}`));
 
-              // Update vehicle: hapus info dokumen
               if (doc.vehicleId) {
                 const vehicleRef = ref(db, `vehicles/${uid}/${doc.vehicleId}`);
                 await update(vehicleRef, {
@@ -116,7 +114,6 @@ const ListDocumentScreen = ({navigation}) => {
                 });
               }
 
-              // Tambahkan notifikasi penghapusan dokumen
               const now = new Date();
               const timestamp = now.getTime();
               const notifRef = push(ref(db, `notifications/${uid}`));
@@ -151,14 +148,12 @@ const ListDocumentScreen = ({navigation}) => {
     });
   };
 
-  // Konversi Base64 ke URI untuk Image component
   const getImageSource = (base64: string, fileType: string) => {
     if (!base64) return null;
     const mimeType = fileType || 'image/jpeg';
     return {uri: `data:${mimeType};base64,${base64}`};
   };
 
-  // Loading state
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
