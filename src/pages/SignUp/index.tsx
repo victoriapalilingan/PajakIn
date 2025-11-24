@@ -23,7 +23,7 @@ import {
 import {IdentificationIcon, MaleIcon, EmailIcon, PassIcon} from '../../assets';
 import {showMessage} from 'react-native-flash-message';
 
-import {useAuth} from '../../hooks/';
+import {useAuth} from '../../hooks/useAuth';
 
 const fields = [
   {

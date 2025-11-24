@@ -4,8 +4,8 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 const SplashScreen = ({navigation}) => {
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace('OnBoarding'); // pindah otomatis ke OnBoarding
-    }, 2000); // delay 2 detik
+      navigation.replace('OnBoarding');
+    }, 2000);
     return () => clearTimeout(timer);
   }, [navigation]);
 

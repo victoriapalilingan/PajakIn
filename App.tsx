@@ -43,7 +43,7 @@ const App = () => (
       floating
       statusBarHeight={StatusBar.currentHeight || 0}
       style={{marginTop: StatusBar.currentHeight || 0}}
-      offset={10} // jarak dikit dari atas
+      offset={10}
     />
   </NavigationContainer>
 );

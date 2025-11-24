@@ -4,26 +4,32 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  signOut,
 } from 'firebase/auth';
 import {getDatabase, ref, set} from 'firebase/database';
 
 export const useAuth = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [initializing, setInitializing] = useState(true);
+  const [justRegistered, setJustRegistered] = useState(false); // ⬅️ ADD
 
-  // Listener auth state
   useEffect(() => {
     const auth = getAuth();
 
     const unsubscribe = onAuthStateChanged(auth, user => {
+      // ⬅️ JIKA baru register, JANGAN auto-navigate ke Main
+      if (justRegistered) {
+        setInitializing(false);
+        return;
+      }
+
       setCurrentUser(user || null);
       setInitializing(false);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [justRegistered]);
 
-  // Login user
   const login = async (email, password) => {
     const auth = getAuth();
     const userCredential = await signInWithEmailAndPassword(
@@ -34,7 +40,6 @@ export const useAuth = () => {
     return userCredential.user;
   };
 
-  // Register user baru + simpan ke database
   const register = async ({email, password, nik, fullname}) => {
     const auth = getAuth();
 
@@ -55,6 +60,11 @@ export const useAuth = () => {
       createdAt: new Date().toISOString(),
     });
 
+    // ⬅️ set flag, agar root navigator TIDAK redirect ke Main
+    setJustRegistered(true);
+
+    await signOut(auth);
+
     return user;
   };
 
@@ -63,5 +73,6 @@ export const useAuth = () => {
     initializing,
     login,
     register,
+    justRegistered,
   };
 };
