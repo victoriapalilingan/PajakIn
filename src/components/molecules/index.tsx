@@ -12,6 +12,7 @@ import StatusBadge from './StatusBadge';
 import SuccessPopup from './SuccessPopup';
 import TextInput from './TextInput';
 import VehicleCard from './VehicleCard';
+import ConfirmationPopup from './ConfirmationPopUp';
 
 export {
   BottomBar,
@@ -28,4 +29,5 @@ export {
   SuccessPopup,
   TextInput,
   VehicleCard,
+  ConfirmationPopup,
 };

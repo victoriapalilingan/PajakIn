@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,8 +11,68 @@ import {
 
 import {TextInput, Button, Gap, Card} from '../../components';
 import {EmailIcon, PassIcon} from '../../assets';
+import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+import {showMessage} from 'react-native-flash-message';
 
-const LoginScreen = ({navigation}: any) => {
+const LoginScreen = ({navigation}) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const onSubmit = () => {
+    if (!email || !password) {
+      showMessage({
+        message: 'Email dan password tidak boleh kosong',
+        type: 'danger',
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    const auth = getAuth(); // pakai default Firebase app yang sudah di-init
+
+    signInWithEmailAndPassword(auth, email.trim(), password)
+      .then(userCredential => {
+        const user = userCredential.user;
+        console.log('Login success:', user);
+
+        // Arahkan ke halaman Main, dan hapus screen login dari history
+        navigation.replace('Main');
+      })
+      .catch(error => {
+        console.log('Login error:', error);
+
+        let msg = 'Terjadi kesalahan, coba lagi.';
+
+        switch (error.code) {
+          case 'auth/user-not-found':
+            msg = 'Akun tidak ditemukan.';
+            break;
+          case 'auth/wrong-password':
+            msg = 'Password salah.';
+            break;
+          case 'auth/invalid-email':
+            msg = 'Format email tidak valid.';
+            break;
+          case 'auth/too-many-requests':
+            msg =
+              'Terlalu banyak percobaan login. Coba lagi beberapa saat nanti.';
+            break;
+          default:
+            msg = error.message || msg;
+        }
+
+        showMessage({
+          message: msg,
+          type: 'danger',
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   return (
     <ImageBackground
       source={require('../../assets/PajakIn.png')}
@@ -34,12 +94,15 @@ const LoginScreen = ({navigation}: any) => {
             style={styles.image}
             resizeMode="contain"
           />
+
           <TextInput
             label="Email atau No Hp"
             placeholder="Email atau No Hp"
             leftElement={<EmailIcon width={24} height={24} />}
             width={255}
             height={38}
+            value={email}
+            onChangeText={value => setEmail(value)}
           />
 
           <Gap height={8} />
@@ -47,23 +110,26 @@ const LoginScreen = ({navigation}: any) => {
           <TextInput
             label="Password"
             placeholder="Password"
-            secureTextEntry
             leftElement={<PassIcon width={24} height={24} />}
             width={255}
             height={38}
+            value={password}
+            onChangeText={value => setPassword(value)}
+            secureTextEntry={true}
           />
 
           <Gap height={16} />
 
           <View style={{marginLeft: 25}}>
             <Button
-              label="Login"
-              onPress={() => navigation.replace('Main')}
+              label={loading ? 'Memproses...' : 'Login'}
+              onPress={onSubmit}
               color="#2A6E54"
               textColor="#FFFFFF"
               width={255}
               height={38}
               fontSize={24}
+              disabled={loading}
             />
           </View>
 
@@ -111,7 +177,6 @@ const styles = StyleSheet.create({
     width: 304,
     height: 261,
     alignSelf: 'center',
-
     marginLeft: 30,
   },
   title: {

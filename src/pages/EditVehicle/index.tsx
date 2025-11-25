@@ -1,5 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, ScrollView, Switch, Text, Alert} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Switch,
+  Text,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 
 import {
   CustomHeader,
@@ -8,7 +16,15 @@ import {
   Dropdown,
   DatePicker,
 } from '../../components';
+
 import {MobilIcon, MotorIcon} from '../../assets';
+
+// Custom hooks
+import {useVehicle} from '../../hooks/useVehicles';
+
+// Utils
+import {parseDate} from '../../utils/Date/';
+import {showMessage} from 'react-native-flash-message';
 
 const vehicleOptions = [
   {label: 'Mobil', value: 'mobil', icon: <MobilIcon width={24} height={24} />},
@@ -16,7 +32,7 @@ const vehicleOptions = [
 ];
 
 const EditVehicle = ({navigation, route}) => {
-  const vehicleData = route?.params?.vehicleData;
+  const vehicleId = route?.params?.vehicleId;
 
   const [jenisKendaraan, setJenisKendaraan] = useState('');
   const [noPolisi, setNoPolisi] = useState('');
@@ -24,98 +40,81 @@ const EditVehicle = ({navigation, route}) => {
   const [tanggalJatuhTempo, setTanggalJatuhTempo] = useState(null);
   const [reminderActive, setReminderActive] = useState(true);
 
+  // Use custom hook for single vehicle
+  const {vehicle, loading, error, updateVehicleData} = useVehicle(vehicleId);
+
+  // Populate form when vehicle data is loaded
   useEffect(() => {
-    if (!vehicleData) {
-      return;
+    if (vehicle) {
+      setJenisKendaraan(vehicle.jenisKendaraan || '');
+      setNoPolisi(vehicle.noPolisi || '');
+      setMerekTahun(vehicle.merekTahun || '');
+      setTanggalJatuhTempo(parseDate(vehicle.tanggalJatuhTempo));
+      setReminderActive(
+        vehicle.reminderActive !== undefined ? vehicle.reminderActive : true,
+      );
     }
+  }, [vehicle]);
 
-    setJenisKendaraan(vehicleData.jenisKendaraan || '');
-    setNoPolisi(vehicleData.noPolisi || '');
-    setMerekTahun(vehicleData.merekTahun || '');
-
-    if (vehicleData.tanggalJatuhTempo) {
-      const date =
-        vehicleData.tanggalJatuhTempo instanceof Date
-          ? vehicleData.tanggalJatuhTempo
-          : new Date(vehicleData.tanggalJatuhTempo);
-      setTanggalJatuhTempo(date);
+  // Handle error
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Error', 'Data kendaraan tidak ditemukan', [
+        {text: 'OK', onPress: () => navigation.goBack()},
+      ]);
     }
+  }, [error, navigation]);
 
-    setReminderActive(
-      vehicleData.reminderActive !== undefined
-        ? vehicleData.reminderActive
-        : true,
-    );
-  }, [vehicleData]);
-
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
+    // Validation
     if (!jenisKendaraan) {
-      Alert.alert('Perhatian', 'Pilih jenis kendaraan terlebih dahulu');
-      return;
+      return Alert.alert('Perhatian', 'Pilih jenis kendaraan');
     }
     if (!noPolisi) {
-      Alert.alert('Perhatian', 'Masukkan nomor polisi');
-      return;
+      return Alert.alert('Perhatian', 'Masukkan nomor polisi');
     }
     if (!merekTahun) {
-      Alert.alert('Perhatian', 'Masukkan merek dan tahun kendaraan');
-      return;
+      return Alert.alert('Perhatian', 'Masukkan merek & tahun kendaraan');
     }
     if (!tanggalJatuhTempo) {
-      Alert.alert('Perhatian', 'Pilih tanggal jatuh tempo pajak');
-      return;
+      return Alert.alert('Perhatian', 'Pilih tanggal jatuh tempo pajak');
     }
 
     const updatedData = {
-      id: vehicleData?.id,
       jenisKendaraan,
       noPolisi,
       merekTahun,
-      tanggalJatuhTempo,
+      tanggalJatuhTempo: tanggalJatuhTempo.toISOString(),
       reminderActive,
     };
 
-    console.log('Data Sebelum Update:', vehicleData);
-    console.log('Data Setelah Update:', updatedData);
+    try {
+      await updateVehicleData(updatedData);
 
-    Alert.alert('Berhasil', 'Data kendaraan berhasil diperbarui', [
-      {
-        text: 'OK',
-        onPress: () => {
-          navigation.navigate('DetailVehicle', {
-            vehicleData: updatedData,
-            updated: true,
-          });
-        },
-      },
-    ]);
+      // ✅ Flash message sukses
+      showMessage({
+        message: 'Data kendaraan berhasil diperbarui',
+        type: 'success',
+      });
+
+      // ✅ Ini juga otomatis memicu generateTaxNotifications
+      //    karena data di `vehicles/{uid}` berubah
+
+      navigation.goBack();
+    } catch (error) {
+      console.log('Update vehicle error:', error);
+      Alert.alert('Gagal', 'Gagal memperbarui kendaraan, coba lagi.');
+    }
   };
 
-  const handleDelete = () => {
-    Alert.alert(
-      'Konfirmasi Hapus',
-      'Apakah Anda yakin ingin menghapus kendaraan ini?',
-      [
-        {text: 'Batal', style: 'cancel'},
-        {
-          text: 'Hapus',
-          style: 'destructive',
-          onPress: () => {
-            console.log('Deleted vehicle ID:', vehicleData?.id);
-
-            Alert.alert('Berhasil', 'Kendaraan berhasil dihapus', [
-              {
-                text: 'OK',
-                onPress: () => {
-                  navigation.navigate('DetailVehicle');
-                },
-              },
-            ]);
-          },
-        },
-      ],
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#2D6A4F" />
+        <Text style={styles.loadingText}>Memuat data kendaraan...</Text>
+      </View>
     );
-  };
+  }
 
   return (
     <View style={styles.container}>
@@ -196,6 +195,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F4FFF4',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F4FFF4',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: '#2A6E53',
+    fontFamily: 'Montserrat-Medium',
+  },
   scrollView: {
     flex: 1,
   },
@@ -221,7 +232,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     paddingVertical: 20,
     backgroundColor: '#F4FFF4',
-    borderTopColor: '#E0E0E0',
     marginTop: 10,
   },
   updateButton: {

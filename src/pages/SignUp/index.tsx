@@ -1,3 +1,4 @@
+// src/pages/SignUp/index.js
 import React, {useState} from 'react';
 import {
   StyleSheet,
@@ -21,6 +22,9 @@ import {
 } from '../../components';
 
 import {IdentificationIcon, MaleIcon, EmailIcon, PassIcon} from '../../assets';
+import {showMessage} from 'react-native-flash-message';
+
+import {useAuth} from '../../hooks/useAuth';
 
 const fields = [
   {
@@ -60,17 +64,93 @@ const SignUp = ({navigation}) => {
   const [isAgreed, setIsAgreed] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
+  const [nik, setNik] = useState('');
+  const [fullname, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const {register} = useAuth();
+
+  const getFieldProps = label => {
+    switch (label) {
+      case 'NIK':
+        return {value: nik, onChangeText: setNik};
+      case 'Nama Lengkap':
+        return {value: fullname, onChangeText: setFullName};
+      case 'Email atau No Hp':
+        return {value: email, onChangeText: setEmail};
+      case 'Password':
+        return {value: password, onChangeText: setPassword};
+      case 'Konfirmasi Password':
+        return {value: confirmPassword, onChangeText: setConfirmPassword};
+      default:
+        return {};
+    }
+  };
+
+  const validateForm = () => {
+    if (!isAgreed) {
+      showMessage({
+        message:
+          'Harap setujui Ketentuan dan Kebijakan Privasi terlebih dahulu',
+        type: 'danger',
+      });
+      return false;
+    }
+
+    if (!nik || !fullname || !email || !password || !confirmPassword) {
+      showMessage({
+        message: 'Semua field wajib diisi',
+        type: 'danger',
+      });
+      return false;
+    }
+
+    if (password !== confirmPassword) {
+      showMessage({
+        message: 'Password dan Konfirmasi Password tidak sama',
+        type: 'danger',
+      });
+      return false;
+    }
+
+    return true;
+  };
+
+  const onSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const user = await register({
+        email,
+        password,
+        nik,
+        fullname,
+      });
+
+      console.log('User created:', user);
+      setShowSuccess(true);
+    } catch (error) {
+      console.log('Signup error:', error);
+
+      showMessage({
+        message: error?.message || 'Gagal mendaftarkan akun',
+        type: 'danger',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const goToSignIn = () => {
     setShowSuccess(false);
     navigation.navigate('SignIn');
-  };
-
-  const handleContinue = () => {
-    if (!isAgreed) {
-      console.log('Harap setujui Ketentuan dan Kebijakan Privasi');
-      return;
-    }
-    setShowSuccess(true);
   };
 
   return (
@@ -101,12 +181,15 @@ const SignUp = ({navigation}) => {
               </Text>
               <Gap height={18} />
 
-              {fields.map((f, idx) => (
-                <View key={f.label}>
-                  <TextInput {...f} width={255} height={36} />
-                  {idx < fields.length - 1 && <Gap height={2} />}
-                </View>
-              ))}
+              {fields.map((f, idx) => {
+                const fieldProps = getFieldProps(f.label);
+                return (
+                  <View key={f.label}>
+                    <TextInput {...f} {...fieldProps} width={255} height={36} />
+                    {idx < fields.length - 1 && <Gap height={2} />}
+                  </View>
+                );
+              })}
 
               <Gap height={4} />
 
@@ -122,12 +205,13 @@ const SignUp = ({navigation}) => {
                 <Gap height={16} />
 
                 <Button
-                  label="Daftar Sekarang"
-                  onPress={handleContinue}
+                  label={loading ? 'Memproses...' : 'Daftar Sekarang'}
+                  onPress={onSubmit}
                   color="#2A6E54"
                   textColor="#FFFFFF"
                   width={255}
                   height={38}
+                  disabled={loading}
                 />
 
                 <Gap height={10} />

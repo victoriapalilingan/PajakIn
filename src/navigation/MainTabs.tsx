@@ -22,7 +22,6 @@ import {
 
 const Tab = createBottomTabNavigator();
 
-// CONFIG = “desain” level organism, bukan di App
 const TAB_ITEMS = [
   {
     key: 'home',
