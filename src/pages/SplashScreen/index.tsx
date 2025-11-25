@@ -78,7 +78,7 @@ const SplashScreen = ({navigation}) => {
             routes: [{name: 'OnBoarding'}],
           });
         }
-      }, 1200);
+      }, 3000);
     });
 
     return () => unsubscribe();
