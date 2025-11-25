@@ -53,8 +53,6 @@ const HomeScreen = ({navigation}) => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
-        <Gap height={10} />
-
         <HomeHeader
           userName={userName}
           userPhoto={userPhoto}
