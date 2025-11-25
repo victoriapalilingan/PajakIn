@@ -1,4 +1,3 @@
-// src/hooks/useProfile.js
 import {useEffect, useState} from 'react';
 import {getAuth, signOut} from 'firebase/auth';
 import {getDatabase, ref, onValue, update, push, set} from 'firebase/database';
@@ -17,7 +16,6 @@ const useProfile = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Ambil data profil user dari Firebase
   useEffect(() => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
@@ -61,7 +59,6 @@ const useProfile = () => {
     return () => unsubscribe();
   }, []);
 
-  // Simpan profil ke Firebase + buat notifikasi
   const saveProfile = async updatedProfile => {
     const auth = getAuth();
     const currentUser = auth.currentUser;
@@ -98,7 +95,6 @@ const useProfile = () => {
     });
   };
 
-  // Logout user
   const logout = async () => {
     const auth = getAuth();
     await signOut(auth);

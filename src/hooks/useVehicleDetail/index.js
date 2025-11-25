@@ -1,4 +1,3 @@
-// src/hooks/useVehicleDetail.js
 import {useEffect, useState} from 'react';
 import {
   listenVehicle,
@@ -12,7 +11,6 @@ export const useVehicleDetail = vehicleId => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Listen detail 1 kendaraan
   useEffect(() => {
     if (!vehicleId) {
       setLoading(false);
@@ -58,7 +56,6 @@ export const useVehicleDetail = vehicleId => {
     return () => unsubscribe && unsubscribe();
   }, [vehicleId]);
 
-  // Hapus kendaraan + kirim notifikasi (via service)
   const removeVehicle = async () => {
     if (!vehicleId) {
       throw new Error('ID kendaraan tidak valid');

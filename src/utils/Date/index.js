@@ -1,4 +1,3 @@
-// Format tanggal (dd MMM yyyy) — contoh: "12 Feb 2025"
 export const formatDate = (dateValue, options = {}) => {
   if (!dateValue) return '-';
 
@@ -13,7 +12,6 @@ export const formatDate = (dateValue, options = {}) => {
   return date.toLocaleDateString('id-ID', {...baseOptions, ...options});
 };
 
-// Format tanggal + waktu — contoh: "12/02/2025 14.55"
 export const formatDateTime = dateValue => {
   if (!dateValue) return '-';
 
@@ -21,7 +19,6 @@ export const formatDateTime = dateValue => {
   return date.toLocaleString('id-ID');
 };
 
-// Hitung selisih hari sampai jatuh tempo
 export const calculateDaysUntilDue = dueDate => {
   if (!dueDate) return null;
 
@@ -35,7 +32,6 @@ export const calculateDaysUntilDue = dueDate => {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 };
 
-// Konversi selisih hari → status pajak
 export const getTaxStatus = dueDate => {
   const days = calculateDaysUntilDue(dueDate);
 
@@ -45,7 +41,6 @@ export const getTaxStatus = dueDate => {
   return 'active';
 };
 
-// Warna berdasarkan status pajak
 export const getStatusColor = status => {
   const colors = {
     active: '#4CAF50',
@@ -57,7 +52,6 @@ export const getStatusColor = status => {
   return colors[status] || colors.unknown;
 };
 
-// Label status pajak dalam bahasa Indonesia
 export const getStatusLabel = status => {
   const labels = {
     active: 'Aktif',
@@ -69,7 +63,6 @@ export const getStatusLabel = status => {
   return labels[status] || labels.unknown;
 };
 
-// Parse string → objek Date
 export const parseDate = value => {
   if (!value) return null;
   if (value instanceof Date) return value;

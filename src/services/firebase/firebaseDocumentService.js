@@ -1,9 +1,6 @@
-// src/services/firebase/firebaseDocumentService.js
-
 import {getDatabase, ref, set, remove, onValue, push} from 'firebase/database';
 import {getCurrentUserId} from './firebaseAuthService';
 
-// Listen dokumen milik user
 export const listenDocuments = (onSuccess, onError) => {
   const userId = getCurrentUserId();
   if (!userId) {
@@ -24,7 +21,6 @@ export const listenDocuments = (onSuccess, onError) => {
           ...data[key],
         }));
 
-        // urutkan berdasarkan waktu upload (terbaru di atas)
         documentsList.sort((a, b) => {
           const ta = new Date(a.uploadedAt).getTime();
           const tb = new Date(b.uploadedAt).getTime();
@@ -45,7 +41,6 @@ export const listenDocuments = (onSuccess, onError) => {
   return unsubscribe;
 };
 
-// Buat dokumen baru
 export const createDocument = async documentData => {
   const userId = getCurrentUserId();
   if (!userId) {
@@ -66,7 +61,6 @@ export const createDocument = async documentData => {
   return documentRef.key;
 };
 
-// Hapus dokumen
 export const deleteDocument = async documentId => {
   const userId = getCurrentUserId();
   if (!userId || !documentId) {
@@ -77,11 +71,10 @@ export const deleteDocument = async documentId => {
   await remove(ref(db, `documents/${userId}/${documentId}`));
 };
 
-// Validasi ukuran gambar (default max 5MB)
 export const validateImageSize = (base64String, maxSizeMB = 5) => {
   if (!base64String) return false;
 
-  const base64Size = base64String.length * 0.75; // convert ke bytes
+  const base64Size = base64String.length * 0.75;
   const maxBytes = maxSizeMB * 1024 * 1024;
 
   return base64Size <= maxBytes;

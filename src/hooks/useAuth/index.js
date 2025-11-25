@@ -1,4 +1,3 @@
-// src/hooks/useAuth.js
 import {useEffect, useState} from 'react';
 import {
   getAuth,
@@ -10,7 +9,6 @@ import {
 import {getDatabase, ref, set} from 'firebase/database';
 
 const mapRegisterError = error => {
-  // Mapping kode error Firebase → pesan user-friendly
   switch (error.code) {
     case 'auth/email-already-in-use':
       return 'Email sudah terdaftar, silakan gunakan email lain atau masuk.';
@@ -32,7 +30,6 @@ export const useAuth = () => {
     const auth = getAuth();
 
     const unsubscribe = onAuthStateChanged(auth, user => {
-      // Jangan ganggu flow saat registrasi
       if (isRegistering) {
         console.log('⏸️ Registrasi sedang berjalan, skip update currentUser');
         setInitializing(false);
@@ -64,7 +61,6 @@ export const useAuth = () => {
       setIsRegistering(true);
       console.log('🔐 Mulai registrasi...');
 
-      // 1. Buat akun Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email.trim(),
@@ -74,7 +70,6 @@ export const useAuth = () => {
       const user = userCredential.user;
       console.log('👤 User berhasil dibuat:', user.uid);
 
-      // 2. Simpan profile ke Realtime Database
       const db = getDatabase();
       await set(ref(db, 'users/' + user.uid), {
         uid: user.uid,
@@ -86,7 +81,6 @@ export const useAuth = () => {
 
       console.log('💾 Data user berhasil disimpan');
 
-      // 3. Sign out setelah registrasi selesai
       await signOut(auth);
       console.log('🚪 User berhasil di-sign out');
 
@@ -94,7 +88,6 @@ export const useAuth = () => {
     } catch (error) {
       console.error('❌ Error saat registrasi:', error);
 
-      // Lempar error dengan pesan yang sudah dimapping
       const friendlyMessage = mapRegisterError(error);
       const err = new Error(friendlyMessage);
       err.code = error.code;
@@ -116,7 +109,7 @@ export const useAuth = () => {
   return {
     currentUser,
     initializing,
-    isRegistering, // untuk debugging
+    isRegistering, 
     login,
     register,
     logout,

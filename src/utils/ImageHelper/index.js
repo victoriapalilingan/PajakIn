@@ -1,4 +1,3 @@
-// Format ukuran file dari bytes → KB / MB
 export const formatFileSize = bytes => {
   if (!bytes) return '';
   const kb = bytes / 1024;
@@ -6,14 +5,12 @@ export const formatFileSize = bytes => {
   return `${(kb / 1024).toFixed(1)} MB`;
 };
 
-// Konversi base64 + mime type → source gambar React Native
 export const getImageSource = (base64, fileType = 'image/jpeg') => {
   if (!base64) return null;
   const mime = fileType || 'image/jpeg';
   return {uri: `data:${mime};base64,${base64}`};
 };
 
-// Konfigurasi default untuk Image Picker
 export const commonImageOptions = {
   mediaType: 'photo',
   quality: 0.7,
@@ -22,7 +19,6 @@ export const commonImageOptions = {
   includeBase64: true,
 };
 
-// Proses hasil dari Image Picker
 export const processImageResponse = response => {
   if (response?.didCancel) return null;
 

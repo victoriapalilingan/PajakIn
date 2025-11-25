@@ -1,5 +1,3 @@
-// src/hooks/useDocuments.js
-
 import {useState, useEffect} from 'react';
 import {
   listenDocuments,
@@ -13,7 +11,6 @@ import {
   notifyDocumentDeleted,
 } from '../../services/firebase/firebaseNotificationService';
 
-// Custom hook untuk mengelola data dokumen
 export const useDocuments = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,9 +32,7 @@ export const useDocuments = () => {
     return () => unsubscribe();
   }, []);
 
-  // Upload dokumen baru
   const uploadDocument = async documentData => {
-    // Validasi ukuran gambar
     if (!validateImageSize(documentData.imageBase64, 5)) {
       throw new Error('Ukuran gambar terlalu besar. Maksimal 5MB.');
     }
@@ -46,7 +41,6 @@ export const useDocuments = () => {
       const now = new Date();
       const isoTimestamp = now.toISOString();
 
-      // Buat dokumen
       const documentId = await createDocument({
         vehicleId: documentData.vehicleId,
         vehiclePlate: documentData.vehiclePlate,
@@ -55,7 +49,6 @@ export const useDocuments = () => {
         fileType: documentData.fileType,
       });
 
-      // Update info dokumen di kendaraan
       if (documentData.vehicleId) {
         await updateVehicleDocument(documentData.vehicleId, {
           fileName: documentData.fileName,
@@ -65,7 +58,6 @@ export const useDocuments = () => {
         });
       }
 
-      // Kirim notifikasi
       await notifyDocumentUploaded(documentData.vehiclePlate);
 
       return documentId;
@@ -74,13 +66,12 @@ export const useDocuments = () => {
     }
   };
 
-  // Hapus dokumen
+
   const removeDocument = async document => {
     try {
-      // Hapus dokumen
+
       await deleteDocument(document.id);
 
-      // Kosongkan info dokumen di kendaraan
       if (document.vehicleId) {
         await updateVehicleDocument(document.vehicleId, {
           fileName: null,
@@ -90,7 +81,6 @@ export const useDocuments = () => {
         });
       }
 
-      // Kirim notifikasi
       await notifyDocumentDeleted(document.vehiclePlate);
     } catch (err) {
       throw err;

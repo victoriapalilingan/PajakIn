@@ -131,7 +131,6 @@ export const useVehicle = vehicleId => {
     return () => unsubscribe();
   }, [vehicleId]);
 
-  // Update kendaraan ini
   const updateVehicleData = async updates => {
     try {
       await updateVehicle(vehicleId, updates);

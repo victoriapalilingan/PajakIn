@@ -26,7 +26,6 @@ const formatDateTime = (date = new Date()) => {
   return `${day} ${month} ${year} - ${hours}.${minutes}`;
 };
 
-// Generate notifikasi pajak berdasarkan data kendaraan
 const generateTaxNotifications = (db, userId, vehiclesData) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -35,7 +34,6 @@ const generateTaxNotifications = (db, userId, vehiclesData) => {
   Object.keys(vehiclesData).forEach(vehicleId => {
     const vehicle = vehiclesData[vehicleId];
 
-    // Jika reminder aktif dan ada tanggal jatuh tempo
     if (vehicle.reminderActive !== false && vehicle.tanggalJatuhTempo) {
       const dueDate = new Date(vehicle.tanggalJatuhTempo);
       dueDate.setHours(0, 0, 0, 0);
@@ -43,12 +41,10 @@ const generateTaxNotifications = (db, userId, vehiclesData) => {
       const diffTime = dueDate - today;
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      // Hanya generate jika dalam 7 hari ke depan atau sudah lewat max 30 hari
       if (diffDays <= 7 && diffDays >= -30) {
         const notifId = `tax-${vehicleId}-${todayDateStr}`;
         const notifRef = ref(db, `notifications/${userId}/${notifId}`);
 
-        // Cek apakah notifikasi hari ini sudah ada
         onValue(
           notifRef,
           snapshot => {
@@ -102,7 +98,6 @@ export const useNotifications = () => {
 
     const db = getDatabase();
 
-    // 1. Listen kendaraan → generate notifikasi pajak otomatis
     const vehiclesRef = ref(db, `vehicles/${currentUser.uid}`);
     const unsubscribeVehicles = onValue(
       vehiclesRef,
@@ -117,7 +112,6 @@ export const useNotifications = () => {
       },
     );
 
-    // 2. Listen notifikasi tersimpan
     const notificationsRef = ref(db, `notifications/${currentUser.uid}`);
     const unsubscribeNotifications = onValue(
       notificationsRef,
@@ -136,7 +130,6 @@ export const useNotifications = () => {
           });
         }
 
-        // Urutkan terbaru di atas
         notificationsList.sort((a, b) => {
           const ta =
             typeof a.timestamp === 'number'

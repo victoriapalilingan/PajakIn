@@ -26,7 +26,7 @@ export const useHomeData = () => {
 
     const db = getDatabase();
 
-    // === LISTENER USER ===
+
     const userRef = ref(db, `users/${currentUser.uid}`);
     const unsubscribeUser = onValue(
       userRef,
@@ -43,7 +43,6 @@ export const useHomeData = () => {
       },
     );
 
-    // === LISTENER VEHICLES ===
     const vehiclesRef = ref(db, `vehicles/${currentUser.uid}`);
     const unsubscribeVehicles = onValue(
       vehiclesRef,

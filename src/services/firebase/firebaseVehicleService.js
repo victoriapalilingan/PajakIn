@@ -1,5 +1,3 @@
-// src/services/firebase/firebaseVehicleService.js
-
 import {
   getDatabase,
   ref,
@@ -10,7 +8,6 @@ import {
 } from 'firebase/database';
 import {getCurrentUserId} from './firebaseAuthService';
 
-// Listen seluruh kendaraan milik user
 export const listenVehicles = (onSuccess, onError) => {
   const userId = getCurrentUserId();
   if (!userId) {
@@ -44,7 +41,6 @@ export const listenVehicles = (onSuccess, onError) => {
   return unsubscribe;
 };
 
-// Listen satu kendaraan berdasarkan ID
 export const listenVehicle = (vehicleId, onSuccess, onError) => {
   const userId = getCurrentUserId();
   if (!userId || !vehicleId) {
@@ -73,7 +69,6 @@ export const listenVehicle = (vehicleId, onSuccess, onError) => {
   return unsubscribe;
 };
 
-// Membuat kendaraan baru
 export const createVehicle = async vehicleData => {
   const userId = getCurrentUserId();
   if (!userId) {
@@ -95,7 +90,6 @@ export const createVehicle = async vehicleData => {
   return vehicleId;
 };
 
-// Update kendaraan
 export const updateVehicle = async (vehicleId, updates) => {
   const userId = getCurrentUserId();
   if (!userId || !vehicleId) {
@@ -113,7 +107,6 @@ export const updateVehicle = async (vehicleId, updates) => {
   await update(ref(db, `vehicles/${userId}/${vehicleId}`), payload);
 };
 
-// Hapus kendaraan
 export const deleteVehicle = async vehicleId => {
   const userId = getCurrentUserId();
   if (!userId || !vehicleId) {
@@ -124,7 +117,6 @@ export const deleteVehicle = async vehicleId => {
   await remove(ref(db, `vehicles/${userId}/${vehicleId}`));
 };
 
-// Update informasi dokumen kendaraan
 export const updateVehicleDocument = async (vehicleId, documentInfo) => {
   const userId = getCurrentUserId();
   if (!userId || !vehicleId) {
