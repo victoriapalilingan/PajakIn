@@ -19,10 +19,8 @@ import {
 
 import {MobilIcon, MotorIcon} from '../../assets';
 
-// Custom hooks
 import {useVehicle} from '../../hooks/useVehicles';
 
-// Utils
 import {parseDate} from '../../utils/Date/';
 import {showMessage} from 'react-native-flash-message';
 
@@ -40,10 +38,8 @@ const EditVehicle = ({navigation, route}) => {
   const [tanggalJatuhTempo, setTanggalJatuhTempo] = useState(null);
   const [reminderActive, setReminderActive] = useState(true);
 
-  // Use custom hook for single vehicle
   const {vehicle, loading, error, updateVehicleData} = useVehicle(vehicleId);
 
-  // Populate form when vehicle data is loaded
   useEffect(() => {
     if (vehicle) {
       setJenisKendaraan(vehicle.jenisKendaraan || '');
@@ -56,7 +52,6 @@ const EditVehicle = ({navigation, route}) => {
     }
   }, [vehicle]);
 
-  // Handle error
   useEffect(() => {
     if (error) {
       Alert.alert('Error', 'Data kendaraan tidak ditemukan', [
@@ -66,7 +61,6 @@ const EditVehicle = ({navigation, route}) => {
   }, [error, navigation]);
 
   const handleUpdate = async () => {
-    // Validation
     if (!jenisKendaraan) {
       return Alert.alert('Perhatian', 'Pilih jenis kendaraan');
     }
@@ -91,14 +85,11 @@ const EditVehicle = ({navigation, route}) => {
     try {
       await updateVehicleData(updatedData);
 
-      // ✅ Flash message sukses
       showMessage({
         message: 'Data kendaraan berhasil diperbarui',
         type: 'success',
       });
 
-      // ✅ Ini juga otomatis memicu generateTaxNotifications
-      //    karena data di `vehicles/{uid}` berubah
 
       navigation.goBack();
     } catch (error) {
