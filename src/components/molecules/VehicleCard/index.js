@@ -1,25 +1,34 @@
-// src/components/molecules/VehicleCard.js
 import React from 'react';
 import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import colors from '../../../styles/colors';
-import ForwardIcon from '../../../assets/Forward.svg'; // pastikan file ada
+import ForwardIcon from '../../../assets/Forward.svg';
 
-const VehicleCard = ({plate, icon, Icon, status, statusText, statusColor}) => {
-  const navigation = useNavigation();
+const BADGE_COLORS = {
+  Aktif: {
+    bg: '#2A6E54',
+    text: '#FFFFFF',
+  },
+  'Akan Jatuh Tempo': {
+    bg: '#F4C542',
+    text: '#FFFFFF',
+  },
+  'Telat Bayar': {
+    bg: '#F44336',
+    text: '#FFFFFF',
+  },
+};
 
-  const handlePressForward = () => {
-    console.log('Forward icon ditekan, plate:', plate);
-    navigation.navigate('DetailVehicle', {
-      plate,
-      status,
-      statusText,
-      statusColor,
-    });
-  };
+const VehicleCard = ({
+  plate,
+  icon,
+  Icon,
+  status,
+  statusText,
+  onPressForward,
+}) => {
+  const badgeColorSet = BADGE_COLORS[status] || BADGE_COLORS['Aktif'];
+
   return (
     <View style={styles.container}>
-      {/* Bagian kiri: ikon kendaraan + plat */}
       <View style={styles.leftSection}>
         {Icon ? (
           <Icon width={40} height={40} style={styles.vehicleIcon} />
@@ -33,27 +42,25 @@ const VehicleCard = ({plate, icon, Icon, status, statusText, statusColor}) => {
 
         <View style={styles.textContainer}>
           <Text style={styles.plate}>{plate}</Text>
+
           {statusText && (
-            <Text style={[styles.statusText, {color: statusColor}]}>
+            <Text style={[styles.statusText, {color: badgeColorSet.bg}]}>
               {statusText}
             </Text>
           )}
         </View>
       </View>
 
-      {/* Bagian kanan: badge + ikon panah (klik di sini) */}
       <View style={styles.rightSection}>
-        <View
-          style={[
-            styles.statusBadge,
-            {backgroundColor: statusColor || colors.primary},
-          ]}>
-          <Text style={styles.statusBadgeText}>{status}</Text>
+        <View style={[styles.statusBadge, {backgroundColor: badgeColorSet.bg}]}>
+          <Text style={[styles.statusBadgeText, {color: badgeColorSet.text}]}>
+            Aktif
+          </Text>
         </View>
 
         <TouchableOpacity
           style={styles.forwardButton}
-          onPress={handlePressForward}
+          onPress={onPressForward}
           activeOpacity={0.7}>
           <ForwardIcon width={16} height={16} />
         </TouchableOpacity>
@@ -66,36 +73,26 @@ export default VehicleCard;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.white,
+    backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E0ECF8', // sedikit lebih lembut dari sebelumnya
     paddingHorizontal: 16,
     paddingVertical: 12,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 12,
-
-    // ✨ Shadow lembut dan lebih menyebar seperti di desain
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   leftSection: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
   },
-  rightSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   vehicleIcon: {
-    width: 53,
-    height: 53,
+    width: 50,
+    height: 50,
     marginRight: 12,
   },
   textContainer: {
@@ -104,25 +101,28 @@ const styles = StyleSheet.create({
   plate: {
     fontFamily: 'Montserrat-Bold',
     fontSize: 16,
-    color: colors.textPrimary,
+    color: '#1B4332',
   },
   statusText: {
     fontFamily: 'Montserrat-Medium',
     fontSize: 11,
     marginTop: 2,
   },
+  rightSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   statusBadge: {
-    paddingHorizontal: 14,
-    paddingVertical: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
     borderRadius: 20,
   },
   statusBadgeText: {
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 12,
-    color: colors.white,
   },
   forwardButton: {
-    marginLeft: 8,
-    padding: 4, // area klik lebih luas
+    marginLeft: 10,
+    padding: 5,
   },
 });

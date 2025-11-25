@@ -1,4 +1,5 @@
 import React from 'react';
+import {StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
@@ -13,10 +14,20 @@ import UnggahBerkas from './src/pages/AddDocument';
 
 import MainTabs from './src/navigation/MainTabs';
 
+import FlashMessage from 'react-native-flash-message';
+
+import './src/config/Firebase';
+
 const Stack = createNativeStackNavigator();
 
 const App = () => (
   <NavigationContainer>
+    <StatusBar
+      translucent
+      backgroundColor="transparent"
+      barStyle="dark-content"
+    />
+
     <Stack.Navigator
       initialRouteName="SplashScreen"
       screenOptions={{headerShown: false}}>
@@ -31,6 +42,14 @@ const App = () => (
       <Stack.Screen name="DetailVehicle" component={VehicleDetailScreen} />
       <Stack.Screen name="EditVehicle" component={EditVehicle} />
     </Stack.Navigator>
+
+    <FlashMessage
+      position="top"
+      floating
+      statusBarHeight={StatusBar.currentHeight || 0}
+      style={{marginTop: StatusBar.currentHeight || 0}}
+      offset={10}
+    />
   </NavigationContainer>
 );
 

@@ -6,39 +6,85 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Image,
+  ActivityIndicator,
 } from 'react-native';
-import {CustomHeader, Button} from '../../components';
+
+import {
+  CustomHeader,
+  Button,
+  SuccessPopup,
+  ConfirmationPopup,
+} from '../../components';
 import {UploadIcon} from '../../assets';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {useDocuments} from '../../hooks/useDocuments';
+import {
+  commonImageOptions,
+  processImageResponse,
+  formatFileSize,
+} from '../../utils/ImageHelper';
 
-const UnggahBerkas = ({navigation}) => {
-  const [selectedFile, setSelectedFile] = useState(null);
+const UnggahBerkas = ({navigation, route}) => {
+  const vehicle = route?.params?.vehicle || null;
 
-  const handleBackPress = () => {
-    navigation.goBack();
+  const [image, setImage] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [successVisible, setSuccessVisible] = useState(false);
+  const [chooseImageVisible, setChooseImageVisible] = useState(false);
+
+  const {uploadDocument} = useDocuments();
+
+  const handleImage = response => {
+    try {
+      const result = processImageResponse(response);
+      if (result) setImage(result);
+    } catch (err) {
+      Alert.alert('Error', err.message || 'Gagal memproses gambar');
+    }
   };
 
-  const handlePickFile = () => {
-    // Placeholder untuk file picker
-    // Gunakan library seperti react-native-document-picker
-    Alert.alert('Info', 'Fitur pilih file akan diimplementasikan');
-
-    // Contoh dummy file selected
-    setSelectedFile({
-      name: 'dokumen_pajak.pdf',
-      size: '2.5 MB',
-      type: 'application/pdf',
-    });
+  const handleChooseCamera = () => {
+    setChooseImageVisible(false);
+    launchCamera(commonImageOptions, res => handleImage(res));
   };
 
-  const handleSave = () => {
-    if (!selectedFile) {
-      Alert.alert('Perhatian', 'Silakan pilih berkas terlebih dahulu');
+  const handleChooseGallery = () => {
+    setChooseImageVisible(false);
+    launchImageLibrary(commonImageOptions, res => handleImage(res));
+  };
+
+  const handleSave = async () => {
+    if (!image) {
+      Alert.alert('Perhatian', 'Silakan pilih gambar terlebih dahulu');
       return;
     }
 
-    // Logic untuk save/upload file
-    Alert.alert('Sukses', 'Berkas berhasil disimpan');
-    console.log('Saving file:', selectedFile);
+    if (!vehicle?.id) {
+      Alert.alert('Perhatian', 'Data kendaraan tidak ditemukan');
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      await uploadDocument({
+        vehicleId: vehicle.id,
+        vehiclePlate: vehicle.noPolisi || vehicle.plate || '-',
+        imageBase64: image.base64,
+        fileName: image.fileName,
+        fileType: image.type,
+      });
+
+      setSuccessVisible(true);
+    } catch (err) {
+      Alert.alert(
+        'Error',
+        err?.message || 'Gagal menyimpan dokumen. Silakan coba lagi.',
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -46,55 +92,112 @@ const UnggahBerkas = ({navigation}) => {
       <CustomHeader
         title="Unggah Berkas"
         titleSize={24}
-        onBackPress={handleBackPress}
+        onBackPress={() => navigation.goBack()}
       />
 
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
-        {/* Subtitle */}
+        {vehicle && (
+          <View style={styles.vehicleInfo}>
+            <Text style={styles.vehicleLabel}>Kendaraan:</Text>
+            <Text style={styles.vehiclePlate}>{vehicle.noPolisi || '-'}</Text>
+          </View>
+        )}
+
         <Text style={styles.subtitle}>
-          Pilih dan unggah berkas sesuai kebutuhan Anda.
+          Pilih dan unggah foto dokumen kendaraan Anda.
         </Text>
 
-        {/* Upload Box */}
         <View style={styles.uploadBox}>
-          <View style={styles.uploadIconWrapper}>
-            <UploadIcon width={60} height={60} />
-          </View>
+          {image ? (
+            <View style={styles.imagePreviewContainer}>
+              <Image
+                source={{uri: image.uri}}
+                style={styles.imagePreview}
+                resizeMode="cover"
+              />
 
-          <Text style={styles.uploadTitle}>Pilih berkas atau dokumen</Text>
-          <Text style={styles.uploadDescription}>
-            JPEG, PNG, dan PDF hingga 50 MB.
-          </Text>
+              <TouchableOpacity
+                style={styles.changeImageButton}
+                onPress={() => setChooseImageVisible(true)}>
+                <Text style={styles.changeImageText}>Ganti Gambar</Text>
+              </TouchableOpacity>
 
-          {selectedFile && (
-            <View style={styles.filePreview}>
-              <Text style={styles.fileName}>{selectedFile.name}</Text>
-              <Text style={styles.fileSize}>{selectedFile.size}</Text>
+              <Text style={styles.fileName}>{image.fileName}</Text>
+              {image.fileSize && (
+                <Text style={styles.fileSize}>
+                  {formatFileSize(image.fileSize)}
+                </Text>
+              )}
             </View>
+          ) : (
+            <>
+              <View style={styles.uploadIconWrapper}>
+                <UploadIcon width={60} height={60} />
+              </View>
+              <Text style={styles.uploadTitle}>Pilih foto dokumen</Text>
+              <Text style={styles.uploadDescription}>
+                JPEG, PNG hingga 5 MB
+              </Text>
+              <TouchableOpacity
+                style={styles.pickFileButton}
+                onPress={() => setChooseImageVisible(true)}
+                activeOpacity={0.8}>
+                <Text style={styles.pickFileButtonText}>Pilih Gambar</Text>
+              </TouchableOpacity>
+            </>
           )}
-
-          <TouchableOpacity
-            style={styles.pickFileButton}
-            onPress={handlePickFile}
-            activeOpacity={0.8}>
-            <Text style={styles.pickFileButtonText}>Pilih Berkas</Text>
-          </TouchableOpacity>
         </View>
 
-        {/* Save Button */}
         <View style={styles.buttonContainer}>
           <Button
-            label="Simpan"
+            label={saving ? 'Menyimpan...' : 'Simpan'}
             onPress={handleSave}
             style={styles.saveButton}
             textStyle={styles.saveButtonText}
             width={355}
+            disabled={saving || !image}
           />
         </View>
       </ScrollView>
+
+      {saving && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#2D6B4F" />
+          <Text style={styles.loadingText}>Menyimpan dokumen...</Text>
+        </View>
+      )}
+
+      <SuccessPopup
+        visible={successVisible}
+        title="Dokumen berhasil diunggah!"
+        buttonLabel="Kembali ke Home"
+        buttonWidth={230}
+        buttonHeight={51}
+        onButtonPress={() => {
+          setSuccessVisible(false);
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Main'}],
+          });
+        }}
+      />
+
+      <ConfirmationPopup
+        visible={chooseImageVisible}
+        onClose={() => setChooseImageVisible(false)}
+        title="Pilih Sumber Gambar"
+        message="Ambil foto dari kamera atau pilih dari galeri?"
+        confirmLabel="Kamera"
+        cancelLabel="Galeri"
+        confirmButtonColor="#2D6B4F"
+        cancelButtonColor="#2A9D8F"
+        onConfirm={handleChooseCamera}
+        onCancel={handleChooseGallery}
+        loading={saving}
+      />
     </View>
   );
 };
@@ -102,123 +205,104 @@ const UnggahBerkas = ({navigation}) => {
 export default UnggahBerkas;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#E8F5E9',
+  container: {flex: 1, backgroundColor: '#E8F5E9'},
+  scrollView: {flex: 1},
+  scrollContent: {paddingHorizontal: 24, paddingTop: 20, paddingBottom: 40},
+  vehicleInfo: {
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    elevation: 2,
   },
-
-  // SCROLL VIEW
-  scrollView: {
-    flex: 1,
+  vehicleLabel: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 14,
+    color: '#666',
+    marginRight: 8,
   },
-  scrollContent: {
-    paddingHorizontal: 24,
-    paddingTop: 20,
-    paddingBottom: 40,
+  vehiclePlate: {
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 16,
+    color: '#2D6B4F',
   },
-
-  // SUBTITLE
   subtitle: {
     fontFamily: 'Montserrat-Regular',
     fontSize: 13,
     color: '#4A5F55',
     textAlign: 'center',
     marginBottom: 24,
-    lineHeight: 20,
-    paddingHorizontal: 10,
   },
-
-  // UPLOAD BOX
   uploadBox: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFF',
     borderRadius: 20,
     borderWidth: 2,
     borderStyle: 'dashed',
     borderColor: '#90A4AE',
-    paddingVertical: 48,
-    paddingHorizontal: 32,
+    paddingVertical: 32,
+    paddingHorizontal: 24,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
     elevation: 4,
     marginBottom: 28,
   },
-
-  // UPLOAD ICON WRAPPER
-  uploadIconWrapper: {
-    marginBottom: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  // UPLOAD TEXT
+  uploadIconWrapper: {marginBottom: 24},
   uploadTitle: {
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 17,
     color: '#2D6B4F',
-    textAlign: 'center',
     marginBottom: 10,
-    letterSpacing: 0.3,
-    lineHeight: 24,
   },
   uploadDescription: {
     fontFamily: 'Montserrat-Regular',
     fontSize: 11,
     color: '#9E9E9E',
-    textAlign: 'center',
     marginBottom: 24,
-    lineHeight: 16,
   },
-
-  // FILE PREVIEW
-  filePreview: {
-    backgroundColor: '#E8F5E9',
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+  imagePreviewContainer: {alignItems: 'center', width: '100%'},
+  imagePreview: {
+    width: '100%',
+    height: 200,
+    borderRadius: 12,
     marginBottom: 16,
-    alignItems: 'center',
+  },
+  changeImageButton: {
+    backgroundColor: '#E8F5E9',
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    marginBottom: 12,
+  },
+  changeImageText: {
+    fontFamily: 'Montserrat-SemiBold',
+    fontSize: 12,
+    color: '#2D6B4F',
   },
   fileName: {
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 12,
     color: '#2D6B4F',
-    marginBottom: 2,
+    marginBottom: 4,
   },
   fileSize: {
     fontFamily: 'Montserrat-Regular',
     fontSize: 10,
     color: '#757575',
   },
-
-  // PICK FILE BUTTON
   pickFileButton: {
     backgroundColor: '#2D6B4F',
-    borderWidth: 0,
     borderRadius: 24,
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 32,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
     elevation: 3,
   },
   pickFileButtonText: {
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 14,
-    color: '#FFFFFF',
-    letterSpacing: 0.3,
+    color: '#FFF',
   },
-
-  // SAVE BUTTON CONTAINER
-  saveButtonContainer: {
-    alignItems: 'center',
-    marginTop: 12,
-  },
-
+  buttonContainer: {alignItems: 'center', marginTop: 12},
   saveButton: {
     width: '100%',
     height: 48,
@@ -226,12 +310,26 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
   },
-
   saveButtonText: {
     fontFamily: 'Montserrat-Bold',
     fontSize: 22,
-    color: '#FFFFFF',
+    color: '#FFF',
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 14,
+    color: '#2D6B4F',
   },
 });

@@ -1,4 +1,3 @@
-// src/pages/AddVehicle/index.js
 import React, {useState} from 'react';
 import {View, StyleSheet, ScrollView, Switch, Text} from 'react-native';
 
@@ -12,6 +11,8 @@ import {
 } from '../../components';
 
 import {MobilIcon, MotorIcon} from '../../assets';
+import {useVehicles} from '../../hooks/useVehicles';
+import {showMessage} from 'react-native-flash-message';
 
 const vehicleOptions = [
   {label: 'Mobil', value: 'mobil', icon: <MobilIcon width={24} height={24} />},
@@ -25,44 +26,73 @@ const AddVehicle = ({navigation}) => {
   const [tanggalJatuhTempo, setTanggalJatuhTempo] = useState(null);
   const [reminderActive, setReminderActive] = useState(true);
 
+  const [saving, setSaving] = useState(false);
   const [successVisible, setSuccessVisible] = useState(false);
   const [savedVehicle, setSavedVehicle] = useState(null);
 
-  const handleSave = () => {
+  const {addVehicle} = useVehicles();
+
+  const showError = message => {
+    showMessage({
+      message,
+      type: 'danger',
+    });
+  };
+
+  const validateForm = () => {
     if (!jenisKendaraan) {
-      alert('Pilih jenis kendaraan terlebih dahulu');
-      return;
+      showError('Pilih jenis kendaraan terlebih dahulu');
+      return false;
     }
     if (!noPolisi) {
-      alert('Masukkan nomor polisi');
-      return;
+      showError('Masukkan nomor polisi');
+      return false;
     }
     if (!merekTahun) {
-      alert('Masukkan merek dan tahun kendaraan');
-      return;
+      showError('Masukkan merek dan tahun kendaraan');
+      return false;
     }
     if (!tanggalJatuhTempo) {
-      alert('Pilih tanggal jatuh tempo pajak');
-      return;
+      showError('Pilih tanggal jatuh tempo pajak');
+      return false;
     }
+    return true;
+  };
+
+  const handleSave = async () => {
+    if (!validateForm()) return;
 
     const vehicleData = {
-      id: Date.now().toString(),
       jenisKendaraan,
-      noPolisi,
-      merekTahun,
-      tanggalJatuhTempo,
+      noPolisi: noPolisi.trim().toUpperCase(),
+      merekTahun: merekTahun.trim(),
+      tanggalJatuhTempo: tanggalJatuhTempo.toISOString(),
       reminderActive,
     };
 
-    console.log('Data Kendaraan:', vehicleData);
+    setSaving(true);
 
-    setSavedVehicle(vehicleData);
-    setSuccessVisible(true);
+    try {
+      const vehicleId = await addVehicle(vehicleData);
+
+      setSavedVehicle({
+        id: vehicleId,
+        ...vehicleData,
+      });
+      setSuccessVisible(true);
+    } catch (error) {
+      console.log('Error simpan kendaraan:', error);
+      showError('Gagal menyimpan kendaraan, coba lagi.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleGoToAddDocument = () => {
-    navigation.navigate('AddDocument', {vehicle: savedVehicle});
+    setSuccessVisible(false);
+    if (savedVehicle) {
+      navigation.navigate('AddDocument', {vehicle: savedVehicle});
+    }
   };
 
   return (
@@ -125,11 +155,12 @@ const AddVehicle = ({navigation}) => {
 
         <View style={styles.buttonContainer}>
           <Button
-            label="Simpan"
+            label={saving ? 'Menyimpan...' : 'Simpan'}
             onPress={handleSave}
             style={styles.saveButton}
             textStyle={styles.saveButtonText}
             width={355}
+            disabled={saving}
           />
         </View>
       </ScrollView>
@@ -137,7 +168,7 @@ const AddVehicle = ({navigation}) => {
       <SuccessPopup
         visible={successVisible}
         onClose={() => setSuccessVisible(false)}
-        title={'Kendaraan berhasil ditambahkan!'}
+        title="Kendaraan berhasil ditambahkan!"
         buttonLabel="Unggah Dokumen"
         onButtonPress={handleGoToAddDocument}
       />

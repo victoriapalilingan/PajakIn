@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -7,60 +7,174 @@ import {
   SafeAreaView,
   Image,
   Text,
+  ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 
-import {CustomHeader} from '../../components';
+import {CustomHeader, ConfirmationPopup} from '../../components';
+import {useDocuments} from '../../hooks/useDocuments';
+import {useVehicles} from '../../hooks/useVehicles';
+import {formatDate} from '../../utils/Date';
+import {getImageSource} from '../../utils/ImageHelper';
+import {showMessage} from 'react-native-flash-message';
 
-const ListDocumentScreen = () => {
-  const documents = [
-    {
-      code: 'B 1234 XYZ',
-      imageSource: require('../../assets/image1.png'),
-    },
-    {
-      code: 'D 5678 ABC',
-      imageSource: require('../../assets/image1.png'),
-    },
-  ];
+const ListDocumentScreen = ({navigation}) => {
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [selectedDoc, setSelectedDoc] = useState(null);
+
+  const {documents, loading: documentsLoading, removeDocument} = useDocuments();
+
+  const {vehicles, loading: vehiclesLoading} = useVehicles();
+
+  const loading = documentsLoading || vehiclesLoading;
+
+  const handleDeleteDocument = doc => {
+    setSelectedDoc(doc);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedDoc) return;
+
+    setDeleteLoading(true);
+    try {
+      await removeDocument(selectedDoc);
+
+      showMessage({
+        message: 'Dokumen berhasil dihapus',
+        type: 'success',
+      });
+
+      setShowDeleteConfirm(false);
+      setSelectedDoc(null);
+    } catch (error) {
+      console.log('Delete error:', error);
+
+      showMessage({
+        message: 'Gagal menghapus dokumen',
+        type: 'danger',
+      });
+
+      setShowDeleteConfirm(false);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteConfirm(false);
+    setSelectedDoc(null);
+  };
+
+  const selectedDocVehicle =
+    selectedDoc && vehicles.find(v => v.id === selectedDoc.vehicleId);
+  const selectedDocPlate =
+    selectedDocVehicle?.noPolisi || selectedDoc?.vehiclePlate || '-';
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle="dark-content"
+        />
+        <CustomHeader title="List Dokumen" alignLeft />
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color="#2A6E54" />
+          <Text style={styles.loadingText}>Memuat dokumen...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
         translucent
         backgroundColor="transparent"
-        barStyle="light-content"
+        barStyle="dark-content"
       />
 
-      {/* Header */}
       <CustomHeader title="List Dokumen" />
 
-      {/* List Dokumen */}
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
-        <View style={styles.listContainer}>
-          {documents.map((doc, index) => (
-            <View key={index} style={styles.cardWrapper}>
-              <View style={styles.card}>
-                <Image
-                  source={doc.imageSource}
-                  style={styles.cardImage}
-                  resizeMode="cover"
-                />
-                <View style={styles.cardInfo}>
-                  <View style={styles.iconBox}>
-                    <View style={styles.iconLine} />
-                    <View style={styles.iconLine} />
-                    <View style={styles.iconLine} />
-                  </View>
-                  <Text style={styles.codeText}>{doc.code}</Text>
+        {documents.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Belum ada dokumen</Text>
+            <Text style={styles.emptySubText}>
+              Unggah dokumen kendaraan Anda untuk menyimpannya di sini.
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.listContainer}>
+            {documents.map(doc => {
+              const imageSource = getImageSource(doc.imageBase64, doc.fileType);
+              const vehicle = vehicles.find(v => v.id === doc.vehicleId);
+              const plate = vehicle?.noPolisi || doc.vehiclePlate || '-';
+
+              return (
+                <View key={doc.id} style={styles.cardWrapper}>
+                  <TouchableOpacity
+                    style={styles.card}
+                    activeOpacity={0.9}
+                    onLongPress={() => handleDeleteDocument(doc)}>
+                    {imageSource ? (
+                      <Image
+                        source={imageSource}
+                        style={styles.cardImage}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <View style={styles.placeholderImage}>
+                        <Text style={styles.placeholderText}>No Image</Text>
+                      </View>
+                    )}
+
+                    <View style={styles.cardInfo}>
+                      <View style={styles.iconBox}>
+                        <View style={styles.iconLine} />
+                        <View style={styles.iconLine} />
+                        <View style={styles.iconLine} />
+                      </View>
+                      <View style={styles.textInfo}>
+                        <Text style={styles.codeText}>{plate}</Text>
+                        <Text style={styles.dateText}>
+                          Diunggah: {formatDate(doc.uploadedAt)}
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
                 </View>
-              </View>
-            </View>
-          ))}
-        </View>
+              );
+            })}
+          </View>
+        )}
+
+        {documents.length > 0 && (
+          <Text style={styles.hintText}>
+            Tekan lama pada dokumen untuk menghapus
+          </Text>
+        )}
       </ScrollView>
+
+      <ConfirmationPopup
+        visible={showDeleteConfirm}
+        onClose={cancelDelete}
+        title="Hapus Dokumen"
+        message={`Apakah Anda yakin ingin menghapus dokumen untuk ${selectedDocPlate}?`}
+        confirmLabel="Hapus"
+        cancelLabel="Batal"
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+        loading={deleteLoading}
+        confirmButtonColor="#E53935"
+        cancelButtonColor="#9E9E9E"
+      />
     </SafeAreaView>
   );
 };
@@ -68,26 +182,47 @@ const ListDocumentScreen = () => {
 export default ListDocumentScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#E8F5E9',
+  container: {flex: 1, backgroundColor: '#E8F5E9'},
+  centerContainer: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+  loadingText: {
+    marginTop: 12,
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 14,
+    color: '#2A6E54',
   },
-  scrollView: {
-    flex: 1,
+  scrollView: {flex: 1},
+  scrollContent: {paddingBottom: 20},
+  emptyContainer: {
+    marginHorizontal: 24,
+    marginTop: 40,
+    backgroundColor: '#FFF',
+    paddingVertical: 40,
+    paddingHorizontal: 24,
+    borderRadius: 16,
+    alignItems: 'center',
+    elevation: 3,
   },
-  scrollContent: {
-    paddingBottom: 20,
+  emptyText: {
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 18,
+    color: '#2A6E54',
+    marginBottom: 8,
+  },
+  emptySubText: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 13,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 20,
   },
   listContainer: {
     paddingHorizontal: 24,
     paddingTop: 20,
-    paddingBottom: 100,
+    paddingBottom: 20,
   },
-  cardWrapper: {
-    marginBottom: 16,
-  },
+  cardWrapper: {marginBottom: 16},
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFF',
     borderRadius: 20,
     overflow: 'hidden',
     shadowColor: '#000',
@@ -98,34 +233,61 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: '100%',
-    height: 140,
+    height: 160,
+  },
+  placeholderImage: {
+    width: '100%',
+    height: 160,
+    backgroundColor: '#E0E0E0',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  placeholderText: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 14,
+    color: '#9E9E9E',
   },
   cardInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
+    paddingVertical: 14,
     paddingHorizontal: 16,
   },
   iconBox: {
-    width: 32,
-    height: 32,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 6,
+    width: 36,
+    height: 36,
+    backgroundColor: '#E8F5E9',
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   iconLine: {
-    width: 16,
+    width: 18,
     height: 2,
-    backgroundColor: '#757575',
+    backgroundColor: '#2A6E54',
     marginVertical: 2,
     borderRadius: 1,
   },
+  textInfo: {flex: 1},
   codeText: {
-    fontFamily: 'Montserrat-SemiBold',
-    fontSize: 14,
+    fontFamily: 'Montserrat-Bold',
+    fontSize: 16,
     color: '#2A6E54',
     letterSpacing: 0.5,
+  },
+  dateText: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 11,
+    color: '#757575',
+    marginTop: 2,
+  },
+  hintText: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 11,
+    color: '#9E9E9E',
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 20,
   },
 });

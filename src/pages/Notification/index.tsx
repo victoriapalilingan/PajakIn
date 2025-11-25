@@ -1,57 +1,74 @@
 import React from 'react';
-import {View, Text, StyleSheet, ScrollView, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
 
 import {NotificationCard, CustomHeader, Gap} from '../../components';
-const {width: screenWidth} = Dimensions.get('window');
+import {useNotifications} from '../../hooks/useNotifications';
 
+const {width: screenWidth} = Dimensions.get('window');
 const Card = NotificationCard;
 
-export default function Notification() {
+const Notification = () => {
   const horizontalPadding = (screenWidth - 318) / 2;
 
-  const documents = [
-    {
-      type: 'warning',
-      title: 'Pajak B 1234 XYZ jatuh tempo 3 hari lagi',
-      subtitle: 'Reminder - 14 Okt 2025 - 08.30',
-    },
-    {
-      type: 'success',
-      title: 'Dokumen STNK untuk B 1234 XYZ berhasil diunggah',
-      subtitle: 'Arsip - 13 Okt - 19.12',
-    },
-    {
-      type: 'warning',
-      title: 'Pajak D 5678 ABC sudah lewat 1 hari',
-      subtitle: 'Reminder - 10 Okt 2025 - 07.50',
-    },
-  ];
+  const {notifications, loading, error} = useNotifications();
+
+  if (loading) {
+    return (
+      <View style={styles.fullScreenContainer}>
+        <CustomHeader title="Notifikasi" alignLeft />
+        <Gap height={24} />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#2D6A4F" />
+          <Text style={styles.loadingText}>Memuat notifikasi...</Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.fullScreenContainer}>
       <CustomHeader title="Notifikasi" alignLeft />
-
       <Gap height={24} />
 
       <ScrollView
         contentContainerStyle={[
           styles.content,
           {paddingHorizontal: horizontalPadding},
-        ]}>
-        {documents.map((item, index) => (
-          <Card
-            key={index}
-            type={item.type}
-            title={item.title}
-            subtitle={item.subtitle}
-          />
-        ))}
+        ]}
+        showsVerticalScrollIndicator={false}>
+        {error ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>{error}</Text>
+          </View>
+        ) : notifications.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>Tidak ada notifikasi</Text>
+          </View>
+        ) : (
+          notifications.map((item, index) => (
+            <Card
+              key={item.id || index}
+              type={item.type}
+              title={item.title}
+              subtitle={item.subtitle}
+            />
+          ))
+        )}
 
         <View style={styles.scrollSpacer} />
       </ScrollView>
     </View>
   );
-}
+};
+
+export default Notification;
 
 const styles = StyleSheet.create({
   fullScreenContainer: {
@@ -65,5 +82,26 @@ const styles = StyleSheet.create({
   },
   scrollSpacer: {
     height: 100,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 14,
+    color: '#2A6E53',
+    fontFamily: 'Montserrat-Medium',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 40,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: '#8D92A3',
+    fontFamily: 'Montserrat-Medium',
   },
 });

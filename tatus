@@ -1,0 +1,115 @@
+[33mcda2689[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelopment[m[33m, [m[1;31morigin/development[m[33m, [m[1;32mmain[m[33m)[m update all pages clean
+[33m3509dbe[m fix bug
+[33m88ca0bc[m fix bug
+[33ma0c9208[m Merge pull request #18 from victoriapalilingan/firebase-final
+[33m8cbc46e[m[33m ([m[1;31morigin/firebase-final[m[33m)[m fix bug
+[33mc8e8dfc[m fix bug
+[33md4a65d4[m fix bug
+[33md5f213b[m[33m ([m[1;31morigin/firebase-refactor[m[33m)[m refactoring all pages
+[33m54cae17[m Merge pull request #17 from victoriapalilingan/vic-firebase
+[33m414a05a[m[33m ([m[1;31morigin/vic-firebase[m[33m)[m adding firebase integration in homescreen and notification
+[33mf796414[m Merge pull request #16 from victoriapalilingan/kyra-firebase
+[33md909bfd[m[33m ([m[1;31morigin/kyra-firebase[m[33m)[m Merge branch 'firebase-final' into kyra-firebase
+[33m4e3db9b[m Merge pull request #15 from victoriapalilingan/newg-firebase
+[33m2a8c031[m[33m ([m[1;31morigin/newg-firebase[m[33m)[m add ProfileScreen2
+[33m859a055[m add ProfileScreen
+[33mcfe1733[m add ListDocument2
+[33m5e15576[m add ListDocument
+[33m7aeed41[m add Document
+[33m7fb753c[m firebase integration crud vehicle
+[33m056bf7f[m Merge pull request #14 from victoriapalilingan/lovely-firebase
+[33m95728c8[m firebase integration CRUD Vehicle
+[33m4ef5256[m[33m ([m[1;31morigin/lovely-firebase[m[33m)[m adding authentication in signIn and signUp page
+[33m343a7d8[m fix firebase configuration
+[33mdb32f48[m adding firebase configuration
+[33m6cab791[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m clean up all components
+[33maaca318[m Merge pull request #13 from victoriapalilingan/development
+[33m6e8ed7d[m Merge pull request #12 from victoriapalilingan/react-navigation
+[33m91cbfce[m[33m ([m[1;31morigin/react-navigation[m[33m)[m update navigation clean
+[33me92014c[m revision minor
+[33md0db4ec[m update navigation to all page clean
+[33m10aaa6e[m update navigation to all page
+[33me3090df[m Merge pull request #11 from victoriapalilingan/lovely/Profile
+[33m33d5cf5[m[33m ([m[1;31morigin/lovely/Profile[m[33m)[m resolving merge
+[33m098009a[m update bottom bar navigation
+[33ma2fb5ee[m Refactor ProfileScreen component and update imports
+[33me32373a[m  add bottom navigation to homescreen, list document screen and notification screen
+[33m4ed7e29[m feat: Perbaikan path impor InputField, koreksi tata letak header ProfileScreen, dan fix warna label
+[33mbaf6421[m Merge pull request #10 from victoriapalilingan/lovely/Document
+[33m611c9bb[m[33m ([m[1;31morigin/lovely/Document[m[33m)[m resolving merge from lovely/document
+[33mdb4fec5[m merge lovely/document
+[33mdd8a1ac[m Fix casing issue
+[33mbe460d3[m Merge pull request #9 from victoriapalilingan/lovely/Notification
+[33m3204157[m[33m ([m[1;31morigin/lovely/Notification[m[33m)[m Merge branch 'react-navigation' into lovely/Notification
+[33me6fa3e2[m[33m ([m[1;31morigin/lovely/Notification2[m[33m)[m feat: Implementasi final UI Notifikasi, Empty State, dan BottomNav baru
+[33m59289d7[m feat: Menambahkan fitur dokumen baru
+[33m4ca4fdc[m feat: Menambahkan seluruh struktur SRC (Komponen, Aset, Pages)
+[33mb76ff40[m revisi
+[33mb7411c9[m fixing layout after merge
+[33mfc5bf70[m update navigation to edit vehicle page
+[33m2fff0f6[m update
+[33m7b743e4[m update merge
+[33m930f155[m Merge pull request #8 from victoriapalilingan/teksinput
+[33m1aa195d[m[33m ([m[1;31morigin/teksinput[m[33m)[m Merge branch 'react-navigation' into teksinput
+[33m0a2d36f[m progress lokal sebelum pull
+[33mfd53a3f[m update terbaru semuanya
+[33m7239701[m update
+[33m1d5df7c[m resolve conflict
+[33ma2354ec[m Merge pull request #7 from victoriapalilingan/victoria/uploadDoc
+[33m1777270[m[33m ([m[1;31morigin/victoria/uploadDoc[m[33m)[m Merge branch 'react-navigation' into victoria/uploadDoc
+[33mcd1dd7d[m create upload document page
+[33maaa6757[m update navigation from vehicle list to detail vehicle
+[33m1dfd57e[m add textinput dropdown
+[33md8fadf9[m update edit vehicle
+[33mba545e8[m update navigation from add vehicle screen to detail vehicle screen
+[33m4012ca5[m fix: resolve merge conflict in AddVehicle (use CustomHeader & lowercase svg)
+[33m8514ab5[m resolve conflict merge between kyra/detail_vehicel and react navigation
+[33m6743194[m update navigation from homescreen to addvehicle
+[33m286d0d4[m Merge pull request #6 from victoriapalilingan/kyra/detail_vehicle
+[33meb03fa5[m[33m ([m[1;31morigin/kyra/detail_vehicle[m[33m)[m Merge branch 'react-navigation' into kyra/detail_vehicle
+[33m2e9f419[m Merge pull request #5 from victoriapalilingan/kyra/add_vehicle2
+[33m98a2383[m[33m ([m[1;31morigin/kyra/add_vehicle2[m[33m)[m Merge branch 'react-navigation' into kyra/add_vehicle2
+[33m6fb109c[m update navigation sign in to homescreen
+[33m477a7a1[m Merge pull request #4 from victoriapalilingan/victoria/home
+[33m6090dd0[m[33m ([m[1;31morigin/victoria/home[m[33m)[m Resolve merge conflict by incorporating both suggestions
+[33m7cafcb7[m resolve error in home page
+[33ma127a3e[m update home page clean
+[33m585a6c7[m add navigation from onboarding to sign in
+[33mfda3d54[m Merge pull request #3 from victoriapalilingan/new/signIn
+[33m1b720fe[m[33m ([m[1;31morigin/new/signIn[m[33m)[m Merge branch 'react-navigation' into new/signIn
+[33m2a69fda[m add navigation splash screen to onboarding
+[33mcd7bf24[m detail vehicle
+[33mcdc904d[m Merge pull request #2 from victoriapalilingan/new/onBoarding
+[33m1c2ddd5[m[33m ([m[1;31morigin/new/onBoarding[m[33m)[m Merge branch 'react-navigation' into new/onBoarding
+[33mb26fcbf[m Merge pull request #1 from victoriapalilingan/new/splashScreen
+[33mbeb15e5[m update logo onBoarding1 & onBoarding2
+[33mb38b101[m add SignIn
+[33m1982fa0[m[33m ([m[1;31morigin/kyra/edit_vehicle[m[33m)[m add edit vehicle and header
+[33m53f8a7b[m Add OnBoarding
+[33md83ab08[m update home
+[33m40f54e0[m[33m ([m[1;31morigin/victoria/signUp[m[33m)[m update component button
+[33m8c5ecc0[m update component button
+[33mce4be89[m Add EditVehicle
+[33m9f98b76[m revision size in nav bar item
+[33mab5f523[m resolve error
+[33mc3616c4[m update pop up success
+[33m0228ed4[m update add vehicle
+[33m1202981[m add feature pop up success
+[33m142ff38[m add vehicle
+[33m8cac376[m[33m ([m[1;31morigin/new/splashScreen[m[33m)[m Add SplashScreen page
+[33m8613313[m update home screen clean without signUp page
+[33m8fcb551[m update sign up page clean without homescreen page
+[33ma55a203[m add pop up bottom
+[33m8b9e907[m update bottom nav
+[33mfaa76a6[m add buttom navigation
+[33m63c7cfe[m update homepage add button tambah sekarang
+[33m44b8660[m add motor and mobil icon
+[33m26660ca[m add Header, Status Badge, Vehicle Card and Vehicle list
+[33m55035a0[m add home page
+[33me8c1c26[m update signUp page
+[33me37185b[m update sign up page
+[33m9045232[m update sign up page
+[33mfa14d45[m adding sign up page
+[33md3e203a[m create branch development
+[33mdcc3812[m adding montserrat font
+[33m3a8e071[m Initial commit

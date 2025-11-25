@@ -39,17 +39,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: {width: 0, height: 6},
-        shadowOpacity: 0.25,
-        shadowRadius: 10,
-      },
-      android: {
-        elevation: 10,
-      },
-    }),
+    elevation: 10,
   },
   svgCircle: {
     position: 'absolute',

@@ -8,6 +8,7 @@ import GoogleCalendarIcon from './googlecalendar.svg';
 import SecureIcon from './Secure.svg';
 import ForwardIcon from './Forward.svg';
 import ErrorIcon from './Error.svg';
+import NullPhoto from './null-photo.png';
 
 // =====================
 // Vehicle Icons
@@ -60,6 +61,7 @@ export {
   SecureIcon,
   ForwardIcon,
   ErrorIcon,
+  NullPhoto,
 
   // Vehicle
   MobilIcon,
