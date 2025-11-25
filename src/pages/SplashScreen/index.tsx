@@ -7,7 +7,6 @@ const SplashScreen = ({navigation}) => {
     const auth = getAuth();
 
     const unsubscribe = onAuthStateChanged(auth, user => {
-      // Kasih delay dikit biar splash-nya kelihatan
       setTimeout(() => {
         if (user) {
           console.log('✔ User terdeteksi, langsung ke Main');
