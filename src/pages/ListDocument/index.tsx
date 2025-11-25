@@ -9,7 +9,6 @@ import {
   Text,
   ActivityIndicator,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 
 import {CustomHeader, ConfirmationPopup} from '../../components';
@@ -20,6 +19,8 @@ import {useDocuments} from '../../hooks/useDocuments';
 // Utils
 import {formatDate} from '../../utils/Date';
 import {getImageSource} from '../../utils/ImageHelper';
+
+import {showMessage} from 'react-native-flash-message';
 
 const ListDocumentScreen = ({navigation}) => {
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -41,12 +42,23 @@ const ListDocumentScreen = ({navigation}) => {
     try {
       await removeDocument(selectedDoc);
 
-      Alert.alert('Sukses', 'Dokumen berhasil dihapus');
+      // ✅ Ganti Alert dengan flash message
+      showMessage({
+        message: 'Dokumen berhasil dihapus',
+        type: 'success',
+      });
+
       setShowDeleteConfirm(false);
       setSelectedDoc(null);
     } catch (error) {
       console.log('Delete error:', error);
-      Alert.alert('Error', 'Gagal menghapus dokumen');
+
+      showMessage({
+        message: 'Gagal menghapus dokumen',
+        type: 'danger',
+      });
+
+      setShowDeleteConfirm(false);
     } finally {
       setDeleteLoading(false);
     }
