@@ -16,7 +16,6 @@ import {
 } from '../../components';
 import {CheckmarkIcon} from '../../assets';
 
-// Custom hook (sudah di-refactor pakai service)
 import {useVehicleDetail} from '../../hooks/useVehicleDetail';
 
 const formatDisplayDate = dateString => {
@@ -69,7 +68,6 @@ const VehicleDetailScreen = ({navigation, route}) => {
     try {
       setDeleting(true);
 
-      // 🚗 Hapus kendaraan + buat notifikasi (dikerjakan oleh hook/service)
       await removeVehicle();
 
       setConfirmVisible(false);
@@ -138,7 +136,6 @@ const VehicleDetailScreen = ({navigation, route}) => {
 
       <ScrollView style={styles.scrollViewContent}>
         <View style={styles.content}>
-          {/* Data Kendaraan */}
           <View style={styles.card}>
             <Text style={styles.label}>Nomor Polisi</Text>
             <Text style={styles.plateNumber}>{vehicle.noPolisi}</Text>
@@ -149,7 +146,6 @@ const VehicleDetailScreen = ({navigation, route}) => {
             </Text>
           </View>
 
-          {/* Status Pajak */}
           <View style={styles.card}>
             <Text style={styles.label}>Status Pajak</Text>
 
@@ -170,7 +166,6 @@ const VehicleDetailScreen = ({navigation, route}) => {
             </Text>
           </View>
 
-          {/* Reminder */}
           <View style={styles.card}>
             <Text style={styles.label}>Pengingat Pajak</Text>
             <Text style={styles.reminderStatus}>
@@ -180,7 +175,6 @@ const VehicleDetailScreen = ({navigation, route}) => {
         </View>
       </ScrollView>
 
-      {/* Tombol Edit & Hapus */}
       <View style={styles.fixedButtonContainer}>
         <View style={styles.buttonWrapper}>
           <Button
@@ -211,7 +205,6 @@ const VehicleDetailScreen = ({navigation, route}) => {
         </View>
       </View>
 
-      {/* Popup Konfirmasi Hapus */}
       <ConfirmationPopup
         visible={confirmVisible}
         onClose={() => setConfirmVisible(false)}

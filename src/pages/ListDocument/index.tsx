@@ -13,10 +13,8 @@ import {
 
 import {CustomHeader, ConfirmationPopup} from '../../components';
 
-// Custom hooks
 import {useDocuments} from '../../hooks/useDocuments';
 
-// Utils
 import {formatDate} from '../../utils/Date';
 import {getImageSource} from '../../utils/ImageHelper';
 
@@ -27,7 +25,6 @@ const ListDocumentScreen = ({navigation}) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
 
-  // Use custom hook for documents
   const {documents, loading, removeDocument} = useDocuments();
 
   const handleDeleteDocument = doc => {
@@ -42,7 +39,6 @@ const ListDocumentScreen = ({navigation}) => {
     try {
       await removeDocument(selectedDoc);
 
-      // ✅ Ganti Alert dengan flash message
       showMessage({
         message: 'Dokumen berhasil dihapus',
         type: 'success',

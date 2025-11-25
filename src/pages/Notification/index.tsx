@@ -1,4 +1,3 @@
-// src/screens/Notification/Notification.js
 import React from 'react';
 import {
   View,
