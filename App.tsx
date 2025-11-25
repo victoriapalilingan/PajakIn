@@ -1,7 +1,7 @@
 import React from 'react';
+import {StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {StatusBar} from 'react-native';
 
 import SplashScreen from './src/pages/SplashScreen';
 import OnBoarding from './src/pages/onBoarding';
@@ -22,6 +22,12 @@ const Stack = createNativeStackNavigator();
 
 const App = () => (
   <NavigationContainer>
+    <StatusBar
+      translucent
+      backgroundColor="transparent"
+      barStyle="dark-content"
+    />
+
     <Stack.Navigator
       initialRouteName="SplashScreen"
       screenOptions={{headerShown: false}}>
@@ -33,7 +39,6 @@ const App = () => (
       <Stack.Screen name="Main" component={MainTabs} />
       <Stack.Screen name="AddVehicle" component={AddVehicle} />
       <Stack.Screen name="AddDocument" component={UnggahBerkas} />
-
       <Stack.Screen name="DetailVehicle" component={VehicleDetailScreen} />
       <Stack.Screen name="EditVehicle" component={EditVehicle} />
     </Stack.Navigator>

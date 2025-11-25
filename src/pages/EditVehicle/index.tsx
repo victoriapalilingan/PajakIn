@@ -24,6 +24,7 @@ import {useVehicle} from '../../hooks/useVehicles';
 
 // Utils
 import {parseDate} from '../../utils/Date/';
+import {showMessage} from 'react-native-flash-message';
 
 const vehicleOptions = [
   {label: 'Mobil', value: 'mobil', icon: <MobilIcon width={24} height={24} />},
@@ -90,10 +91,18 @@ const EditVehicle = ({navigation, route}) => {
     try {
       await updateVehicleData(updatedData);
 
-      Alert.alert('Berhasil', 'Data kendaraan berhasil diperbarui', [
-        {text: 'OK', onPress: () => navigation.goBack()},
-      ]);
+      // ✅ Flash message sukses
+      showMessage({
+        message: 'Data kendaraan berhasil diperbarui',
+        type: 'success',
+      });
+
+      // ✅ Ini juga otomatis memicu generateTaxNotifications
+      //    karena data di `vehicles/{uid}` berubah
+
+      navigation.goBack();
     } catch (error) {
+      console.log('Update vehicle error:', error);
       Alert.alert('Gagal', 'Gagal memperbarui kendaraan, coba lagi.');
     }
   };

@@ -1,3 +1,4 @@
+// src/pages/SignUp/index.js
 import React, {useState} from 'react';
 import {
   StyleSheet,
@@ -75,43 +76,28 @@ const SignUp = ({navigation}) => {
   const getFieldProps = label => {
     switch (label) {
       case 'NIK':
-        return {
-          value: nik,
-          onChangeText: setNik,
-        };
+        return {value: nik, onChangeText: setNik};
       case 'Nama Lengkap':
-        return {
-          value: fullname,
-          onChangeText: setFullName,
-        };
+        return {value: fullname, onChangeText: setFullName};
       case 'Email atau No Hp':
-        return {
-          value: email,
-          onChangeText: setEmail,
-        };
+        return {value: email, onChangeText: setEmail};
       case 'Password':
-        return {
-          value: password,
-          onChangeText: setPassword,
-        };
+        return {value: password, onChangeText: setPassword};
       case 'Konfirmasi Password':
-        return {
-          value: confirmPassword,
-          onChangeText: setConfirmPassword,
-        };
+        return {value: confirmPassword, onChangeText: setConfirmPassword};
       default:
         return {};
     }
   };
 
-  const onSubmit = async () => {
+  const validateForm = () => {
     if (!isAgreed) {
       showMessage({
         message:
           'Harap setujui Ketentuan dan Kebijakan Privasi terlebih dahulu',
         type: 'danger',
       });
-      return;
+      return false;
     }
 
     if (!nik || !fullname || !email || !password || !confirmPassword) {
@@ -119,7 +105,7 @@ const SignUp = ({navigation}) => {
         message: 'Semua field wajib diisi',
         type: 'danger',
       });
-      return;
+      return false;
     }
 
     if (password !== confirmPassword) {
@@ -127,6 +113,14 @@ const SignUp = ({navigation}) => {
         message: 'Password dan Konfirmasi Password tidak sama',
         type: 'danger',
       });
+      return false;
+    }
+
+    return true;
+  };
+
+  const onSubmit = async () => {
+    if (!validateForm()) {
       return;
     }
 
@@ -143,21 +137,10 @@ const SignUp = ({navigation}) => {
       console.log('User created:', user);
       setShowSuccess(true);
     } catch (error) {
-      console.log('Signup error code:', error.code);
-      console.log('Signup error msg:', error.message);
-
-      let msg = 'Gagal mendaftarkan akun';
-
-      if (error.code === 'auth/email-already-in-use') {
-        msg = 'Email sudah terdaftar, silakan gunakan email lain atau masuk.';
-      } else if (error.code === 'auth/invalid-email') {
-        msg = 'Format email tidak valid.';
-      } else if (error.code === 'auth/weak-password') {
-        msg = 'Password terlalu lemah, minimal 6 karakter.';
-      }
+      console.log('Signup error:', error);
 
       showMessage({
-        message: msg,
+        message: error?.message || 'Gagal mendaftarkan akun',
         type: 'danger',
       });
     } finally {
@@ -168,10 +151,6 @@ const SignUp = ({navigation}) => {
   const goToSignIn = () => {
     setShowSuccess(false);
     navigation.navigate('SignIn');
-  };
-
-  const handleContinue = () => {
-    onSubmit();
   };
 
   return (
@@ -227,7 +206,7 @@ const SignUp = ({navigation}) => {
 
                 <Button
                   label={loading ? 'Memproses...' : 'Daftar Sekarang'}
-                  onPress={handleContinue}
+                  onPress={onSubmit}
                   color="#2A6E54"
                   textColor="#FFFFFF"
                   width={255}

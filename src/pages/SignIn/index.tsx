@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,30 +11,13 @@ import {
 
 import {TextInput, Button, Gap, Card} from '../../components';
 import {EmailIcon, PassIcon} from '../../assets';
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-} from 'firebase/auth';
+import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import {showMessage} from 'react-native-flash-message';
 
-const LoginScreen = ({navigation}: any) => {
+const LoginScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
-  // 🔥 Kalau sudah ada user yang login, langsung ke Main
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, user => {
-      if (user) {
-        console.log('User already logged in, go to Main');
-        navigation.replace('Main');
-      }
-    });
-
-    return () => unsubscribe();
-  }, [navigation]);
 
   const onSubmit = () => {
     if (!email || !password) {

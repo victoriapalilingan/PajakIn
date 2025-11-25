@@ -1,12 +1,31 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, View, Image} from 'react-native';
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
 const SplashScreen = ({navigation}) => {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.replace('OnBoarding');
-    }, 2000);
-    return () => clearTimeout(timer);
+    const auth = getAuth();
+
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      // Kasih delay dikit biar splash-nya kelihatan
+      setTimeout(() => {
+        if (user) {
+          console.log('✔ User terdeteksi, langsung ke Main');
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Main'}],
+          });
+        } else {
+          console.log('❌ Tidak ada user, ke OnBoarding');
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'OnBoarding'}],
+          });
+        }
+      }, 1200);
+    });
+
+    return () => unsubscribe();
   }, [navigation]);
 
   return (
