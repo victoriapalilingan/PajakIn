@@ -16,7 +16,6 @@ import {
 } from '../../components';
 import {CheckmarkIcon} from '../../assets';
 
-// Custom hook (sudah di-refactor pakai service)
 import {useVehicleDetail} from '../../hooks/useVehicleDetail';
 
 const formatDisplayDate = dateString => {
@@ -69,7 +68,6 @@ const VehicleDetailScreen = ({navigation, route}) => {
     try {
       setDeleting(true);
 
-      // 🚗 Hapus kendaraan + buat notifikasi (dikerjakan oleh hook/service)
       await removeVehicle();
 
       setConfirmVisible(false);

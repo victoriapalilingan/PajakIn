@@ -30,14 +30,13 @@ const LoginScreen = ({navigation}) => {
 
     setLoading(true);
 
-    const auth = getAuth(); // pakai default Firebase app yang sudah di-init
+    const auth = getAuth(); 
 
     signInWithEmailAndPassword(auth, email.trim(), password)
       .then(userCredential => {
         const user = userCredential.user;
         console.log('Login success:', user);
-
-        // Arahkan ke halaman Main, dan hapus screen login dari history
+        
         navigation.replace('Main');
       })
       .catch(error => {
