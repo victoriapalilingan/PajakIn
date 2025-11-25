@@ -12,12 +12,10 @@ import {
 } from 'react-native';
 
 import {CustomHeader, ConfirmationPopup} from '../../components';
-
 import {useDocuments} from '../../hooks/useDocuments';
-
+import {useVehicles} from '../../hooks/useVehicles';
 import {formatDate} from '../../utils/Date';
 import {getImageSource} from '../../utils/ImageHelper';
-
 import {showMessage} from 'react-native-flash-message';
 
 const ListDocumentScreen = ({navigation}) => {
@@ -25,7 +23,11 @@ const ListDocumentScreen = ({navigation}) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState(null);
 
-  const {documents, loading, removeDocument} = useDocuments();
+  const {documents, loading: documentsLoading, removeDocument} = useDocuments();
+
+  const {vehicles, loading: vehiclesLoading} = useVehicles();
+
+  const loading = documentsLoading || vehiclesLoading;
 
   const handleDeleteDocument = doc => {
     setSelectedDoc(doc);
@@ -65,6 +67,11 @@ const ListDocumentScreen = ({navigation}) => {
     setSelectedDoc(null);
   };
 
+  const selectedDocVehicle =
+    selectedDoc && vehicles.find(v => v.id === selectedDoc.vehicleId);
+  const selectedDocPlate =
+    selectedDocVehicle?.noPolisi || selectedDoc?.vehiclePlate || '-';
+
   if (loading) {
     return (
       <SafeAreaView style={styles.container}>
@@ -73,10 +80,7 @@ const ListDocumentScreen = ({navigation}) => {
           backgroundColor="transparent"
           barStyle="dark-content"
         />
-        <CustomHeader
-          title="List Dokumen"
-          onBackPress={() => navigation.goBack()}
-        />
+        <CustomHeader title="List Dokumen" alignLeft />
         <View style={styles.centerContainer}>
           <ActivityIndicator size="large" color="#2A6E54" />
           <Text style={styles.loadingText}>Memuat dokumen...</Text>
@@ -93,10 +97,7 @@ const ListDocumentScreen = ({navigation}) => {
         barStyle="dark-content"
       />
 
-      <CustomHeader
-        title="List Dokumen"
-        onBackPress={() => navigation.goBack()}
-      />
+      <CustomHeader title="List Dokumen" />
 
       <ScrollView
         style={styles.scrollView}
@@ -113,6 +114,8 @@ const ListDocumentScreen = ({navigation}) => {
           <View style={styles.listContainer}>
             {documents.map(doc => {
               const imageSource = getImageSource(doc.imageBase64, doc.fileType);
+              const vehicle = vehicles.find(v => v.id === doc.vehicleId);
+              const plate = vehicle?.noPolisi || doc.vehiclePlate || '-';
 
               return (
                 <View key={doc.id} style={styles.cardWrapper}>
@@ -139,7 +142,7 @@ const ListDocumentScreen = ({navigation}) => {
                         <View style={styles.iconLine} />
                       </View>
                       <View style={styles.textInfo}>
-                        <Text style={styles.codeText}>{doc.vehiclePlate}</Text>
+                        <Text style={styles.codeText}>{plate}</Text>
                         <Text style={styles.dateText}>
                           Diunggah: {formatDate(doc.uploadedAt)}
                         </Text>
@@ -163,7 +166,7 @@ const ListDocumentScreen = ({navigation}) => {
         visible={showDeleteConfirm}
         onClose={cancelDelete}
         title="Hapus Dokumen"
-        message={`Apakah Anda yakin ingin menghapus dokumen untuk ${selectedDoc?.vehiclePlate}?`}
+        message={`Apakah Anda yakin ingin menghapus dokumen untuk ${selectedDocPlate}?`}
         confirmLabel="Hapus"
         cancelLabel="Batal"
         onConfirm={confirmDelete}
